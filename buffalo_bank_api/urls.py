@@ -16,7 +16,13 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from accounts.views import SendEmailInvites, VerifyInvitationKey, CreateUserView, RetrieveUserView
-from bank.views import RetrieveReportsView, RetrieveActiveCoursesView, RetrieveStudentsByCourseView, RetrieveCourseReportView, RetrieveBehaviorGoalsView
+from bank.views import (RetrieveReportsView,
+                        RetrieveActiveCoursesView,
+                        RetrieveStudentsByCourseView,
+                        RetrieveCourseReportView,
+                        RetrieveBehaviorGoalsView,
+                        UpdateCourseReportView
+                       )
 from rest_framework.authtoken import views as rest_framework_views
 
 urlpatterns = [
@@ -34,6 +40,7 @@ urlpatterns = [
     url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
     url(r'^bank/roster/(?P<pk>[0-9]+)/$',RetrieveStudentsByCourseView.as_view()),
     url(r'^bank/course_report/(?P<pk>[0-9]+)/$',RetrieveCourseReportView.as_view()),
+    url(r'^bank/course_report/save/(?P<pk>[0-9]+)/$', UpdateCourseReportView.as_view()),
     url(r'^bank/behavior_goals/active/$',RetrieveBehaviorGoalsView.as_view()),
     url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 ]

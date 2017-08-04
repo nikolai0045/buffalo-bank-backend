@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework import status, authentication, permissions
 
 from .serializers import CourseReportSerializer, CourseStudentsSerializer, BasicCourseSerializer, FullCourseReportSerializer, BehaviorGoalSerializer
@@ -54,6 +54,12 @@ class RetrieveStudentsByCourseView(RetrieveAPIView):
     queryset = Course.objects.all()
 
 class RetrieveCourseReportView(RetrieveAPIView):
+    model = CourseReport
+    serializer_class = FullCourseReportSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    queryset = CourseReport.objects.all()
+    
+class UpdateCourseReportView(UpdateAPIView):
     model = CourseReport
     serializer_class = FullCourseReportSerializer
     authentication_classes = (authentication.TokenAuthentication,)

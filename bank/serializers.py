@@ -44,26 +44,70 @@ class BehaviorGoalSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = BehaviorGoal
 		fields = ('goal','id')
-
+        
 class BuckSerializer(serializers.ModelSerializer):
-	goal = BehaviorGoalSerializer()
-
-	class Meta:
-		model = Buck
-		fields = ('goal','earned','id')
-
+    goal = BehaviorGoalSerializer()
+    id = serializers.IntegerField(read_only=False)
+    class Meta:
+        model = Buck
+        fields = ('goal','earned','id')
+        
 class FullDepositSerializer(serializers.ModelSerializer):
-	student = BasicStudentSerializer()
-	buck_set = BuckSerializer(many=True)
-
-	class Meta:
-		model = Deposit
-		fields = ('student','amount_earned','buck_set','id')
+    student = BasicStudentSerializer()
+    id = serializers.IntegerField(read_only=False)
+    buck_set = BuckSerializer(many=True)
+    
+    class Meta:
+        model = Deposit
+        fields = ('student','amount_earned','buck_set','id')
 
 class FullCourseReportSerializer(serializers.ModelSerializer):
-	deposit_set = FullDepositSerializer(many=True)
-	course = BasicCourseSerializer()
-
-	class Meta:
-		model = CourseReport
-		fields = ('course','date','start_time','end_time','completed','deposit_set','id')
+    deposit_set = FullDepositSerializer(many=True)
+    course = BasicCourseSerializer()
+    
+    def update(self,instance,validated_data):
+        if instance.completed == False:
+            for d in validated_data['deposit_set']:
+                deposit = Deposit.objects.get(pk=d['id'])
+                student = deposit.student
+                for b in d['buck_set']:
+                    buck = Buck.objects.get(pk=b['id'])
+                    if b['earned'] == 'true' or b['earned'] == True:
+                        buck.earned = True
+                        deposit.amount_earned += 1
+                        student.account_balance += 1
+                        student.save()
+                    else:
+                        buck.earned = False
+                    buck.save()
+                    deposit.save()
+            instance.completed = True
+            instance.save()
+        else:
+            for d in validated_data['deposit_set']:
+                deposit = Deposit.objects.get(pk=d['id'])
+                student = deposit.student
+                for b in d['buck_set']:
+                    buck = Buck.objects.get(pk=b['id'])
+                    if b['earned'] == 'true' or b['earned'] == True:
+                        if not buck.earned:
+                            buck.earned = True
+                            deposit.amount_earned += 1
+                            student.account_balance += 1
+                            student.save()
+                            deposit.save()
+                            buck.save()
+                    else:
+                        if buck.earned:
+                            buck.earned = False
+                            deposit.amount_earned -= 1
+                            student.account_balance -= 1
+                            student.save()
+                            deposit.save()
+                            buck.save()
+                instance.save()
+        return instance
+        
+    class Meta:
+        model = CourseReport
+        fields = ('course','date','start_time','end_time','completed','deposit_set','id')
