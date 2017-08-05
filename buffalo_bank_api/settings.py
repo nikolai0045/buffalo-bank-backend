@@ -41,9 +41,9 @@ INSTALLED_APPS = [
 
     # Behavior Management
     'bank',
+    'accounts',
     'tier_two',
     'tier_three',
-    'accounts',
 
     # Third party
     'rest_framework',

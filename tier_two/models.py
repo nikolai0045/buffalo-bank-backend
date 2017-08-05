@@ -4,17 +4,17 @@ from __future__ import unicode_literals
 from django.db import models
 from bank.models import Student, CourseReport, UserProfile
 
-class T2Profile(models.Model):
+class TTwoProfile(models.Model):
 	student = models.ForeignKey(Student)
 	mentor = models.ForeignKey(UserProfile)
 	active = models.BooleanField(default=True)
 
-class T2Goal(models.Model):
-	profile = models.ForeignKey(T2Profile)
+class TTwoGoal(models.Model):
+	profile = models.ForeignKey(TTwoProfile)
 	goal = models.CharField(max_length=255)
 	active = models.BooleanField(default=False)
 
-class T2Report(models.Model):
-	goal = models.ForeignKey(T2Goal)
+class TTwoReport(models.Model):
+	goal = models.ForeignKey(TTwoGoal)
 	report = models.ForeignKey(CourseReport)
 	score = models.IntegerField(default=5)
