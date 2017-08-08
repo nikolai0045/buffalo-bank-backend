@@ -7,7 +7,8 @@ from django.db import models
 USER_TYPE_CHOICES = [
 	('ADMIN','ADMIN'),
 	('TEACHER','TEACHER'),
-	('OBSERVER','OBSERVER')
+	('OBSERVER','OBSERVER'),
+	('MERCHANT','MERCHANT')
 ]
 class Student(models.Model):
 	first_name = models.CharField(max_length=255)
@@ -16,10 +17,26 @@ class Student(models.Model):
 	active = models.BooleanField(default=True)
 	external_id = models.CharField(max_length=255)
 	account_balance = models.IntegerField(default=0)
+	
+	def is_ttwo(self):
+		if self.ttwoprofile_set.filter(active=True).exists():
+			return True
+		return False
+	
+	def is_tthree(self):
+		if self.tthreeprofile_set.filter(active=True).exists():
+			return True
+		return False
 
 	def __str__(self):
 		return self.first_name + " " + self.last_name
 
+class PersonalBehaviorGoal(models.Model):
+	student = models.ForeignKey(Student)
+	active = models.BooleanField(default=True)
+	name = models.CharField(max_length=200)
+	description = models.TextField(null=True,blank=True)
+	
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	user_type = models.CharField(max_length=20,choices=USER_TYPE_CHOICES,default='TEACHER')
@@ -51,7 +68,8 @@ class BehaviorGoal(models.Model):
 
 class Transaction(models.Model):
 	student = models.ForeignKey(Student)
-	datetime = models.DateTimeField(auto_now=True)
+	date = models.DateField()
+	time = models.TimeField()
 
 class CourseReport(models.Model):
 	course = models.ForeignKey(Course)
@@ -69,7 +87,7 @@ class Deposit(Transaction):
 	amount_earned = models.IntegerField(default=0)
 
 	def __str__(self):
-		return str(self.student) + " - " + self.course_report.course.name + " " + str(self.datetime)
+		return str(self.student) + " - " + self.course_report.course.name + " " + str(self.date)
 
 	##def amount_earned(self):
 	##	return len(self.buck_set.filter(earned=True))
@@ -97,3 +115,10 @@ class Buck(models.Model):
 
 	def __str__(self):
 		return str(self.deposit.student) + " - " + str(self.goal)
+	
+class MissingAssignment(models.Model):
+	name = models.CharField(max_length=30)
+	description = models.CharField(max_length=400,blank=True,null=True)
+	students = models.ManyToManyField(Student)
+	course = models.ForeignKey(Course)
+	date = models.DateField(auto_now_add=True)

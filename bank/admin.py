@@ -14,5 +14,6 @@ admin.site.register(Deposit)
 admin.site.register(PurchaseItem)
 admin.site.register(Purchase)
 admin.site.register(Buck)
+admin.site.register(MissingAssignment)
 
 # Register your models here.

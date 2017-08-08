@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal
+from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal
 from tier_two.models import TTwoProfile, TTwoGoal, TTwoReport
 from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
+import datetime
 
 ##Bank Serializers
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -31,10 +32,12 @@ class CourseReportSerializer(serializers.ModelSerializer):
 		fields = ('course','start_time','end_time','completed','date','id')
 
 class BasicStudentSerializer(serializers.ModelSerializer):
+	is_ttwo = serializers.BooleanField()
+	is_tthree = serializers.BooleanField()
 
 	class Meta:
 		model = Student
-		fields = ('first_name','last_name','grade','id','account_balance')
+		fields = ('first_name','last_name','grade','id','account_balance','is_ttwo','is_tthree')
 
 class CourseStudentsSerializer(serializers.ModelSerializer):
 	students = BasicStudentSerializer(many=True)
@@ -63,7 +66,30 @@ class FullDepositSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deposit
         fields = ('student','amount_earned','buck_set','id')
+		
+class StudentDepositSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(read_only=False)
+	buck_set = BuckSerializer(many=True)
+	class Meta:
+		model = Deposit
+		fields = ('amount_earned','buck_set','id')
+		
+class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(read_only=False)
+	
+	class Meta:
+		model = PersonalBehaviorGoal
+		fields = ('name','description')
+		
+class MissingAssignmentSerializer(serializers.ModelSerializer):
+	course = BasicCourseSerializer()
+	
+	class Meta:
+		model = MissingAssignment
+		fields = ('name','description','course','date')
 
+		
+		
 ##Tier Two Serializers
 class TTwoProfileSerializer(serializers.ModelSerializer):
 	student = BasicStudentSerializer()
@@ -82,10 +108,13 @@ class TTwoGoalSerializer(serializers.ModelSerializer):
 
 class TTwoReportSerializer(serializers.ModelSerializer):
 	goal = TTwoGoalSerializer()
+	id = serializers.IntegerField(read_only=False)
 
 	class Meta:
 		model = TTwoReport
 		fields = ('goal','score','id')
+
+
 
 ##Tier Three Serializers
 class TThreeGoalSerializer(serializers.ModelSerializer):
@@ -105,10 +134,13 @@ class TThreeProfileSerializer(serializers.ModelSerializer):
 
 class TThreeReportSerializer(serializers.ModelSerializer):
 	profile = TThreeProfileSerializer()
+	id = serializers.IntegerField(read_only=False)
 
 	class Meta:
 		model = TThreeReport
 		fields = ('profile','score','id')
+
+##Student Profile Serializer
 
 ##Course Report Serializer
 class FullCourseReportSerializer(serializers.ModelSerializer):
@@ -118,6 +150,14 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 	ttworeport_set = TTwoReportSerializer(many=True)
 
 	def update(self,instance,validated_data):
+		for r in validated_data['ttworeport_set']:
+			report = TTwoReport.objects.get(pk=r['id'])
+			report.score = r['score']
+			report.save()
+		for r in validated_data['tthreereport_set']:
+			report = TThreeReport.objects.get(pk=r['id'])
+			report.score = r['score']
+			report.save()
 		if instance.completed == False:
 			for d in validated_data['deposit_set']:
 				deposit = Deposit.objects.get(pk=d['id'])
