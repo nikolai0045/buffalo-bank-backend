@@ -17,12 +17,12 @@ class Student(models.Model):
 	active = models.BooleanField(default=True)
 	external_id = models.CharField(max_length=255)
 	account_balance = models.IntegerField(default=0)
-	
+
 	def is_ttwo(self):
 		if self.ttwoprofile_set.filter(active=True).exists():
 			return True
 		return False
-	
+
 	def is_tthree(self):
 		if self.tthreeprofile_set.filter(active=True).exists():
 			return True
@@ -36,7 +36,7 @@ class PersonalBehaviorGoal(models.Model):
 	active = models.BooleanField(default=True)
 	name = models.CharField(max_length=200)
 	description = models.TextField(null=True,blank=True)
-	
+
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	user_type = models.CharField(max_length=20,choices=USER_TYPE_CHOICES,default='TEACHER')
@@ -115,7 +115,12 @@ class Buck(models.Model):
 
 	def __str__(self):
 		return str(self.deposit.student) + " - " + str(self.goal)
-	
+
+class BehaviorNote(models.Model):
+	student = models.ForeignKey(Student)
+	report = models.ForeignKey(CourseReport)
+	note = models.TextField()
+
 class MissingAssignment(models.Model):
 	name = models.CharField(max_length=30)
 	description = models.CharField(max_length=400,blank=True,null=True)

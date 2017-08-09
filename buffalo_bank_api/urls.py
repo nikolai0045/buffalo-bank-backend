@@ -31,6 +31,13 @@ from bank.views import (
 	RetrieveStudentView,
 	RetrieveStudentScheduleView,
 	RetrieveStudentStatisticsView,
+    UpdatePersonalBehaviorGoalView,
+    CreatePersonalBehaviorGoalView,
+    RetrieveCourseMissingWorkView,
+    RetrieveStudentsNotMissingWork,
+    UpdateMissingWorkView,
+    DestroyMissingWorkView,
+    CreateMissingWorkView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -47,6 +54,11 @@ urlpatterns = [
 	url(r'^bank/reports/$',RetrieveReportsView.as_view()),
 	url(r'^bank/reports/(?P<year>[0-9]+)/(?P<month>[0-9]+)/(?P<day>[0-9]+)/$',RetrieveReportsView.as_view()),
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
+    url(r'^bank/courses/missing_work/(?P<pk>[0-9]+)/$',RetrieveCourseMissingWorkView.as_view()),
+    url(r'^bank/courses/not_missing_work/(?P<report_id>[0-9]+)/(?P<assignment_id>[0-9]+)/$',RetrieveStudentsNotMissingWork.as_view()),
+    url(r'^bank/courses/missing_work/update/(?P<pk>[0-9]+)/$',UpdateMissingWorkView.as_view()),
+    url(r'^bank/courses/missing_work/destroy/(?P<pk>[0-9]+)/$',DestroyMissingWorkView.as_view()),
+    url(r'^bank/courses/missing_work/create/$',CreateMissingWorkView.as_view()),
 	url(r'^bank/roster/(?P<pk>[0-9]+)/$',RetrieveStudentsByCourseView.as_view()),
 	url(r'^bank/course_report/(?P<pk>[0-9]+)/$',RetrieveCourseReportView.as_view()),
 	url(r'^bank/course_report/save/(?P<pk>[0-9]+)/$', UpdateCourseReportView.as_view()),
@@ -59,5 +71,7 @@ urlpatterns = [
 	url(r'^bank/student/recent_tthree_reports/(?P<pk>[0-9]+)/$',RetrieveRecentTThreeReportsView.as_view()),
 	url(r'^bank/student/schedule/(?P<pk>[0-9]+)/$',RetrieveStudentScheduleView.as_view()),
 	url(r'^bank/student/statistics/(?P<pk>[0-9]+)/$',RetrieveStudentStatisticsView.as_view()),
+    url(r'^bank/student/update_goal/(?P<pk>[0-9]+)/$',UpdatePersonalBehaviorGoalView.as_view()),
+    url(r'^bank/student/new_goal/$',CreatePersonalBehaviorGoalView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 ]

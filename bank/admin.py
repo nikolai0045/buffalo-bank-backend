@@ -15,5 +15,6 @@ admin.site.register(PurchaseItem)
 admin.site.register(Purchase)
 admin.site.register(Buck)
 admin.site.register(MissingAssignment)
+admin.site.register(PersonalBehaviorGoal)
 
 # Register your models here.
