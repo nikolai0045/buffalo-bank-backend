@@ -8,11 +8,13 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.utils.six import BytesIO
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework import status, authentication, permissions
+from rest_framework.parsers import JSONParser
 
 from jsonview.decorators import json_view
 
@@ -142,6 +144,48 @@ class CreateMissingWorkView(CreateAPIView):
 	serializer_class = CreateMissingAssignmentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
 
+class MissingWorkStudentsView(View):
+	http_method_names = [u'get',u'put']
+
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(MissingWorkStudentsView, self).dispatch(request,*args,**kwargs)
+
+	def get(self,request,*args,**kwargs):
+		report = CourseReport.objects.get(pk=kwargs['report_id'])
+		missing_assignment = MissingAssignment.objects.get(pk=kwargs['mw_id'])
+		all_students = []
+		for d in report.deposit_set.all():
+			all_students.append(d.student)
+		students_missing_work = missing_assignment.students.all()
+		students_not_missing_work = []
+		for s in all_students:
+			if s not in students_missing_work:
+				students_not_missing_work.append(s)
+		assignment_serializer = MissingAssignmentSerializer(missing_assignment)
+		students_missing_work_serializer = BasicStudentSerializer(students_missing_work,many=True)
+		students_not_missing_work_serializer = BasicStudentSerializer(students_not_missing_work,many=True)
+		response = {
+			'assignment':assignment_serializer.data,
+			'missing':students_missing_work_serializer.data,
+			'notMissing':students_not_missing_work_serializer.data,
+		}
+		return response
+
+	def put(self,request,*args,**kwargs):
+		stream = BytesIO(request.body)
+		data = JSONParser().parse(stream)
+		print "-------------------------------------------"
+		print data['assignment']
+		print "-------------------------------------------"
+		print data['missing']
+		print "-------------------------------------------"
+		print data['notMissing']
+
+
+
+
 class RetrieveStudentsNotMissingWork(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
@@ -160,8 +204,6 @@ class RetrieveStudentsNotMissingWork(ListAPIView):
 			if s not in students_missing_work:
 				students_not_missing_work.append(s)
 		return students_not_missing_work
-
-
 class RetrieveStudentMissingWorkView(ListAPIView):
 	model = MissingAssignment
 	serializer_class = CourseMissingAssignmentSerializer
@@ -185,7 +227,6 @@ class RetrievePersonalBehaviorGoalsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = student.personalbehaviorgoal_set.filter(active=True)
 		return qs
-
 class RetrieveRecentDepositsView(ListAPIView):
 	model = Deposit
 	serializer_class = StudentDepositSerializer
@@ -196,7 +237,6 @@ class RetrieveRecentDepositsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date__gte=two_weeks_ago)
 		return qs
-
 class RetrieveRecentTTwoReportsView(ListAPIView):
 	model = TTwoReport
 	serializer_class = TTwoReportSerializer
@@ -209,7 +249,6 @@ class RetrieveRecentTTwoReportsView(ListAPIView):
 		profile = student.ttwoprofile_set.first()
 		qs = TTwoReport.objects.filter(report__date__gte=two_weeks_ago,goal__profile=profile)
 		return qs
-
 class RetrieveRecentTThreeReportsView(ListAPIView):
 	model = TThreeReport
 	serializer_class = TThreeReportSerializer
@@ -227,7 +266,6 @@ class RetrieveRecentTThreeReportsView(ListAPIView):
 				return False
 		else:
 			return False
-
 class RetrieveStudentScheduleView(ListAPIView):
 	model = CourseReport
 	serializer_class = CourseReportSerializer
@@ -243,7 +281,6 @@ class RetrieveStudentScheduleView(ListAPIView):
 			if date < (date - datetime.timedelta(days=14)):
 				return qs
 		return qs
-
 class RetrieveStudentStatisticsView(View):
 	http_method_names = [u'get']
 

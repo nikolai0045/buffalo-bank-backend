@@ -169,7 +169,7 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TTwoReport
-		fields = ('goal','score','id','report')
+		fields = ('goal','score','id','report','note')
 
 
 
@@ -196,7 +196,7 @@ class TThreeReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TThreeReport
-		fields = ('profile','score','id','report')
+		fields = ('profile','score','id','report','note')
 
 ##Student Profile Serializer
 

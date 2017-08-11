@@ -38,6 +38,7 @@ from bank.views import (
     UpdateMissingWorkView,
     DestroyMissingWorkView,
     CreateMissingWorkView,
+    MissingWorkStudentsView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -56,6 +57,7 @@ urlpatterns = [
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
     url(r'^bank/courses/missing_work/(?P<pk>[0-9]+)/$',RetrieveCourseMissingWorkView.as_view()),
     url(r'^bank/courses/not_missing_work/(?P<report_id>[0-9]+)/(?P<assignment_id>[0-9]+)/$',RetrieveStudentsNotMissingWork.as_view()),
+    url(r'^bank/courses/missing_work_detail/(?P<report_id>[0-9]+)/(?P<mw_id>[0-9]+)/$',MissingWorkStudentsView.as_view()),
     url(r'^bank/courses/missing_work/update/(?P<pk>[0-9]+)/$',UpdateMissingWorkView.as_view()),
     url(r'^bank/courses/missing_work/destroy/(?P<pk>[0-9]+)/$',DestroyMissingWorkView.as_view()),
     url(r'^bank/courses/missing_work/create/$',CreateMissingWorkView.as_view()),

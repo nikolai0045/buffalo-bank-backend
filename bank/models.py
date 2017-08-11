@@ -85,6 +85,7 @@ class Deposit(Transaction):
 	course_report = models.ForeignKey(CourseReport)
 	##consider refactoring this as a function
 	amount_earned = models.IntegerField(default=0)
+	note = models.TextField(blank=True,null=True)
 
 	def __str__(self):
 		return str(self.student) + " - " + self.course_report.course.name + " " + str(self.date)
