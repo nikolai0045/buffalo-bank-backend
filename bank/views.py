@@ -218,9 +218,15 @@ class RetrieveRecentTThreeReportsView(ListAPIView):
 	def get_queryset(self):
 		two_weeks_ago = datetime.date.today() - datetime.timedelta(days=14)
 		student = Student.objects.get(pk=self.kwargs['pk'])
-		profile = student.tthreeprofile_set.first()
-		qs = profile.tthreereport_set.filter(report__date__gte=two_weeks_ago)
-		return qs
+		if student.tthreeprofile_set.exists():
+			profile = student.tthreeprofile_set.first()
+			try:
+				qs = profile.tthreereport_set.filter(report__date__gte=two_weeks_ago, report__completed=True)
+				return qs
+			except:
+				return False
+		else:
+			return False
 
 class RetrieveStudentScheduleView(ListAPIView):
 	model = CourseReport
@@ -232,8 +238,8 @@ class RetrieveStudentScheduleView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = []
 		while len(qs) == 0:
-			qs = CourseReport.objects.filter(deposit__student=student)
 			date = date - datetime.timedelta(days=1)
+			qs = CourseReport.objects.filter(deposit__student=student,date=date)
 			if date < (date - datetime.timedelta(days=14)):
 				return qs
 		return qs
