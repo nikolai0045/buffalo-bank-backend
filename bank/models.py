@@ -34,7 +34,7 @@ class Student(models.Model):
 class PersonalBehaviorGoal(models.Model):
 	student = models.ForeignKey(Student)
 	active = models.BooleanField(default=True)
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200,blank=True,null=True)
 	description = models.TextField(null=True,blank=True)
 
 class UserProfile(models.Model):
@@ -82,6 +82,10 @@ class CourseReport(models.Model):
 		return str(self.course.name) + " - " + str(self.date)
 
 class Deposit(Transaction):
+	
+	class Meta:
+		ordering = ['student__last_name','student__first_name']
+		
 	course_report = models.ForeignKey(CourseReport)
 	##consider refactoring this as a function
 	amount_earned = models.IntegerField(default=0)

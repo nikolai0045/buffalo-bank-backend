@@ -77,6 +77,20 @@ class StudentDepositSerializer(serializers.ModelSerializer):
 		model = Deposit
 		fields = ('amount_earned','buck_set','id','course_report')
 
+class InitPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
+	student = BasicStudentSerializer()
+	
+	class Meta:
+		model = PersonalBehaviorGoal
+		fields = ('student','id','active')
+		
+	def create(self,validated_data):
+		student_id = validated_data['student']['id']
+		student = Student.objects.get(pk=student_id)
+		new_goal = PersonalBehaviorGoal(student=student)
+		new_goal.save()
+		return new_goal
+		
 class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 	id = serializers.IntegerField(read_only=False)
 
@@ -85,8 +99,8 @@ class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 		fields = ('name','description','id','active')
 
 	def update(self,instance,validated_data):
-		instance.name = validated_data['name']
-		instance.description = validated_data['description']
+		instance.name = validated_data.pop('name',"")
+		instance.description = validated_data.pop('description',"")
 		instance.active = validated_data['active']
 		instance.save()
 		return instance
@@ -130,10 +144,11 @@ class CreateMissingAssignmentSerializer(serializers.ModelSerializer):
 
 class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 	students = BasicStudentSerializer(many=True)
+	course = BasicCourseSerializer()
 
 	class Meta:
 		model = MissingAssignment
-		fields = ('name','description','students','date','id')
+		fields = ('name','description','students','date','id','course')
 
 	def update(self,instance,validated_data):
 		instance.students.clear()
@@ -169,7 +184,7 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TTwoReport
-		fields = ('goal','score','id','report','note')
+		fields = ('goal','score','id','report','note')	
 
 
 

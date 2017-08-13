@@ -33,6 +33,8 @@ from .serializers import (
 	CreateStudentPersonalBehaviorGoalSerializer,
 	CourseMissingAssignmentSerializer,
 	CreateMissingAssignmentSerializer,
+	InitPersonalBehaviorGoalSerializer,
+	TTwoGoalSerializer,
 )
 from .models import (
 	CourseReport,
@@ -99,6 +101,17 @@ class UpdateCourseReportView(UpdateAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     queryset = CourseReport.objects.all()
 
+class InitPersonalBehaviorGoalView(CreateAPIView):
+	model = PersonalBehaviorGoal
+	serializer_class = InitPersonalBehaviorGoalSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+	
+class DestroyPersonalBehaviorGoalView(DestroyAPIView):
+	model = PersonalBehaviorGoal
+	serializer_class = InitPersonalBehaviorGoalSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+	queryset = PersonalBehaviorGoal.objects.all()
+	
 class UpdatePersonalBehaviorGoalView(UpdateAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = StudentPersonalBehaviorGoalSerializer
@@ -156,7 +169,7 @@ class MissingWorkStudentsView(View):
 		report = CourseReport.objects.get(pk=kwargs['report_id'])
 		missing_assignment = MissingAssignment.objects.get(pk=kwargs['mw_id'])
 		all_students = []
-		for d in report.deposit_set.all():
+		for d in report.deposit_set.all().order_by('student__last_name'):
 			all_students.append(d.student)
 		students_missing_work = missing_assignment.students.all()
 		students_not_missing_work = []
@@ -176,13 +189,19 @@ class MissingWorkStudentsView(View):
 	def put(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
-		print "-------------------------------------------"
-		print data['assignment']
-		print "-------------------------------------------"
-		print data['missing']
-		print "-------------------------------------------"
-		print data['notMissing']
-
+		missing = data['missing']
+		not_missing = data['notMissing']
+		assignment = MissingAssignment.objects.get(pk=data['assignment'])
+		for s in missing:
+			student = Student.objects.get(pk=s['id'])
+			if student not in assignment.students.all():
+				assignment.students.add(student)
+		for s in not_missing:
+			student = Student.objects.get(pk=s['id'])
+			if student in assignment.students.all():
+				assignment.students.remove(student)
+		return MissingAssignmentSerializer(assignment).data
+			
 
 
 
@@ -204,6 +223,7 @@ class RetrieveStudentsNotMissingWork(ListAPIView):
 			if s not in students_missing_work:
 				students_not_missing_work.append(s)
 		return students_not_missing_work
+	
 class RetrieveStudentMissingWorkView(ListAPIView):
 	model = MissingAssignment
 	serializer_class = CourseMissingAssignmentSerializer
@@ -213,11 +233,13 @@ class RetrieveStudentMissingWorkView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = student.missingassignment_set.all()
 		return qs
+	
 class RetrieveStudentView(RetrieveAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = Student.objects.all()
+	
 class RetrievePersonalBehaviorGoalsView(ListAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = StudentPersonalBehaviorGoalSerializer
@@ -237,6 +259,7 @@ class RetrieveRecentDepositsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date__gte=two_weeks_ago)
 		return qs
+	
 class RetrieveRecentTTwoReportsView(ListAPIView):
 	model = TTwoReport
 	serializer_class = TTwoReportSerializer
@@ -249,6 +272,87 @@ class RetrieveRecentTTwoReportsView(ListAPIView):
 		profile = student.ttwoprofile_set.first()
 		qs = TTwoReport.objects.filter(report__date__gte=two_weeks_ago,goal__profile=profile)
 		return qs
+	
+class RetrieveTierTwoChartView(View):
+	http_method_names=[u'post']
+	
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(RetrieveTierTwoChartView,self).dispatch(request,*args,**kwargs)
+	
+	def post(self,request,*args,**kwargs):
+		stream = BytesIO(request.body)
+		data = JSONParser().parse(stream)
+		print data
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',datetime.date.today())
+		init_weekday = date.weekday()
+		monday = date - datetime.timedelta(days=init_weekday)
+		friday = monday + datetime.timedelta(days=4)
+		if not student.is_ttwo:
+			return {}
+		profile = student.ttwoprofile_set.first()
+		goals = profile.ttwogoal_set.all()
+		response = []
+		
+		def get_goal_scores(goal,start,end):
+			response = {}
+			response['goal'] = TTwoGoalSerializer(goal).data
+			response['courses'] = []
+			day_two = start + datetime.timedelta(days=1)
+			day_three = start + datetime.timedelta(days=2)
+			day_four = start + datetime.timedelta(days=3)
+			response['col_headers'] = ["Course",start.strftime("%m/%d/%y"),day_two.strftime("%m/%d/%y"),day_three.strftime("%m/%d/%y"),day_four.strftime("%m/%d/%y"),end.strftime("%m/%d/%y")]
+			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			course_list = []
+			for r in reports:
+				if r.report.course.name not in course_list:
+					course_list.append(r.report.course.name)
+			print course_list
+			for c in course_list:
+				course_data = {
+					'course':c,
+					'scores':[0,0,0,0,0],
+					'summary':0,
+				}
+				course_reports = reports.filter(report__course__name=c).order_by('report__date')
+				for cr in course_reports:
+					course_data['scores'][cr.report.date.weekday()] = cr.score
+					if cr.score > 3:
+						course_data['summary'] += 1
+				for i,item in enumerate(course_data['scores']):
+					if item == 0:
+						course_data['scores'][i] = "-"
+				response['courses'].append(course_data)
+				
+			response['totals'] = {
+				'scores':[0,0,0,0,0],
+				'summary':0
+			}
+			for d in [0,1,2,3,4]:
+				total = 0
+				for course in response['courses']:
+					if course['scores'][d] != "-" and course['scores'][d] > 3:
+						total += 1
+				response['totals']['scores'][d] = total
+				
+			for course in response['courses']:
+				response['totals']['summary'] += course['summary']
+			
+			return response
+			
+			
+		for g in goals:
+			goal_scores = get_goal_scores(g,monday,friday)
+			if len(goal_scores['courses']) > 0:
+				response.append(goal_scores)
+			
+		return response
+		
+		
+		
 class RetrieveRecentTThreeReportsView(ListAPIView):
 	model = TThreeReport
 	serializer_class = TThreeReportSerializer

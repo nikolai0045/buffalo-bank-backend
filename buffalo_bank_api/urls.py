@@ -39,6 +39,9 @@ from bank.views import (
     DestroyMissingWorkView,
     CreateMissingWorkView,
     MissingWorkStudentsView,
+	InitPersonalBehaviorGoalView,
+	DestroyPersonalBehaviorGoalView,
+	RetrieveTierTwoChartView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -70,10 +73,13 @@ urlpatterns = [
 	url(r'^bank/student/goals/(?P<pk>[0-9]+)/$',RetrievePersonalBehaviorGoalsView.as_view()),
 	url(r'^bank/student/recent_deposits/(?P<pk>[0-9]+)/$',RetrieveRecentDepositsView.as_view()),
 	url(r'^bank/student/recent_ttwo_reports/(?P<pk>[0-9]+)/$',RetrieveRecentTTwoReportsView.as_view()),
+	url(r'^bank/student/ttwo_chart/$',RetrieveTierTwoChartView.as_view()),
 	url(r'^bank/student/recent_tthree_reports/(?P<pk>[0-9]+)/$',RetrieveRecentTThreeReportsView.as_view()),
 	url(r'^bank/student/schedule/(?P<pk>[0-9]+)/$',RetrieveStudentScheduleView.as_view()),
 	url(r'^bank/student/statistics/(?P<pk>[0-9]+)/$',RetrieveStudentStatisticsView.as_view()),
     url(r'^bank/student/update_goal/(?P<pk>[0-9]+)/$',UpdatePersonalBehaviorGoalView.as_view()),
     url(r'^bank/student/new_goal/$',CreatePersonalBehaviorGoalView.as_view()),
+	url(r'^bank/student/init_goal/$',InitPersonalBehaviorGoalView.as_view()),
+	url(r'^bank/student/destroy_goal/(?P<pk>[0-9]+)/$',DestroyPersonalBehaviorGoalView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 ]
