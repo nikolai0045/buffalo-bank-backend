@@ -35,6 +35,9 @@ from .serializers import (
 	CreateMissingAssignmentSerializer,
 	InitPersonalBehaviorGoalSerializer,
 	TTwoGoalSerializer,
+	TThreeGoalSerializer,
+	TTwoReportNoteSerializer,
+	TThreeReportNoteSerializer,
 )
 from .models import (
 	CourseReport,
@@ -215,9 +218,7 @@ class RetrieveStudentsNotMissingWork(ListAPIView):
 		all_students = []
 		for d in report.deposit_set.all():
 			all_students.append(d.student)
-		print all_students
 		students_missing_work = MissingAssignment.objects.get(pk=self.kwargs['assignment_id']).students.all()
-		print students_missing_work
 		students_not_missing_work = []
 		for s in all_students:
 			if s not in students_missing_work:
@@ -268,10 +269,89 @@ class RetrieveRecentTTwoReportsView(ListAPIView):
 	def get_queryset(self):
 		two_weeks_ago = datetime.date.today() - datetime.timedelta(days=14)
 		student = Student.objects.get(pk=self.kwargs['pk'])
-		print student
 		profile = student.ttwoprofile_set.first()
 		qs = TTwoReport.objects.filter(report__date__gte=two_weeks_ago,goal__profile=profile)
 		return qs
+
+class RetrieveTierThreeChartView(View):
+	http_method_names=[u'post']
+	
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(RetrieveTierThreeChartView,self).dispatch(request,*args,**kwargs)
+	
+	def post(self,request,*args,**kwargs):
+		stream = BytesIO(request.body)
+		data = JSONParser().parse(stream)
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',datetime.date.today())
+		init_weekday = date.weekday()
+		monday = date - datetime.timedelta(days=init_weekday)
+		friday = monday + datetime.timedelta(days=4)
+		if not student.is_tthree:
+			return []
+		profile = student.tthreeprofile_set.first()
+		goals = profile.tthreegoal_set.all()
+		response = {
+			'goals': TThreeGoalSerializer(goals,many=True).data,
+		}
+		
+		def get_chart(profile,start,end):
+			response = {}
+			response['courses'] = []
+			day_two = start + datetime.timedelta(days=1)
+			day_three = start + datetime.timedelta(days=2)
+			day_four = start + datetime.timedelta(days=3)
+			response['col_headers']=[
+				"Course",
+				start.strftime("%m/%d/%y"),
+				day_two.strftime("%m/%d/%y"),
+				day_three.strftime("%m/%d/%y"),
+				day_four.strftime("%m/%d/%y"),
+				end.strftime("%m/%d/%y"),
+				"Blues and Greens"
+			]
+			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			course_list = []
+			for r in reports:
+				if r.report.course.name not in course_list:
+					course_list.append(r.report.course.name)
+			for c in course_list:
+				course_data = {
+					'course':c,
+					'scores':[0,0,0,0,0],
+					'summary':0,
+				}
+				course_reports = reports.filter(report__course__name=c).order_by('report__date')
+				for cr in course_reports:
+					course_data['scores'][cr.report.date.weekday()]=cr.score
+					if cr.score > 2:
+						course_data['summary'] += 1
+				for i, item in enumerate(course_data['scores']):
+					if item == 0:
+						course_data['scores'][i] = "-"
+				response['courses'].append(course_data)
+			response['totals'] = {
+				'scores':[0,0,0,0,0],
+				'summary':0,
+			}
+			for d in [0,1,2,3,4]:
+				total = 0
+				for course in response['courses']:
+					if course['scores'][d] != "-" and course['scores'][d] > 2:
+						total += 1
+				response['totals']['scores'][d] = total
+				
+			for course in response['courses']:
+				response['totals']['summary'] += course['summary']
+				
+			return response
+		
+		response['chart'] = get_chart(profile,monday,friday)
+		
+		return response
 	
 class RetrieveTierTwoChartView(View):
 	http_method_names=[u'post']
@@ -284,7 +364,6 @@ class RetrieveTierTwoChartView(View):
 	def post(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
-		print data
 		student_id = data['student_id']
 		student = Student.objects.get(pk=student_id)
 		date = data.pop('date',datetime.date.today())
@@ -292,7 +371,7 @@ class RetrieveTierTwoChartView(View):
 		monday = date - datetime.timedelta(days=init_weekday)
 		friday = monday + datetime.timedelta(days=4)
 		if not student.is_ttwo:
-			return {}
+			return []
 		profile = student.ttwoprofile_set.first()
 		goals = profile.ttwogoal_set.all()
 		response = []
@@ -310,7 +389,6 @@ class RetrieveTierTwoChartView(View):
 			for r in reports:
 				if r.report.course.name not in course_list:
 					course_list.append(r.report.course.name)
-			print course_list
 			for c in course_list:
 				course_data = {
 					'course':c,
@@ -353,6 +431,73 @@ class RetrieveTierTwoChartView(View):
 		
 		
 		
+class RetrieveTierThreeNotesView(View):
+	http_method_names=[u'post']
+	
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(RetrieveTierThreeNotesView,self).dispatch(request,*args,**kwargs)
+	
+	def post(self,request,*args,**kwargs):
+		stream = BytesIO(request.body)
+		data = JSONParser().parse(stream)
+		student_id = data.pop('student_id')
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',datetime.date.today())
+		init_weekday = date.weekday()
+		monday = date - datetime.timedelta(days=init_weekday)
+		friday = monday + datetime.timedelta(days=4)
+		if not student.is_tthree():
+			return []
+		profile = student.tthreeprofile_set.first()
+		reports = profile.tthreereport_set.filter(
+			report__date__gte=monday,
+			report__date__lte=friday,
+			report__completed=True
+		).exclude(
+			note__isnull=True
+		).exclude(
+			note__exact=""
+		).order_by('report__date','report__end_time')
+		print "-----------------------"
+		print reports
+		serializer = TThreeReportSerializer(reports,many=True)
+		print serializer
+		print serializer.data
+		return serializer.data
+	
+class RetrieveTierTwoNotesView(View):
+	http_method_names=[u'post']
+	
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(RetrieveTierTwoNotesView,self).dispatch(request,*args,**kwargs)
+	
+	def post(self,request,*args,**kwargs):
+		stream = BytesIO(request.body)
+		data = JSONParser().parse(stream)
+		student_id = data.pop('student_id')
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',datetime.date.today())
+		init_weekday = date.weekday()
+		monday = date - datetime.timedelta(days=init_weekday)
+		friday = monday + datetime.timedelta(days=4)
+		if not student.is_ttwo():
+			return []
+		profile = student.ttwoprofile_set.first()
+		reports = profile.ttwogoal_set.all().ttworeport_set.filter(
+			report__date__gte=monday,
+			report__date__lte=friday,
+			report__complete=True
+		).exclude(
+			note__isnull=True
+		).exclude(
+			note__exact=""
+		).order_by('report__date','report__end_time')
+		serializer = TTwoReportSerializer(reports,many=True)
+		return seializer.data
 class RetrieveRecentTThreeReportsView(ListAPIView):
 	model = TThreeReport
 	serializer_class = TThreeReportSerializer

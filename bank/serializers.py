@@ -186,6 +186,13 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 		model = TTwoReport
 		fields = ('goal','score','id','report','note')	
 
+class TTwoReportNoteSerializer(serializers.ModelSerializer):
+	goal = TTwoGoalSerializer()
+	report = CourseReportSerializer()
+	
+	class Meta:
+		model = TTwoReport
+		fields = ('goal','report','note')
 
 
 ##Tier Three Serializers
@@ -212,6 +219,14 @@ class TThreeReportSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = TThreeReport
 		fields = ('profile','score','id','report','note')
+		
+class TThreeReportNoteSerializer(serializers.ModelSerializer):
+	profile = TThreeProfileSerializer()
+	report = CourseReportSerializer()
+	
+	class Meta:
+		model = TThreeReport
+		fields = ('profile','report','note')
 
 ##Student Profile Serializer
 
@@ -226,10 +241,14 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 		for r in validated_data['ttworeport_set']:
 			report = TTwoReport.objects.get(pk=r['id'])
 			report.score = r['score']
+			if r.has_key('note'):
+				report.note = r['note']
 			report.save()
 		for r in validated_data['tthreereport_set']:
 			report = TThreeReport.objects.get(pk=r['id'])
 			report.score = r['score']
+			if r.has_key('note'):
+				report.note = r['note']
 			report.save()
 		if instance.completed == False:
 			for d in validated_data['deposit_set']:
@@ -252,6 +271,9 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 			for d in validated_data['deposit_set']:
 				deposit = Deposit.objects.get(pk=d['id'])
 				student = deposit.student
+				if d.has_key('note'):
+					deposit.note = d['note']
+				deposit.save()
 				for b in d['buck_set']:
 					buck = Buck.objects.get(pk=b['id'])
 					if b['earned'] == 'true' or b['earned'] == True:
