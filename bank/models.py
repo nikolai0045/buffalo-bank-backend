@@ -18,6 +18,9 @@ class Student(models.Model):
 	external_id = models.CharField(max_length=255)
 	account_balance = models.IntegerField(default=0)
 
+	class Meta:
+		ordering = ['last_name','first_name']
+
 	def is_ttwo(self):
 		if self.ttwoprofile_set.filter(active=True).exists():
 			return True
@@ -82,10 +85,10 @@ class CourseReport(models.Model):
 		return str(self.course.name) + " - " + str(self.date)
 
 class Deposit(Transaction):
-	
+
 	class Meta:
 		ordering = ['student__last_name','student__first_name']
-		
+
 	course_report = models.ForeignKey(CourseReport)
 	##consider refactoring this as a function
 	amount_earned = models.IntegerField(default=0)
