@@ -23,9 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's%qn678)%ownidi64s9=-^uu$&yz88*3@=#*ifm7cd4$=8o@d@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = False
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['api.buffalo-bank.com', 'ec2-18-220-108-235.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['api.buffalo-bank.com']
 
 
 # Application definition
@@ -83,16 +85,16 @@ REST_FRAMEWORK = {
 }
 
 #URL References
-BASE_WEB_URL = 'localhost:8080'
+BASE_WEB_URL = 'http://api.buffalo-bank.com/'
 SIGNUP_URL = BASE_WEB_URL + '/signup/'
 LOGIN_URL = BASE_WEB_URL + '/login/'
 
 #CORS settings
-CORS_ORIGIN_WHITELIST = (
-    BASE_WEB_URL,
-)
-
-CORS_ALLOW_METHODS = (
+#CORS_ORIGIN_WHITELIST = (
+#    BASE_WEB_URL,
+#i)
+CORS_ORIGIN_ALLOW_ALL = True
+BBBBBBCRS_ALLOW_METHODS = (
     'DELETE',
     'GET',
     'OPTIONS',
@@ -103,18 +105,19 @@ CORS_ALLOW_METHODS = (
 
 CORS_ALLOW_HEADERS = (
     'accept',
-    'accept-encoding',
+   'accept-encoding',
     'authorization',
     'content-type',
     'access-control-allow-origin',
     'access-control-allow-methods',
     'access-control-allow-headers',
+'Content-Type','Access-Control-Allow-Credentials', 'X-Requested-With', 'Set-Cookie'
 )
 
 CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE_CLASSES = [
-    'corsheaders.middleware.CorsMiddleware',
+ #   'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,6 +126,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'buffalo_bank_api.urls'
@@ -148,13 +152,6 @@ WSGI_APPLICATION = 'buffalo_bank_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation
@@ -189,8 +186,19 @@ USE_L10N = True
 
 USE_TZ = True
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'buffalo-bank',
+        'USER': 'tannerball',
+        'PASSWORD': 'buffalobank2017',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
