@@ -22,7 +22,7 @@ class BasicCourseSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Course
-		fields = ('name','section_number','teachers','id')
+		fields = ('name','section_number','teachers','id','hour')
 
 class CourseReportSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer(many=False)
@@ -79,18 +79,18 @@ class StudentDepositSerializer(serializers.ModelSerializer):
 
 class InitPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 	student = BasicStudentSerializer()
-	
+
 	class Meta:
 		model = PersonalBehaviorGoal
 		fields = ('student','id','active')
-		
+
 	def create(self,validated_data):
 		student_id = validated_data['student']['id']
 		student = Student.objects.get(pk=student_id)
 		new_goal = PersonalBehaviorGoal(student=student)
 		new_goal.save()
 		return new_goal
-		
+
 class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 	id = serializers.IntegerField(read_only=False)
 
@@ -184,12 +184,12 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TTwoReport
-		fields = ('goal','score','id','report','note')	
+		fields = ('goal','score','id','report','note')
 
 class TTwoReportNoteSerializer(serializers.ModelSerializer):
 	goal = TTwoGoalSerializer()
 	report = CourseReportSerializer()
-	
+
 	class Meta:
 		model = TTwoReport
 		fields = ('goal','report','note')
@@ -219,11 +219,11 @@ class TThreeReportSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = TThreeReport
 		fields = ('profile','score','id','report','note')
-		
+
 class TThreeReportNoteSerializer(serializers.ModelSerializer):
 	profile = TThreeProfileSerializer()
 	report = CourseReportSerializer()
-	
+
 	class Meta:
 		model = TThreeReport
 		fields = ('profile','report','note')
