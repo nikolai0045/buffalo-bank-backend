@@ -433,7 +433,7 @@ class RetrieveTierTwoChartView(View):
 				course_reports = reports.filter(report__course__name=c).order_by('report__date')
 				for cr in course_reports:
 					course_data['scores'][cr.report.date.weekday()] = cr.score
-					if cr.score > 3:
+					if cr.score > 2:
 						course_data['summary'] += 1
 				for i,item in enumerate(course_data['scores']):
 					if item == 0:
@@ -447,7 +447,7 @@ class RetrieveTierTwoChartView(View):
 			for d in [0,1,2,3,4]:
 				total = 0
 				for course in response['courses']:
-					if course['scores'][d] != "-" and course['scores'][d] > 3:
+					if course['scores'][d] != "-" and course['scores'][d] > 2:
 						total += 1
 				response['totals']['scores'][d] = total
 

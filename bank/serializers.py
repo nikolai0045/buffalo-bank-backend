@@ -81,7 +81,7 @@ class FullDepositSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deposit
-        fields = ('student','amount_earned','buck_set','id')
+        fields = ('student','amount_earned','buck_set','id','absent')
 
 class StudentDepositSerializer(serializers.ModelSerializer):
 	id = serializers.IntegerField(read_only=False)
@@ -255,17 +255,23 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 			for d in validated_data['deposit_set']:
 				deposit = Deposit.objects.get(pk=d['id'])
 				student = deposit.student
-				for b in d['buck_set']:
-					buck = Buck.objects.get(pk=b['id'])
-					if b['earned'] == 'true' or b['earned'] == True:
-						buck.earned = True
-						deposit.amount_earned += 1
-						student.account_balance += 1
-						student.save()
-					else:
-						buck.earned = False
-					buck.save()
+				print d['absent']
+				if d['absent']:
+					deposit.absent = True
 					deposit.save()
+					print "deposit was marked absent"
+				else:
+					for b in d['buck_set']:
+						buck = Buck.objects.get(pk=b['id'])
+						if b['earned'] == 'true' or b['earned'] == True:
+							buck.earned = True
+							deposit.amount_earned += 1
+							student.account_balance += 1
+							student.save()
+						else:
+							buck.earned = False
+						buck.save()
+						deposit.save()
 			instance.completed = True
 			instance.save()
 		else:
@@ -275,10 +281,13 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 				if d.has_key('note'):
 					deposit.note = d['note']
 				deposit.save()
+				if d['absent'] == True:
+					deposit.absent = True
+					deposit.save()
 				for b in d['buck_set']:
 					buck = Buck.objects.get(pk=b['id'])
 					if b['earned'] == 'true' or b['earned'] == True:
-						if not buck.earned:
+						if not buck.earned and not deposit.absent:
 							buck.earned = True
 							deposit.amount_earned += 1
 							student.account_balance += 1
