@@ -90,7 +90,7 @@ class StudentDepositSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Deposit
-		fields = ('amount_earned','buck_set','id','course_report')
+		fields = ('amount_earned','buck_set','id','course_report','absent')
 
 class InitPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 	student = BasicStudentSerializer()
