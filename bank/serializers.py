@@ -205,7 +205,7 @@ class TThreeGoalSerializer(serializers.ModelSerializer):
 
 class TThreeProfileSerializer(serializers.ModelSerializer):
 	student = BasicStudentSerializer()
-	mentor = BasicUserProfileSerializer()
+	mentor = BasicUserProfileSerializer(allow_null=True)
 	tthreegoal_set = TThreeGoalSerializer(many=True)
 
 	class Meta:
