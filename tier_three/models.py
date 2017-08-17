@@ -10,7 +10,7 @@ class TThreeProfile(models.Model):
 		return str(self.student) + " - PASS Profile"
 	student = models.ForeignKey(Student)
 	active = models.BooleanField(default=True)
-	mentor = models.ForeignKey(UserProfile)
+	mentor = models.ForeignKey(UserProfile,blank=True,null=True)
 
 class TThreeGoal(models.Model):
 	profile = models.ForeignKey(TThreeProfile)

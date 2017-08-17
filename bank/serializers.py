@@ -5,11 +5,25 @@ from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
 import datetime
 
 ##Bank Serializers
+class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(read_only=False)
+
+	class Meta:
+		model = PersonalBehaviorGoal
+		fields = ('name','description','id','active')
+
+	def update(self,instance,validated_data):
+		instance.name = validated_data.pop('name',"")
+		instance.description = validated_data.pop('description',"")
+		instance.active = validated_data['active']
+		instance.save()
+		return instance
+
 class UserProfileSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = UserProfile
-		fields = ('first_name','last_name','email','user_type')
+		fields = ('first_name','last_name','email','user_type','id')
 
 class BasicUserProfileSerializer(serializers.ModelSerializer):
 
@@ -35,10 +49,11 @@ class BasicStudentSerializer(serializers.ModelSerializer):
 	is_ttwo = serializers.BooleanField()
 	is_tthree = serializers.BooleanField()
 	id = serializers.IntegerField(read_only=False)
+	personalbehaviorgoal_set = StudentPersonalBehaviorGoalSerializer(many=True)
 
 	class Meta:
 		model = Student
-		fields = ('first_name','last_name','grade','id','account_balance','is_ttwo','is_tthree')
+		fields = ('first_name','last_name','grade','id','account_balance','is_ttwo','is_tthree','personalbehaviorgoal_set')
 
 class CourseStudentsSerializer(serializers.ModelSerializer):
 	students = BasicStudentSerializer(many=True)
@@ -90,20 +105,6 @@ class InitPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 		new_goal = PersonalBehaviorGoal(student=student)
 		new_goal.save()
 		return new_goal
-
-class StudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
-	id = serializers.IntegerField(read_only=False)
-
-	class Meta:
-		model = PersonalBehaviorGoal
-		fields = ('name','description','id','active')
-
-	def update(self,instance,validated_data):
-		instance.name = validated_data.pop('name',"")
-		instance.description = validated_data.pop('description',"")
-		instance.active = validated_data['active']
-		instance.save()
-		return instance
 
 class CreateStudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 	student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())

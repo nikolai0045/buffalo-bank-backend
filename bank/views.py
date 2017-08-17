@@ -48,6 +48,7 @@ from .models import (
 	PersonalBehaviorGoal,
 	Deposit,
 	Buck,
+	UserProfile
 )
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
@@ -108,13 +109,13 @@ class InitPersonalBehaviorGoalView(CreateAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = InitPersonalBehaviorGoalSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
-	
+
 class DestroyPersonalBehaviorGoalView(DestroyAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = InitPersonalBehaviorGoalSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = PersonalBehaviorGoal.objects.all()
-	
+
 class UpdatePersonalBehaviorGoalView(UpdateAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = StudentPersonalBehaviorGoalSerializer
@@ -204,8 +205,41 @@ class MissingWorkStudentsView(View):
 			if student in assignment.students.all():
 				assignment.students.remove(student)
 		return MissingAssignmentSerializer(assignment).data
-			
 
+class IsMenteeView(View):
+	http_method_names = [u'get']
+
+	@method_decorator(json_view)
+	@method_decorator(csrf_exempt)
+	def dispatch(self,request,*args,**kwargs):
+		return super(IsMenteeView,self).dispatch(request,*args,**kwargs)
+
+	def get(self,request,*args,**kwargs):
+		teacher_id = kwargs.pop('teacher_id')
+		student_id = kwargs.pop('student_id')
+		teacher = UserProfile.objects.get(pk=teacher_id)
+		student = Student.objects.get(pk=student_id)
+		pot_courses = student.course_set.filter(hour='Mentoring')
+		for c in pot_courses:
+			if teacher in c.teachers.all():
+				return {'mentee':True}
+		return {'mentee':False}
+
+class MenteeListView(ListAPIView):
+	model = Student
+	serializer_class = BasicStudentSerializer
+	authentication_class = (authentication.TokenAuthentication,)
+
+	def get_queryset(self):
+		teacher = UserProfile.objects.get(pk=self.kwargs['pk'])
+		today = datetime.date.today()
+		students = []
+		courses = teacher.course_set.filter(hour="Mentoring")
+		for c in courses:
+			for s in c.students.all():
+				if s not in students:
+					students.append(s)
+		return students
 
 
 class RetrieveStudentsNotMissingWork(ListAPIView):
@@ -224,7 +258,7 @@ class RetrieveStudentsNotMissingWork(ListAPIView):
 			if s not in students_missing_work:
 				students_not_missing_work.append(s)
 		return students_not_missing_work
-	
+
 class RetrieveStudentMissingWorkView(ListAPIView):
 	model = MissingAssignment
 	serializer_class = CourseMissingAssignmentSerializer
@@ -234,13 +268,13 @@ class RetrieveStudentMissingWorkView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = student.missingassignment_set.all()
 		return qs
-	
+
 class RetrieveStudentView(RetrieveAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = Student.objects.all()
-	
+
 class RetrievePersonalBehaviorGoalsView(ListAPIView):
 	model = PersonalBehaviorGoal
 	serializer_class = StudentPersonalBehaviorGoalSerializer
@@ -250,6 +284,7 @@ class RetrievePersonalBehaviorGoalsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = student.personalbehaviorgoal_set.filter(active=True)
 		return qs
+
 class RetrieveRecentDepositsView(ListAPIView):
 	model = Deposit
 	serializer_class = StudentDepositSerializer
@@ -260,7 +295,7 @@ class RetrieveRecentDepositsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date__gte=two_weeks_ago)
 		return qs
-	
+
 class RetrieveRecentTTwoReportsView(ListAPIView):
 	model = TTwoReport
 	serializer_class = TTwoReportSerializer
@@ -275,12 +310,12 @@ class RetrieveRecentTTwoReportsView(ListAPIView):
 
 class RetrieveTierThreeChartView(View):
 	http_method_names=[u'post']
-	
+
 	@method_decorator(json_view)
 	@method_decorator(csrf_exempt)
 	def dispatch(self,request,*args,**kwargs):
 		return super(RetrieveTierThreeChartView,self).dispatch(request,*args,**kwargs)
-	
+
 	def post(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
@@ -297,7 +332,7 @@ class RetrieveTierThreeChartView(View):
 		response = {
 			'goals': TThreeGoalSerializer(goals,many=True).data,
 		}
-		
+
 		def get_chart(profile,start,end):
 			response = {}
 			response['courses'] = []
@@ -343,24 +378,24 @@ class RetrieveTierThreeChartView(View):
 					if course['scores'][d] != "-" and course['scores'][d] > 2:
 						total += 1
 				response['totals']['scores'][d] = total
-				
+
 			for course in response['courses']:
 				response['totals']['summary'] += course['summary']
-				
+
 			return response
-		
+
 		response['chart'] = get_chart(profile,monday,friday)
-		
+
 		return response
-	
+
 class RetrieveTierTwoChartView(View):
 	http_method_names=[u'post']
-	
+
 	@method_decorator(json_view)
 	@method_decorator(csrf_exempt)
 	def dispatch(self,request,*args,**kwargs):
 		return super(RetrieveTierTwoChartView,self).dispatch(request,*args,**kwargs)
-	
+
 	def post(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
@@ -375,7 +410,7 @@ class RetrieveTierTwoChartView(View):
 		profile = student.ttwoprofile_set.first()
 		goals = profile.ttwogoal_set.all()
 		response = []
-		
+
 		def get_goal_scores(goal,start,end):
 			response = {}
 			response['goal'] = TTwoGoalSerializer(goal).data
@@ -404,7 +439,7 @@ class RetrieveTierTwoChartView(View):
 					if item == 0:
 						course_data['scores'][i] = "-"
 				response['courses'].append(course_data)
-				
+
 			response['totals'] = {
 				'scores':[0,0,0,0,0],
 				'summary':0
@@ -415,30 +450,28 @@ class RetrieveTierTwoChartView(View):
 					if course['scores'][d] != "-" and course['scores'][d] > 3:
 						total += 1
 				response['totals']['scores'][d] = total
-				
+
 			for course in response['courses']:
 				response['totals']['summary'] += course['summary']
-			
+
 			return response
-			
-			
+
+
 		for g in goals:
 			goal_scores = get_goal_scores(g,monday,friday)
 			if len(goal_scores['courses']) > 0:
 				response.append(goal_scores)
-			
+
 		return response
-		
-		
-		
+
 class RetrieveTierThreeNotesView(View):
 	http_method_names=[u'post']
-	
+
 	@method_decorator(json_view)
 	@method_decorator(csrf_exempt)
 	def dispatch(self,request,*args,**kwargs):
 		return super(RetrieveTierThreeNotesView,self).dispatch(request,*args,**kwargs)
-	
+
 	def post(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
@@ -466,15 +499,15 @@ class RetrieveTierThreeNotesView(View):
 		print serializer
 		print serializer.data
 		return serializer.data
-	
+
 class RetrieveTierTwoNotesView(View):
 	http_method_names=[u'post']
-	
+
 	@method_decorator(json_view)
 	@method_decorator(csrf_exempt)
 	def dispatch(self,request,*args,**kwargs):
 		return super(RetrieveTierTwoNotesView,self).dispatch(request,*args,**kwargs)
-	
+
 	def post(self,request,*args,**kwargs):
 		stream = BytesIO(request.body)
 		data = JSONParser().parse(stream)
