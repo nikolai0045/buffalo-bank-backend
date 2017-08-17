@@ -23,7 +23,7 @@ class TTwoGoal(models.Model):
 class TTwoReport(models.Model):
 	goal = models.ForeignKey(TTwoGoal)
 	report = models.ForeignKey(CourseReport)
-	score = models.IntegerField(default=5)
+	score = models.IntegerField(default=4)
 	note = models.TextField(null=True,blank=True)
 
 	def __str__(self):
