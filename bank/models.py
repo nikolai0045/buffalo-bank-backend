@@ -46,6 +46,10 @@ class UserProfile(models.Model):
 	first_name = models.CharField(max_length=255)
 	last_name = models.CharField(max_length=255)
 	email = models.EmailField(blank=True,null=True)
+	merchant = models.BooleanField(default=False)
+	administrator = models.BooleanField(default=False)
+	cac_administrator = models.BooleanField(default=False)
+	pass_administrator = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.first_name + " " + self.last_name
@@ -106,10 +110,11 @@ class PurchaseItem(models.Model):
 	name = models.CharField(max_length=255)
 	current_price = models.IntegerField(default=0)
 	quantity_remaining = models.IntegerField(default=0)
+	description = models.CharField(max_length=255,null=True,blank=True)
 	image = models.FileField()
 
 	def __str__(self):
-		return self.name + " - $" + self.current_price
+		return self.name + " - $" + str(self.current_price)
 
 class Purchase(Transaction):
 	item = models.ForeignKey(PurchaseItem)

@@ -46,7 +46,10 @@ from bank.views import (
 	RetrieveTierThreeNotesView,
 	RetrieveTierTwoNotesView,
     MenteeListView,
-    IsMenteeView
+    IsMenteeView,
+    RetrievePurchaseItemsView,
+    CreatePurchaseItemView,
+    DeletePurchaseItemView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -58,6 +61,9 @@ urlpatterns = [
 	url(r'^accounts/send_invites/$',SendEmailInvites.as_view()),
 	url(r'^accounts/verify_key/(?P<key>\w+)/$',VerifyInvitationKey.as_view()),
 	url(r'^accounts/create_user/(?P<key>\w+)/$',CreateUserView.as_view()),
+    url(r'^bank/marketplace/items/$',RetrievePurchaseItemsView.as_view()),
+    url(r'^bank/marketplace/add_item/$',CreatePurchaseItemView.as_view()),
+    url(r'^bank/marketplace/delete_item/(?P<pk>[0-9]+)/$',DeletePurchaseItemView.as_view()),
 	url(r'^bank/current_user/$',RetrieveUserView.as_view()),
 	url(r'^bank/user/(?P<uid>[0-9]+)/$',RetrieveUserView.as_view()),
     url(r'^bank/mentee_list/(?P<pk>[0-9]+)/$',MenteeListView.as_view()),

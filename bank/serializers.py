@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote
+from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem
 from tier_two.models import TTwoProfile, TTwoGoal, TTwoReport
 from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
 import datetime
@@ -23,7 +23,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = UserProfile
-		fields = ('first_name','last_name','email','user_type','id')
+		fields = ('first_name','last_name','email','user_type','id','administrator','cac_administrator','pass_administrator','merchant')
 
 class BasicUserProfileSerializer(serializers.ModelSerializer):
 
@@ -161,6 +161,15 @@ class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 		instance.save()
 		return instance
 
+##Marketplace serializers
+class PurchaseItemSerializer(serializers.ModelSerializer):
+	description = serializers.CharField(allow_null=True)
+	id = serializers.IntegerField(read_only=True)
+	quantity_remaining = serializers.IntegerField(allow_null=True)
+
+	class Meta:
+		model = PurchaseItem
+		fields = ('name','current_price','quantity_remaining','description','id')
 
 ##Tier Two Serializers
 class TTwoProfileSerializer(serializers.ModelSerializer):
