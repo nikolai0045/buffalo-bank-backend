@@ -111,7 +111,7 @@ class CreateStudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = PersonalBehaviorGoal
-		fields = ('name','description','active','student')
+		fields = ('name','description','active','student','id')
 
 class MissingAssignmentSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer()

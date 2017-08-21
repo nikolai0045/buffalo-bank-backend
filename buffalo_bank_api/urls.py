@@ -50,6 +50,7 @@ from bank.views import (
     RetrievePurchaseItemsView,
     CreatePurchaseItemView,
     DeletePurchaseItemView,
+	SearchCoursesView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -98,4 +99,5 @@ urlpatterns = [
 	url(r'^bank/student/init_goal/$',InitPersonalBehaviorGoalView.as_view()),
 	url(r'^bank/student/destroy_goal/(?P<pk>[0-9]+)/$',DestroyPersonalBehaviorGoalView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
+	url(r'^courses/search/$',SearchCoursesView.as_view()),
 ]

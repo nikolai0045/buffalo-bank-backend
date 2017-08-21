@@ -106,6 +106,22 @@ class RetrieveActiveCoursesView(ListAPIView):
             courses = self.request.user.userprofile.course_set.filter(active=True)
             return courses
 
+class SearchCoursesView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+	
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		queryset = Course.objects.all()
+		if data['active']:
+			queryset = queryset.filter(active=data['active'])
+		if data['hour']:
+			queryset = queryset.filter(hour=data['hour'])
+		if data['grade']:
+			for c in queryset:
+				if c.students.first().grade != data['grade']:
+					queryset = queryset.exclude(c)
+		return BasicCourseSerializer(queryset,many=True).data
+	
 class RetrieveStudentsByCourseView(RetrieveAPIView):
     model = Course
     serializer_class = CourseStudentsSerializer

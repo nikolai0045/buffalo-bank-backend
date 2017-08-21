@@ -1,3 +1,4 @@
+Column1,Column2,Column3,Column4,Column5,Column6,Column7,Column8,Column9,Column10,Column11,Column12,Column13,Column14,
 Ashmore,Dustin,6,500913,Band,"Diamond, Joseph",61,1,1st 9 wks,,1,4,8:34,9:19,
 Badgett-Shelton,Micah,6,500913,Band,"Diamond, Joseph",61,1,1st 9 wks,,1,4,8:34,9:19,
 Barker,Jacob,6,500913,Band,"Diamond, Joseph",61,1,1st 9 wks,,1,4,8:34,9:19,
@@ -157,7 +158,7 @@ Patterson,Kaleb,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,
 Rodriguez,Jacqueline,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,
 Shell,Landon,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,
 Walton,Nicholas,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,
-Warren,Jaylen,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,
+Warren,Jaylen,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,"1,2,4,5"
 Woods,Jamie,6,200111,Understanding Arts & Humanit.,"Holajter, Christine",61,1,1st 9 wks,,1,1,8:34,9:19,"1,2,4,5"
 Adams,Cameron,6,230101,Language Arts 6,"Smith, Dana",62,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Adams,Cameron,6,230101,Language Arts 6,"Vorhoff, Brooke",62,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
@@ -428,7 +429,7 @@ Taylor,Isaac,6,270201,Math 6,"Gates, Carolyn",62,2,1st 9 wks,,1,4,9:23,11:13,"1,
 Thompson,Csara,6,270201,Math 6,"Gates, Carolyn",62,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Tillman,Kamorah,6,270201,Math 6,"Gates, Carolyn",62,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Wireman,Lily,6,270201,Math 6,"Gates, Carolyn",62,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
-Wisby,Madison,6,270201,Math 6,"Gates, Carolyn",63,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
+Wisby,Madison,6,270201,Math 6,"Gates, Carolyn",63,2,1st 9 wks,,1,4,9:23,11:13,3
 Wright,Marissa,6,270201,Math 6,"Gates, Carolyn",62,2,1st 9 wks,,1,4,9:23,11:13,3
 Adams,Cameron,6,909999,PLT,"Hall-Fuller, Racheal",66,2,1st 9 wks,,1,4,9:23,11:13,3
 Adkins,Nathan,6,909999,PLT,"Gates, Carolyn",65,2,1st 9 wks,,1,4,9:23,11:13,3
@@ -589,7 +590,7 @@ Wireman,Lily,6,909999,PLT,"Hall-Fuller, Racheal",66,2,1st 9 wks,,1,4,9:23,11:13,
 Wisby,Madison,6,909999,PLT,"Bechard, Megan",61,2,1st 9 wks,,1,4,9:23,11:13,3
 Wollen,Jeanie,6,909999,PLT,"Gates, Carolyn",65,2,1st 9 wks,,1,4,9:23,11:13,3
 Woods,Jamie,6,909999,PLT,"Conner, Brian",63,2,1st 9 wks,,1,4,9:23,11:13,3
-Wright,Marissa,6,909999,PLT,"Gates, Carolyn",65,2,1st 9 wks,,1,4,9:23,11:13,3
+Wright,Marissa,6,909999,PLT,"Gates, Carolyn",65,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Young,Atlas,6,909999,PLT,"Conner, Brian",63,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Adkins,Nathan,6,300166,Science 6,"Hall-Fuller, Racheal",621,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
 Anthony,Canosha,6,300166,Science 6,"Hall-Fuller, Racheal",621,2,1st 9 wks,,1,4,9:23,11:13,"1,2,4,5"
@@ -909,7 +910,7 @@ Thompson,Csara,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,
 Toler-Sharon,Vontashia,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,"1,2,4,5"
 Walton,Nicholas,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,"1,2,4,5"
 Warren,Jaylen,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,"1,2,4,5"
-Williams,Kadynne,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,"1,2,4,5"
+Williams,Kadynne,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,
 Williamson,Austin,6,230101E,Writing Enrichment 6,"Conner, Brian",61,3,1st 9 wks,,1,1,11:17,12:22,
 Baldridge,Jeslyn,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,13:11,
 Brewer,Alexis,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,13:11,
@@ -954,7 +955,7 @@ Williams,Kadynne,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,
 Wilson,J Marley,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,13:11,
 Wilson,Jayla,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,13:11,
 Wollen,Jeanie,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,4,12:26,13:11,
-Beall,Eliza,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
+Beall,Eliza,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,1,12:26,13:11,
 Brumley,Zachary,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 Callison,Declan,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 Collins,Ashleigh,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
@@ -975,7 +976,7 @@ Tackett,Emma,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 
 Tice,Draven,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 Tucker,Chelsea,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 VanHoose,Samuel,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
-Warren,Jaylen,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
+Warren,Jaylen,6,500925,Choir,"Holajter, Christine",61,4,1st 9 wks,,1,1,12:26,13:11,
 Williamson,Austin,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 Wireman,Lily,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
 Wright,Marissa,6,3401362,Drug Education/Prevention 6th,"Burke, Kristina",62,4,1st 9 wks,,1,1,12:26,13:11,
@@ -2141,7 +2142,6 @@ Pider,Selia,7,500913,Band,"Diamond, Joseph",71,3,1st 9 wks,,1,4,10:28,11:13,
 Poore,Gracie,7,200111,Understanding Arts & Humanit.,"Holajter, Christine",71,3,1st 9 wks,,1,1,10:28,11:13,
 Quillen,Seth,7,219901,Foundations of Engineering,"Boone, Thomas",71,3,1st 9 wks,,1,1,10:28,11:13,
 Quintana,Isabel,7,500913,Band,"Diamond, Joseph",71,3,1st 9 wks,,1,4,10:28,11:13,
-Rainey,Kathelina,7,340137,Growth and Development 7th,"Burke, Kristina",71,3,1st 9 wks,,1,1,10:28,11:13,
 Rainey,Kathelina,7,500913,Band,"Diamond, Joseph",71,3,1st 9 wks,,1,4,10:28,11:13,
 Ramirez,Manuel,7,340137,Growth and Development 7th,"Burke, Kristina",71,3,1st 9 wks,,1,4,10:28,11:13,
 Ramos,Christian,7,340227,Physical Education 7th,"Burke, Stephen",71,3,1st 9 wks,,1,1,10:28,11:13,
@@ -3931,7 +3931,6 @@ Alford,Sarah,8,219901,Foundations of Engineering,"Boone, Thomas",83,6,1st 9 wks,
 Anthony,Mayonna,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
 Ashmore,Katelyn,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
 Austin,Jaedyn,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
-Austria,Kevin,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
 Austria,Kevin,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
 Barber,Kamora,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
 Bates,Jayden,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
@@ -3959,7 +3958,6 @@ Colalella,Eythan,8,219901,Foundations of Engineering,"Boone, Thomas",83,6,1st 9 
 Coleman,Caleb,8,9004010,Leadership,"Combs, Donna",81,6,1st 9 wks,,1,2,13:23,14:08,
 Combs,Jaci,8,500925,Choir,"Holajter, Christine",81,6,1st 9 wks,,1,4,13:23,14:08,
 Combs,Riley,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
-Combs,Tre,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
 Combs,Tre,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
 Coots,Reagan,8,500925,Choir,"Holajter, Christine",81,6,1st 9 wks,,1,4,13:23,14:08,
 Corona,Roselyn,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
@@ -4049,7 +4047,6 @@ Richardson,Nevaeh,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wk
 Roaden,Nevaeh,8,340228,Physcial Education 8th,"Burke, Stephen",83,6,1st 9 wks,,1,1,13:23,14:08,
 Robey,Maribeth,8,219901,Foundations of Engineering,"Boone, Thomas",83,6,1st 9 wks,,1,1,13:23,14:08,
 Robinson,Mayson,8,500925,Choir,"Holajter, Christine",81,6,1st 9 wks,,1,4,13:23,14:08,
-Robinson,Mayson,8,600202,Reading ,"Bayer, Juliet",82,6,1st 9 wks,,1,4,13:23,14:08,
 Robinson,Megan,8,600202,Reading ,"Bayer, Juliet",82,6,1st 9 wks,,1,4,13:23,14:08,
 Rodriguez,Gabriel,8,219901,Foundations of Engineering,"Boone, Thomas",83,6,1st 9 wks,,1,1,13:23,14:08,
 Rodriguez,Itzel,8,340138,Safety and First Aid 8th,"Burke, Kristina",83,6,1st 9 wks,,1,1,13:23,14:08,
@@ -4394,19 +4391,19 @@ Richardson,Nevaeh,8,901001,Mentoring,"Gabbard, Megan",86,Mentoring,1st 9 wks,,1,
 Roaden,Nevaeh,8,901001,Mentoring,"Ball, Erin",82,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Robey,Maribeth,8,901001,Mentoring,"Downey, Katherine",81,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Robinson,Mayson,8,901001,Mentoring,"Gabbard, Megan",86,Mentoring,1st 9 wks,,1,4,7:50,8:30,
-Robinson,Megan,8,901001,Mentoring,"Gerton, Kristin",85,Mentoring,1st 9 wks,,1,4,7:50,8:30,
+Robinson,Megan,8,901001,Mentoring,"Bayer, Juliet",88,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Rodriguez,Gabriel,8,901001,Mentoring,"Gerton, Kristin",85,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Rodriguez,Itzel,8,901001,Mentoring,"Gabbard, Megan",86,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Rubio,Chalino,8,901001,Mentoring,"Gerton, Kristin",85,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Ruggles,Breanna,8,901001,Mentoring,"Ryan, Nicole",83,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Sageser,Hailey,8,901001,Mentoring,"Ryan, Nicole",83,Mentoring,1st 9 wks,,1,4,7:50,8:30,
-Saltarelli,Cori,8,901001,Mentoring,"Warring, Suellyn",87,Mentoring,1st 9 wks,,1,4,7:50,8:30,
+Saltarelli,Cori,8,901001,Mentoring,"Bayer, Juliet",88,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Sammons,Madelyn,8,901001,Mentoring,"Pratt, Brittany",84,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Schartung,Mark,8,901001,Mentoring,"Pratt, Brittany",84,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Sharp,Kelsey,8,901001,Mentoring,"Ryan, Nicole",83,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Smith,Brandon,8,901001,Mentoring,"Ryan, Nicole",83,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Smith,Cody,8,901001,Mentoring,"Ball, Erin",82,Mentoring,1st 9 wks,,1,4,7:50,8:30,
-Smith,Matthew,8,901001,Mentoring,"Ryan, Nicole",83,Mentoring,1st 9 wks,,1,4,7:50,8:30,
+Smith,Matthew,8,901001,Mentoring,"Bayer, Juliet",88,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Smith,Mikaia,8,901001,Mentoring,"Gerton, Kristin",85,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Smith,Noah,8,901001,Mentoring,"Ball, Erin",82,Mentoring,1st 9 wks,,1,4,7:50,8:30,
 Sparks,Brianna,8,901001,Mentoring,"Gerton, Kristin",85,Mentoring,1st 9 wks,,1,4,7:50,8:30,
