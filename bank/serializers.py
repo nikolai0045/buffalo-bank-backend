@@ -40,8 +40,8 @@ class BasicCourseSerializer(serializers.ModelSerializer):
 
 class CourseReportSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer(many=False)
-	start_time = serializers.TimeField(required=False)
-	end_time = serializers.TimeField(required=False)
+	start_time = serializers.TimeField(allow_null=True)
+	end_time = serializers.TimeField(allow_null=True)
 
 	class Meta:
 		model = CourseReport
@@ -248,8 +248,8 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer()
 	tthreereport_set = TThreeReportSerializer(many=True)
 	ttworeport_set = TTwoReportSerializer(many=True)
-	start_time = serializers.TimeField(required=False)
-	end_time = serializers.TimeField(required=False)
+	start_time = serializers.TimeField(allow_null=True)
+	end_time = serializers.TimeField(allow_null=True)
 
 	def update(self,instance,validated_data):
 		for r in validated_data['ttworeport_set']:
