@@ -408,7 +408,7 @@ class RetrieveTierThreeChartView(View):
 				end.strftime("%m/%d/%y"),
 				"Blues and Greens"
 			]
-			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,report__absent=False,report__iss=False).order_by('report__start_time')
+			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,absent=False,iss=False).order_by('report__start_time')
 			course_list = []
 			for r in reports:
 				if r.report.course.name not in course_list:
@@ -479,7 +479,7 @@ class RetrieveTierTwoChartView(View):
 			day_three = start + datetime.timedelta(days=2)
 			day_four = start + datetime.timedelta(days=3)
 			response['col_headers'] = ["Course",start.strftime("%m/%d/%y"),day_two.strftime("%m/%d/%y"),day_three.strftime("%m/%d/%y"),day_four.strftime("%m/%d/%y"),end.strftime("%m/%d/%y")]
-			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,report__absent=False,report__iss=False).order_by('report__start_time')
+			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,absent=False,iss=False).order_by('report__start_time')
 			course_list = []
 			for r in reports:
 				if r.report.course.name not in course_list:
