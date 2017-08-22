@@ -13,19 +13,19 @@ class Command(BaseCommand):
             goals = BehaviorGoal.objects.all()
             today = datetime.date.today()
             for row in reader:
-                s_last_name = row[0]
-                s_first_name = row[1]
-                s_grade = row[2]
-                c_number = row[3]
-                c_name = row[4]
+                s_last_name = row[0].strip()
+                s_first_name = row[1].strip()
+                s_grade = row[2].strip()
+                c_number = row[3].strip()
+                c_name = row[4].strip()
                 try:
                     t_split = row[5].split(",")
                 except:
                     pass
                 teacher = False
                 if len(t_split)>1:
-                    t_first_name = t_split[1]
-                    t_last_name = t_split[0]
+                    t_first_name = t_split[1].strip()
+                    t_last_name = t_split[0].strip()
                     teacher, created = UserProfile.objects.get_or_create(first_name=t_first_name,last_name=t_last_name)
                     if created:
                         teacher.save()
