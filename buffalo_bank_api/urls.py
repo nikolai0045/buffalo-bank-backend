@@ -51,6 +51,8 @@ from bank.views import (
     CreatePurchaseItemView,
     DeletePurchaseItemView,
 	SearchCoursesView,
+    MarkReportInactiveView,
+    RemoveReportView
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -71,6 +73,8 @@ urlpatterns = [
     url(r'^bank/is_mentee/(?P<student_id>[0-9]+)/(?P<teacher_id>[0-9]+)/$',IsMenteeView.as_view()),
 	url(r'^bank/reports/$',RetrieveReportsView.as_view()),
 	url(r'^bank/reports/(?P<year>[0-9]+)/(?P<month>[0-9]+)/(?P<day>[0-9]+)/$',RetrieveReportsView.as_view()),
+    url(r'^bank/reports/mark_inactive/$',MarkReportInactiveView.as_view()),
+    url(r'^bank/reports/destroy/(?P<pk>[0-9]+)/$',RemoveReportView.as_view()),
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
     url(r'^bank/courses/missing_work/(?P<pk>[0-9]+)/$',RetrieveCourseMissingWorkView.as_view()),
     url(r'^bank/courses/not_missing_work/(?P<report_id>[0-9]+)/(?P<assignment_id>[0-9]+)/$',RetrieveStudentsNotMissingWork.as_view()),

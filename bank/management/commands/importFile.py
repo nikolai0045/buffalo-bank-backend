@@ -6,19 +6,12 @@ import csv
 class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
-        prepared, created = BehaviorGoal.objects.get_or_create(goal="Be Prepared")
-        if created:
-            prepared.save()
-        on_task, created = BehaviorGoal.objects.get_or_create(goal="Be On Task")
-        if created:
-            on_task.save()
-        respectful, created = BehaviorGoal.objects.get_or_create(goal="Be Respectful")
-        if created:
-            respectful.save()
 
         #/opt/bank/buffalo-bank-api/bank/schedules.csv
-        with open('/opt/bank/buffalo-bank-api/bank/schedules.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/bank/master82117.csv','rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
+            goals = BehaviorGoal.objects.all()
+            today = datetime.date.today()
             for row in reader:
                 s_last_name = row[0]
                 s_first_name = row[1]
@@ -30,7 +23,6 @@ class Command(BaseCommand):
                 except:
                     pass
                 teacher = False
-                print t_split
                 if len(t_split)>1:
                     t_first_name = t_split[1]
                     t_last_name = t_split[0]
@@ -44,27 +36,22 @@ class Command(BaseCommand):
                     course.save()
                 if teacher and teacher not in course.teachers.all():
                     course.teachers.add(teacher)
-                c_raw_start_time = row[12]
-                c_raw_end_time = row[13]
-                weekdays = [x for x in row[14].split(',')]
 
                 student, created = Student.objects.get_or_create(first_name=s_first_name,last_name=s_last_name,grade=s_grade)
                 if created:
                     student.save()
 
-                goals = BehaviorGoal.objects.all()
-		today = datetime.date.today()
-		if course.name != "PLT":
-			course_report, create = CourseReport.objects.get_or_create(course=course,date=today,start_time=datetime.datetime.strptime(c_raw_start_time,'%H:%M'),end_time=datetime.datetime.strptime(c_raw_end_time,'%H:%M'))
-			if create:
-				course_report.save()
-			deposit, created = Deposit.objects.get_or_create(student=student,date=today,course_report=course_report)
-			if created:
-				deposit.save()
-			for g in goals:
-				buck, created = Buck.objects.get_or_create(deposit=deposit,goal=g)
-				if created:
-					buck.save()
+                if course.active:
+            		course_report, create = CourseReport.objects.get_or_create(course=course,date=today)
+            		if create:
+            			course_report.save()
+            		deposit, created = Deposit.objects.get_or_create(student=student,date=today,course_report=course_report)
+            		if created:
+            			deposit.save()
+            		for g in goals:
+            			buck, created = Buck.objects.get_or_create(deposit=deposit,goal=g)
+            			if created:
+            				buck.save()
                 # if len(weekdays) == 0:
                 #     for date in [datetime.date(2017,8,14),datetime.date(2017,8,15),datetime.date(2017,8,16),datetime.date(2017,8,17),datetime.date(2017,8,18)]:
                 #         course_report, created = CourseReport.objects.get_or_create(course=course,date=date,start_time=datetime.datetime.strptime(c_raw_start_time,'%H:%M'),end_time=datetime.datetime.strptime(c_raw_end_time,'%H:%M'))

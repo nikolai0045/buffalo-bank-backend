@@ -82,8 +82,8 @@ class Transaction(models.Model):
 class CourseReport(models.Model):
 	course = models.ForeignKey(Course)
 	date = models.DateField()
-	start_time = models.TimeField()
-	end_time = models.TimeField()
+	start_time = models.TimeField(blank=True,null=True)
+	end_time = models.TimeField(blank=True,null=True)
 	completed = models.BooleanField(default=False)
 
 	def __str__(self):
@@ -99,6 +99,7 @@ class Deposit(Transaction):
 	amount_earned = models.IntegerField(default=0)
 	note = models.TextField(blank=True,null=True)
 	absent = models.BooleanField(default=False)
+	iss = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.student) + " - " + self.course_report.course.name + " " + str(self.date)

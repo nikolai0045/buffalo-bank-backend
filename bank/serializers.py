@@ -81,7 +81,7 @@ class FullDepositSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deposit
-        fields = ('student','amount_earned','buck_set','id','absent')
+        fields = ('student','amount_earned','buck_set','id','absent','iss')
 
 class StudentDepositSerializer(serializers.ModelSerializer):
 	id = serializers.IntegerField(read_only=False)
@@ -194,7 +194,7 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TTwoReport
-		fields = ('goal','score','id','report','note')
+		fields = ('goal','score','id','report','note','absent','iss')
 
 class TTwoReportNoteSerializer(serializers.ModelSerializer):
 	goal = TTwoGoalSerializer()
@@ -228,7 +228,7 @@ class TThreeReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TThreeReport
-		fields = ('profile','score','id','report','note')
+		fields = ('profile','score','id','report','note','absent','iss')
 
 class TThreeReportNoteSerializer(serializers.ModelSerializer):
 	profile = TThreeProfileSerializer()
@@ -253,12 +253,16 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 			report.score = r['score']
 			if r.has_key('note'):
 				report.note = r['note']
+			report.absent = r['absent']
+			report.iss = r['iss']
 			report.save()
 		for r in validated_data['tthreereport_set']:
 			report = TThreeReport.objects.get(pk=r['id'])
 			report.score = r['score']
 			if r.has_key('note'):
 				report.note = r['note']
+			report.absent = r['absent']
+			report.iss = r['iss']
 			report.save()
 		if instance.completed == False:
 			for d in validated_data['deposit_set']:
@@ -268,7 +272,9 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 				if d['absent']:
 					deposit.absent = True
 					deposit.save()
-					print "deposit was marked absent"
+				elif d['iss']:
+					deposit.iss = True
+					deposit.save()
 				else:
 					for b in d['buck_set']:
 						buck = Buck.objects.get(pk=b['id'])
@@ -292,25 +298,41 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 				deposit.save()
 				if d['absent'] == True:
 					deposit.absent = True
+					student.account_balance -= deposit.amount_earned
+					deposit.amount_earned = 0
+					for b in deposit.buck_set.all():
+						b.earned = False
+						b.save()
+					student.save()
 					deposit.save()
-				for b in d['buck_set']:
-					buck = Buck.objects.get(pk=b['id'])
-					if b['earned'] == 'true' or b['earned'] == True:
-						if not buck.earned and not deposit.absent:
-							buck.earned = True
-							deposit.amount_earned += 1
-							student.account_balance += 1
-							student.save()
-							deposit.save()
-							buck.save()
-					else:
-						if buck.earned:
-							buck.earned = False
-							deposit.amount_earned -= 1
-							student.account_balance -= 1
-							student.save()
-							deposit.save()
-							buck.save()
+				elif d['iss'] == True:
+					deposit.iss = True
+					student.account_balance -= deposit.amount_earned
+					deposit.amount_earned = 0
+					for b in deposit.buck_set.all():
+						b.earned = False
+						b.save()
+					student.save()
+					deposit.save()
+				else:
+					for b in d['buck_set']:
+						buck = Buck.objects.get(pk=b['id'])
+						if b['earned'] == 'true' or b['earned'] == True:
+							if not buck.earned and not deposit.absent:
+								buck.earned = True
+								deposit.amount_earned += 1
+								student.account_balance += 1
+								student.save()
+								deposit.save()
+								buck.save()
+						else:
+							if buck.earned:
+								buck.earned = False
+								deposit.amount_earned -= 1
+								student.account_balance -= 1
+								student.save()
+								deposit.save()
+								buck.save()
 				instance.save()
 		return instance
 

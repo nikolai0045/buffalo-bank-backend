@@ -25,6 +25,8 @@ class TTwoReport(models.Model):
 	report = models.ForeignKey(CourseReport)
 	score = models.IntegerField(default=4)
 	note = models.TextField(null=True,blank=True)
+	absent = models.BooleanField(default=False)
+	iss = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.goal) + ' - ' + str(self.report.course) + ' - ' + str(self.report.date)

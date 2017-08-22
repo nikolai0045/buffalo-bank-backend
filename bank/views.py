@@ -94,6 +94,31 @@ class RetrieveReportsView(ListAPIView):
         else:
             return CourseReport.objects.filter(date=date,course__teachers=self.request.user.userprofile)
 
+class MarkReportInactiveView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		report_id = data['id']
+		course_id = data['course']['id']
+		report = CourseReport.objects.get(pk=report_id)
+		if report.completed:
+			for deposit in report.deposit_set.all():
+				student = deposit.student
+				student.account_balance -= deposit.amount_earned
+				student.save()
+		report.delete()
+		course = Course.objects.get(pk=course_id)
+		course.active = False
+		course.save()
+		return BasicCourseSerializer(course).data
+
+class RemoveReportView(DestroyAPIView):
+	model = CourseReport
+	serializer_class = CourseReportSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+	queryset = CourseReport.objects.all()
+
 class RetrieveActiveCoursesView(ListAPIView):
     serializer_class = BasicCourseSerializer
     authentication_classes = (authentication.TokenAuthentication,)
@@ -108,7 +133,7 @@ class RetrieveActiveCoursesView(ListAPIView):
 
 class SearchCoursesView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
-	
+
 	def post(self,request,*args,**kwargs):
 		data = request.data
 		queryset = Course.objects.all()
@@ -121,7 +146,7 @@ class SearchCoursesView(APIView):
 				if c.students.first().grade != data['grade']:
 					queryset = queryset.exclude(c)
 		return BasicCourseSerializer(queryset,many=True).data
-	
+
 class RetrieveStudentsByCourseView(RetrieveAPIView):
     model = Course
     serializer_class = CourseStudentsSerializer
@@ -383,7 +408,7 @@ class RetrieveTierThreeChartView(View):
 				end.strftime("%m/%d/%y"),
 				"Blues and Greens"
 			]
-			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,report__absent=False,report__iss=False).order_by('report__start_time')
 			course_list = []
 			for r in reports:
 				if r.report.course.name not in course_list:
@@ -454,7 +479,7 @@ class RetrieveTierTwoChartView(View):
 			day_three = start + datetime.timedelta(days=2)
 			day_four = start + datetime.timedelta(days=3)
 			response['col_headers'] = ["Course",start.strftime("%m/%d/%y"),day_two.strftime("%m/%d/%y"),day_three.strftime("%m/%d/%y"),day_four.strftime("%m/%d/%y"),end.strftime("%m/%d/%y")]
-			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,report__absent=False,report__iss=False).order_by('report__start_time')
 			course_list = []
 			for r in reports:
 				if r.report.course.name not in course_list:
