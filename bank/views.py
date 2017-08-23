@@ -50,7 +50,8 @@ from .models import (
 	Deposit,
 	Buck,
 	UserProfile,
-	PurchaseItem
+	PurchaseItem,
+	Purchase
 )
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
@@ -72,6 +73,27 @@ class DeletePurchaseItemView(DestroyAPIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = PurchaseItem.objects.all()
 
+class SubmitTransactionView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+	
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		raw_students = data['selectedStudents']
+		raw_items = data['selectedItems']
+		students = []
+		items = []
+		for s in raw_students:
+			students.append(Student.objects.get(pk=s['id']))
+		for i in raw_items:
+			items.append(PurchaseItem.objects.get(pk=i['id']))
+		for s in students:
+			for i in items:
+				new_purchase = Purchase(item=i,student=s,price=i.current_price)
+				new_purchase.save()
+				s.account_balance = s.account_balance - new_purchase.price
+				s.save()
+		return Response({'Transaction':'success'})
+			
 class RetrieveReportsView(ListAPIView):
     serializer_class = CourseReportSerializer
     authentication_classes = (authentication.TokenAuthentication,)
@@ -144,8 +166,8 @@ class SearchCoursesView(APIView):
 		if data['grade']:
 			for c in queryset:
 				if c.students.first().grade != data['grade']:
-					queryset = queryset.exclude(c)
-		return BasicCourseSerializer(queryset,many=True).data
+					queryset = queryset.exclude(pk=c.pk)
+		return Response(BasicCourseSerializer(queryset,many=True).data)
 
 class RetrieveStudentsByCourseView(RetrieveAPIView):
     model = Course
@@ -300,8 +322,37 @@ class MenteeListView(ListAPIView):
 				if s not in students:
 					students.append(s)
 		return students
-
-
+	
+class RetrieveStudentsEligibleToPurchase(ListAPIView):
+	model = Student
+	serializer_class = BasicStudentSerializer
+	authentication_class = (authentication.TokenAuthentication,)
+	
+	def get_queryset(self):
+		course = Course.objects.get(pk=self.kwargs['pk'])
+		report = CourseReport.objects.filter(course=course).last()
+		students = []
+		deposits = report.deposit_set.all()
+		for d in deposits:
+			if len(d.student.missingassignment_set.all()) == 0:
+				students.append(d.student)
+		return students
+	
+class RetrieveStudentsIneligibleToPurchase(ListAPIView):
+	model = Student
+	serializer_class = BasicStudentSerializer
+	authentication_class = (authentication.TokenAuthentication,)
+	
+	def get_queryset(self):
+		course = Course.objects.get(pk=self.kwargs['pk'])
+		report = CourseReport.objects.filter(course=course).last()
+		students = []
+		deposits= report.deposit_set.all()
+		for d in deposits:
+			if len(d.student.missingassignment_set.all()) > 0:
+				students.append(d.student)
+		return students
+	
 class RetrieveStudentsNotMissingWork(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
