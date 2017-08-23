@@ -645,7 +645,7 @@ class RetrieveTierTwoNotesView(View):
 			'report__end_time'
 			)
 		serializer = TTwoReportSerializer(reports,many=True)
-		return seializer.data
+		return serializer.data
 class RetrieveRecentTThreeReportsView(ListAPIView):
 	model = TThreeReport
 	serializer_class = TThreeReportSerializer
