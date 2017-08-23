@@ -75,7 +75,7 @@ class DeletePurchaseItemView(DestroyAPIView):
 
 class SubmitTransactionView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
-	
+
 	def post(self,request,*args,**kwargs):
 		data = request.data
 		raw_students = data['selectedStudents']
@@ -93,7 +93,7 @@ class SubmitTransactionView(APIView):
 				s.account_balance = s.account_balance - new_purchase.price
 				s.save()
 		return Response({'Transaction':'success'})
-			
+
 class RetrieveReportsView(ListAPIView):
     serializer_class = CourseReportSerializer
     authentication_classes = (authentication.TokenAuthentication,)
@@ -322,12 +322,12 @@ class MenteeListView(ListAPIView):
 				if s not in students:
 					students.append(s)
 		return students
-	
+
 class RetrieveStudentsEligibleToPurchase(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
-	
+
 	def get_queryset(self):
 		course = Course.objects.get(pk=self.kwargs['pk'])
 		report = CourseReport.objects.filter(course=course).last()
@@ -337,12 +337,12 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 			if len(d.student.missingassignment_set.all()) == 0:
 				students.append(d.student)
 		return students
-	
+
 class RetrieveStudentsIneligibleToPurchase(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
-	
+
 	def get_queryset(self):
 		course = Course.objects.get(pk=self.kwargs['pk'])
 		report = CourseReport.objects.filter(course=course).last()
@@ -352,7 +352,7 @@ class RetrieveStudentsIneligibleToPurchase(ListAPIView):
 			if len(d.student.missingassignment_set.all()) > 0:
 				students.append(d.student)
 		return students
-	
+
 class RetrieveStudentsNotMissingWork(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
@@ -631,15 +631,19 @@ class RetrieveTierTwoNotesView(View):
 		if not student.is_ttwo():
 			return []
 		profile = student.ttwoprofile_set.first()
-		reports = profile.ttwogoal_set.all().ttworeport_set.filter(
+		reports = TTwoReport.objects.filter(
+			goal__profile=profile,
 			report__date__gte=monday,
 			report__date__lte=friday,
-			report__complete=True
-		).exclude(
+			report__completed=True
+			).exclude(
 			note__isnull=True
-		).exclude(
+			).exclude(
 			note__exact=""
-		).order_by('report__date','report__end_time')
+			).order_by(
+			'report__date',
+			'report__end_time'
+			)
 		serializer = TTwoReportSerializer(reports,many=True)
 		return seializer.data
 class RetrieveRecentTThreeReportsView(ListAPIView):
