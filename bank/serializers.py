@@ -166,7 +166,7 @@ class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 ##Marketplace serializers
 class PurchaseItemSerializer(serializers.ModelSerializer):
 	description = serializers.CharField(allow_null=True)
-	id = serializers.IntegerField(read_only=False)
+	id = serializers.IntegerField(read_only=False,allow_null=True)
 	quantity_remaining = serializers.IntegerField(allow_null=True)
 
 	class Meta:
