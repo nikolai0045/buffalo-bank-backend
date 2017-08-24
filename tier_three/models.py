@@ -27,6 +27,7 @@ class TThreeReport(models.Model):
 	note = models.TextField(null=True,blank=True)
 	absent = models.BooleanField(default=False)
 	iss = models.BooleanField(default=False)
+	not_applicable = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.profile) + ' - ' + str(self.report)

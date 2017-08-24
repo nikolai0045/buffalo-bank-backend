@@ -196,7 +196,7 @@ class TTwoReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TTwoReport
-		fields = ('goal','score','id','report','note','absent','iss')
+		fields = ('goal','score','id','report','note','absent','iss','not_applicable')
 
 class TTwoReportNoteSerializer(serializers.ModelSerializer):
 	goal = TTwoGoalSerializer()
@@ -230,7 +230,7 @@ class TThreeReportSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TThreeReport
-		fields = ('profile','score','id','report','note','absent','iss')
+		fields = ('profile','score','id','report','note','absent','iss','not_applicable')
 
 class TThreeReportNoteSerializer(serializers.ModelSerializer):
 	profile = TThreeProfileSerializer()
@@ -259,6 +259,7 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 				report.note = r['note']
 			report.absent = r['absent']
 			report.iss = r['iss']
+			report.not_applicable = r['not_applicable']
 			report.save()
 		for r in validated_data['tthreereport_set']:
 			report = TThreeReport.objects.get(pk=r['id'])
@@ -267,6 +268,7 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 				report.note = r['note']
 			report.absent = r['absent']
 			report.iss = r['iss']
+			report.not_applicable = r['not_applicable']
 			report.save()
 		if instance.completed == False:
 			for d in validated_data['deposit_set']:
