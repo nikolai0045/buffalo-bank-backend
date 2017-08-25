@@ -115,14 +115,6 @@ class CreateStudentPersonalBehaviorGoalSerializer(serializers.ModelSerializer):
 		model = PersonalBehaviorGoal
 		fields = ('name','description','active','student','id')
 
-class MissingAssignmentSerializer(serializers.ModelSerializer):
-	course = BasicCourseSerializer()
-	id = serializers.IntegerField(read_only=False)
-
-	class Meta:
-		model = MissingAssignment
-		fields = ('name','description','course','date','id')
-
 class UpdateMissingAssignmentSerializer(serializers.ModelSerializer):
 	course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
 	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
@@ -148,7 +140,7 @@ class MissingAssignmentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = MissingAssignment
-		fields = ('course','students','name','description')
+		fields = ('course','students','name','description','id')
 
 	def create(self,validated_data):
 		new_assignment = MissingAssignment(
