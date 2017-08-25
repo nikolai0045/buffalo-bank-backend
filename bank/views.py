@@ -31,14 +31,14 @@ from .serializers import (
 	TTwoReportSerializer,
 	TThreeReportSerializer,
 	CreateStudentPersonalBehaviorGoalSerializer,
-	CourseMissingAssignmentSerializer,
-	CreateMissingAssignmentSerializer,
+	MissingAssignmentSerializer,
 	InitPersonalBehaviorGoalSerializer,
 	TTwoGoalSerializer,
 	TThreeGoalSerializer,
 	TTwoReportNoteSerializer,
 	TThreeReportNoteSerializer,
-	PurchaseItemSerializer
+	PurchaseItemSerializer,
+	CourseMissingAssignmentSerializer,
 )
 from .models import (
 	CourseReport,
@@ -73,6 +73,12 @@ class DeletePurchaseItemView(DestroyAPIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = PurchaseItem.objects.all()
 
+class UpdatePurchaseItemView(UpdateAPIView):
+	model = PurchaseItem
+	serializer_class = PurchaseItemSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+	queryset = PurchaseItem.objects.all()
+	
 class SubmitTransactionView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
@@ -228,7 +234,7 @@ class RetrieveCourseMissingWorkView(ListAPIView):
 
 class UpdateMissingWorkView(UpdateAPIView):
 	model = MissingAssignment
-	serializer_class = CourseMissingAssignmentSerializer
+	serializer_class = MissingAssignmentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
 	queryset = MissingAssignment.objects.all()
 
@@ -240,9 +246,9 @@ class DestroyMissingWorkView(DestroyAPIView):
 
 class CreateMissingWorkView(CreateAPIView):
 	model = MissingAssignment
-	serializer_class = CreateMissingAssignmentSerializer
+	serializer_class = MissingAssignmentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
-
+	
 class MissingWorkStudentsView(View):
 	http_method_names = [u'get',u'put']
 

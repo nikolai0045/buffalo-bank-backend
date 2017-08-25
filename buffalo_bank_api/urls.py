@@ -55,7 +55,8 @@ from bank.views import (
     RemoveReportView,
 	RetrieveStudentsEligibleToPurchase,
 	RetrieveStudentsIneligibleToPurchase,
-	SubmitTransactionView
+	SubmitTransactionView,
+	UpdatePurchaseItemView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -69,6 +70,7 @@ urlpatterns = [
 	url(r'^accounts/create_user/(?P<key>\w+)/$',CreateUserView.as_view()),
     url(r'^bank/marketplace/items/$',RetrievePurchaseItemsView.as_view()),
     url(r'^bank/marketplace/add_item/$',CreatePurchaseItemView.as_view()),
+	url(r'^bank/marketplace/item/update/(?P<pk>[0-9]+)/$',UpdatePurchaseItemView.as_view()),
     url(r'^bank/marketplace/delete_item/(?P<pk>[0-9]+)/$',DeletePurchaseItemView.as_view()),
 	url(r'^bank/marketplace/eligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsEligibleToPurchase.as_view()),
 	url(r'^bank/marketplace/ineligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsIneligibleToPurchase.as_view()),

@@ -123,9 +123,28 @@ class MissingAssignmentSerializer(serializers.ModelSerializer):
 		model = MissingAssignment
 		fields = ('name','description','course','date','id')
 
-class CreateMissingAssignmentSerializer(serializers.ModelSerializer):
+class UpdateMissingAssignmentSerializer(serializers.ModelSerializer):
 	course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
-	students = BasicStudentSerializer(many=True)
+	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+	id = serializers.IntegerField(read_only=False)
+	
+	class Meta:
+		model = MissingAssignment
+		fields = ('course','students','name','description','id')
+		
+	def update(self,validated_data):
+		assignment = MissingAssignment.objects.get(pk=validated_data['id'])
+		assignment.students.clear()
+		for s in validated_data['students']:
+			assignment.students.add(Student.objects.get(pk=s.id))
+		assignment.name = validated_data['name']
+		assignment.description = validated_data['description']
+		assignment.course = Course.objects.get(pk=validated_data['course'].id)
+		assignment.save()
+		
+class MissingAssignmentSerializer(serializers.ModelSerializer):
+	course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(),many=True)
 
 	class Meta:
 		model = MissingAssignment
@@ -139,11 +158,21 @@ class CreateMissingAssignmentSerializer(serializers.ModelSerializer):
 		)
 		new_assignment.save()
 		for s in validated_data['students']:
-			student = Student.objects.get(pk=s['id'])
+			student = Student.objects.get(pk=s.id)
 			new_assignment.students.add(student)
 
 		new_assignment.save()
 		return new_assignment
+	
+	def update(self,instance,validated_data):
+		instance.students.clear()
+		for s in validated_data['students']:
+			instance.students.add(Student.objects.get(pk=s.id))
+		instance.name = validated_data['name']
+		instance.description = validated_data['description']
+		instance.course = Course.objects.get(pk=validated_data['course'].id)
+		instance.save()
+		return instance
 
 class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 	students = BasicStudentSerializer(many=True)
