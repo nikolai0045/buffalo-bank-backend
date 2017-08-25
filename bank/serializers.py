@@ -127,11 +127,11 @@ class UpdateMissingAssignmentSerializer(serializers.ModelSerializer):
 	course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
 	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
 	id = serializers.IntegerField(read_only=False)
-	
+
 	class Meta:
 		model = MissingAssignment
 		fields = ('course','students','name','description','id')
-		
+
 	def update(self,validated_data):
 		assignment = MissingAssignment.objects.get(pk=validated_data['id'])
 		assignment.students.clear()
@@ -141,7 +141,7 @@ class UpdateMissingAssignmentSerializer(serializers.ModelSerializer):
 		assignment.description = validated_data['description']
 		assignment.course = Course.objects.get(pk=validated_data['course'].id)
 		assignment.save()
-		
+
 class MissingAssignmentSerializer(serializers.ModelSerializer):
 	course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
 	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(),many=True)
@@ -163,7 +163,7 @@ class MissingAssignmentSerializer(serializers.ModelSerializer):
 
 		new_assignment.save()
 		return new_assignment
-	
+
 	def update(self,instance,validated_data):
 		instance.students.clear()
 		for s in validated_data['students']:
@@ -195,7 +195,6 @@ class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 ##Marketplace serializers
 class PurchaseItemSerializer(serializers.ModelSerializer):
 	description = serializers.CharField(allow_null=True)
-	id = serializers.IntegerField(read_only=False,allow_null=True)
 	quantity_remaining = serializers.IntegerField(allow_null=True)
 
 	class Meta:
