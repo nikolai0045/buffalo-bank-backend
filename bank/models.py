@@ -155,6 +155,7 @@ class TimeSlot(models.Model):
 class Schedule(models.Model):
 	time_slots = models.ManyToManyField(TimeSlot)
 	courses = models.ManyToManyField(Course)
+	name = models.CharField(max_length=200)
 
 class DailySchedule(models.Model):
 	date = models.DateField()

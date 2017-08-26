@@ -13,7 +13,7 @@ from django.utils.six import BytesIO
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
-from rest_framework import status, authentication, permissions
+from rest_framework import status, authentication, permissions, viewsets
 from rest_framework.parsers import JSONParser
 
 from jsonview.decorators import json_view
@@ -39,6 +39,9 @@ from .serializers import (
 	TThreeReportNoteSerializer,
 	PurchaseItemSerializer,
 	CourseMissingAssignmentSerializer,
+	TimeSlotSerializer,
+	DailyScheduleSerializer,
+	ScheduleSerializer
 )
 from .models import (
 	CourseReport,
@@ -723,3 +726,19 @@ class RetrieveStudentStatisticsView(View):
 				response['bucks_by_course'][b.deposit.course_report.course.pk]['unearned'] += 1
 
 		return response
+
+##Schedule Serializers
+class TimeSlotViewSet(viewsets.ModelViewSet):
+	queryset = TimeSlot.objects.all()
+	serializer_class = TimeSlotSerializer
+	permission_classes = (authentication.TokenAuthentication,)
+	
+class ScheduleViewSet(viewsets.ModelViewSet):
+	queryset = Schedule.objects.all()
+	serializer_class = ScheduleSerializer
+	permission_classes = (authentication.TokenAuthentication,)
+	
+class DailyScheduleViewSet(viewsets.ModelViewSet):
+	queryset = DailySchedule.objects.all()
+	serializer_class = DailyScheduleSerializer
+	permission_classes = (authentication.TokenAuthentication,)

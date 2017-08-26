@@ -57,8 +57,47 @@ from bank.views import (
 	RetrieveStudentsIneligibleToPurchase,
 	SubmitTransactionView,
 	UpdatePurchaseItemView,
+	TimeSlotViewSet,
+	DailyScheduleViewSet,
+	ScheduleViewSet
 	)
 from rest_framework.authtoken import views as rest_framework_views
+
+timeslot_list = TimeSlotViewSet.as_view({
+	'get':'list',
+	'post':'create',
+})
+
+timeslot_detail = TimeSlotViewSet.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+})
+
+dailyschedule_list = DailyScheduleViewSet.as_view({
+	'get':'list',
+	'post':'create'
+})
+
+dailyschedule_detail = DailyScheduleViewSet.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+})
+
+schedule_list = ScheduleViewSet.as_view({
+	'get':'list',
+	'post':'create'
+})
+
+schedule_detail = ScheduleViewSet.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+})
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -68,6 +107,12 @@ urlpatterns = [
 	url(r'^accounts/send_invites/$',SendEmailInvites.as_view()),
 	url(r'^accounts/verify_key/(?P<key>\w+)/$',VerifyInvitationKey.as_view()),
 	url(r'^accounts/create_user/(?P<key>\w+)/$',CreateUserView.as_view()),
+	url(r'^bank/schedule/time_slots/$',timeslot_list),
+	url(r'^bank/schedule/(?P<pk>[0-9]+)/$',timeslot_detail),
+	url(r'^bank/schedule/daily_schedules/$',dailyschedule_list),
+	url(r'^bank/schedule/daily_schedule/(?P<pk>[0-9]+)/$',dailyschedule_detail),
+	url(r'^bank/schedule/schedules/$',schedule_list),
+	url(r'^bank/schedule/schedule/(?P<pk>[0-9]+)/$',schedule_detail),
     url(r'^bank/marketplace/items/$',RetrievePurchaseItemsView.as_view()),
     url(r'^bank/marketplace/add_item/$',CreatePurchaseItemView.as_view()),
 	url(r'^bank/marketplace/item/update/(?P<pk>[0-9]+)/$',UpdatePurchaseItemView.as_view()),
