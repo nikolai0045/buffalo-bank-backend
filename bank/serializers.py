@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem
+from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem, TimeSlot, DailySchedule, Schedule
 from tier_two.models import TTwoProfile, TTwoGoal, TTwoReport
 from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
 import datetime
@@ -260,7 +260,27 @@ class TThreeReportNoteSerializer(serializers.ModelSerializer):
 		model = TThreeReport
 		fields = ('profile','report','note')
 
-##Student Profile Serializer
+## Scheduling Serializers
+class TimeSlotSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = TimeSlot
+		field = ('grade','start_time','end_time','hour','num_bucks')
+
+class ScheduleSerializer(serializers.ModelSerializer):
+	courses = BasicCourseSerializer(many=True)
+	time_slots = TimeSlotSerializer(many=True)
+
+	class Meta:
+		model = Schedule
+		field = ('courses','time_slots')
+
+class DailyScheduleSerializer(serializers.ModelSerializer):
+	schedule = ScheduleSerializer()
+
+	class Meta:
+		model = DailySchedule
+		field = ('date','schedule')
+
 
 ##Course Report Serializer
 class FullCourseReportSerializer(serializers.ModelSerializer):
