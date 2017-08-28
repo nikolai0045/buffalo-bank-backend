@@ -549,7 +549,12 @@ class RetrieveTierThreeChartView(View):
 		data = JSONParser().parse(stream)
 		student_id = data['student_id']
 		student = Student.objects.get(pk=student_id)
-		date = data.pop('date',datetime.date.today())
+		raw_date = data.pop('date',False)
+		if not raw_date:
+			date = datetime.date.today()
+		else:
+			year, month, day = raw_date.split('-')
+			date = datetime.date(int(year),int(month),int(day))
 		init_weekday = date.weekday()
 		monday = date - datetime.timedelta(days=init_weekday)
 		friday = monday + datetime.timedelta(days=4)
@@ -629,7 +634,12 @@ class RetrieveTierTwoChartView(View):
 		data = JSONParser().parse(stream)
 		student_id = data['student_id']
 		student = Student.objects.get(pk=student_id)
-		date = data.pop('date',datetime.date.today())
+		raw_date = data.pop('date',False)
+		if not raw_date:
+			date = datetime.date.today()
+		else:
+			year, month, day = raw_date.split('-')
+			date = datetime.date(int(year),int(month),int(day))
 		init_weekday = date.weekday()
 		monday = date - datetime.timedelta(days=init_weekday)
 		friday = monday + datetime.timedelta(days=4)
@@ -705,7 +715,12 @@ class RetrieveTierThreeNotesView(View):
 		data = JSONParser().parse(stream)
 		student_id = data.pop('student_id')
 		student = Student.objects.get(pk=student_id)
-		date = data.pop('date',datetime.date.today())
+		raw_date = data.pop('date',False)
+		if not raw_date:
+			date = datetime.date.today()
+		else:
+			year, month, day = raw_date.split('-')
+			date = datetime.date(int(year),int(month),int(day))
 		init_weekday = date.weekday()
 		monday = date - datetime.timedelta(days=init_weekday)
 		friday = monday + datetime.timedelta(days=4)
@@ -741,7 +756,12 @@ class RetrieveTierTwoNotesView(View):
 		data = JSONParser().parse(stream)
 		student_id = data.pop('student_id')
 		student = Student.objects.get(pk=student_id)
-		date = data.pop('date',datetime.date.today())
+		raw_date = data.pop('date',False)
+		if not raw_date:
+			date = datetime.date.today()
+		else:
+			year, month, day = raw_date.split('-')
+			date = datetime.date(int(year),int(month),int(day))
 		init_weekday = date.weekday()
 		monday = date - datetime.timedelta(days=init_weekday)
 		friday = monday + datetime.timedelta(days=4)
