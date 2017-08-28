@@ -168,6 +168,7 @@ class GetStudentsByGrade(APIView):
 
 	def post(self,request,*args,**kwargs):
 		data = request.data
+		print data
 		grade = data['grade']
 		students = Student.objects.filter(grade=grade)
 		return Response(BasicStudentSerializer(students,many=True).data)
@@ -207,14 +208,14 @@ class AddStudentToCourseReport(APIView):
 			if student.is_ttwo():
 				for g in student.ttwoprofile_set.first().ttwogoal_set.all():
 					ttworeport = TTwoReport(
-						course_report = report,
+						report = report,
 						goal = g,
 					)
 					ttworeport.save()
 
 			if student.is_tthree():
 				tthreereport = TThreeReport(
-					course_report = report,
+					report = report,
 					profile = student.tthreeprofile_set.first(),
 				)
 				tthreereport.save()
@@ -231,15 +232,15 @@ class RemoveStudentFromCourseReport(APIView):
 		report = CourseReport.objects.get(pk=report_id)
 		date = datetime.date.today()
 
-		deposits = Deposit.objects.filter(course_report=report,transaction__student=student,date=date)
+		deposits = Deposit.objects.filter(course_report=report,student=student)
 		for d in deposits:
 			d.delete()
 		if student.is_ttwo():
-			ttworeports = TTwoReport.objects.filter(date=date,course_report=report,goal__profile__student=student)
+			ttworeports = TTwoReport.objects.filter(report=report,goal__profile__student=student)
 			for t in ttworeports:
 				t.delete()
 		if student.is_tthree():
-			tthreereports = TThreeReport.objects.filter(date=date,course_report=report,profile__student=student)
+			tthreereports = TThreeReport.objects.filter(report=report,profile__student=student)
 			for t in tthreereports:
 				t.delete()
 
