@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self,*args,**kwargs):
 
         #/opt/bank/buffalo-bank-api/bank/schedules.csv
-        with open('/opt/bank/buffalo-bank-api/bank/master82517.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/bank/master82117.csv','rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             courses = Course.objects.all()
             for c in courses:
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     if created:
                         teacher.save()
                 c_section_number = row[6]
-                c_hour = row[8]
+                c_hour = row[7]
                 course, created = Course.objects.get_or_create(name=c_name,course_number=c_number,section_number=c_section_number,hour=c_hour)
                 if created:
                     course.save()
