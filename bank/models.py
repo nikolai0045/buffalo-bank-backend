@@ -63,6 +63,7 @@ class Course(models.Model):
 	teachers = models.ManyToManyField(UserProfile)
 	active = models.BooleanField(default=True)
 	hour = models.CharField(max_length=15,blank=True,null=True)
+	grade = models.CharField(max_length=3,blank=True,null=True)
 
 	def __str__(self):
 		return self.name + " - Section #" + self.section_number
@@ -145,17 +146,17 @@ class MissingAssignment(models.Model):
 	date = models.DateField(auto_now_add=True)
 
 ##Scheduling System
-class Schedule(models.Model):
-	courses = models.ManyToManyField(Course)
-	name = models.CharField(max_length=200)
-
 class TimeSlot(models.Model):
 	grade = models.CharField(max_length=10)
 	start_time = models.TimeField()
 	end_time = models.TimeField()
 	hour = models.CharField(max_length=20)
-	schedule = models.ForeignKey(Schedule)
 	num_bucks = models.IntegerField(default=1)
+
+class Schedule(models.Model):
+	courses = models.ManyToManyField(Course)
+	name = models.CharField(max_length=200)
+	time_slots = models.ManyToManyField(TimeSlot)
 
 class DailySchedule(models.Model):
 	date = models.DateField()

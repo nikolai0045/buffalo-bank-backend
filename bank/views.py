@@ -84,7 +84,7 @@ class UpdatePurchaseItemView(UpdateAPIView):
 	serializer_class = PurchaseItemSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = PurchaseItem.objects.all()
-	
+
 class SubmitTransactionView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
@@ -183,10 +183,11 @@ class SearchCoursesView(APIView):
 
 class RetrieveAllCoursesView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
-	
+
 	def get(self,request,*args,**kwargs):
 		courses = Course.objects.all()
-		return Response(BasicCourseSerializer(courses,many=True))
+		return Response(BasicCourseSerializer(courses,many=True).data)
+
 class RetrieveStudentsByCourseView(RetrieveAPIView):
     model = Course
     serializer_class = CourseStudentsSerializer
@@ -260,7 +261,7 @@ class CreateMissingWorkView(CreateAPIView):
 	model = MissingAssignment
 	serializer_class = MissingAssignmentSerializer
 	authentication_class = (authentication.TokenAuthentication,)
-	
+
 class MissingWorkStudentsView(View):
 	http_method_names = [u'get',u'put']
 
@@ -740,26 +741,26 @@ class RetrieveStudentStatisticsView(View):
 class TimeSlotViewSet(viewsets.ModelViewSet):
 	queryset = TimeSlot.objects.all()
 	serializer_class = TimeSlotSerializer
-	permission_classes = (authentication.TokenAuthentication,)
-	
+	authentication_classes = (authentication.TokenAuthentication,)
+
 class ScheduleViewSet(viewsets.ModelViewSet):
 	queryset = Schedule.objects.all()
 	serializer_class = ScheduleSerializer
-	permission_classes = (authentication.TokenAuthentication,)
-	
+	authentication_classes = (authentication.TokenAuthentication,)
+
 class DailyScheduleViewSet(viewsets.ModelViewSet):
 	queryset = DailySchedule.objects.all()
 	serializer_class = DailyScheduleSerializer
-	permission_classes = (authentication.TokenAuthentication,)
-	
+	authentication_classes = (authentication.TokenAuthentication,)
+
 class GetScheduleByDateView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
 	def post(self,request,*args,**kwargs):
 		data = request.data
-		year = data['date']['year']
-		month = data['date']['month']
-		day = data['date']['day']
+		year = int(data['date']['year'])
+		month = int(data['date']['month'])
+		day = int(data['date']['day'])
 		date = datetime.date(year,month,day)
 		daily_schedule = DailySchedule.objects.filter(date=date).first()
-		return Response(DailyScheduleSerializer(daily_schedule))
+		return Response(DailyScheduleSerializer(daily_schedule).data)

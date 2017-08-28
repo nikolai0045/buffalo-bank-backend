@@ -115,7 +115,7 @@ urlpatterns = [
 	url(r'^bank/schedule/daily_schedule/(?P<pk>[0-9]+)/$',dailyschedule_detail),
 	url(r'^bank/schedule/schedules/$',schedule_list),
 	url(r'^bank/schedule/schedule/(?P<pk>[0-9]+)/$',schedule_detail),
-	url(r'^bank/schedule/get_schedule_by_date/$',GetScheduleByDateView),
+	url(r'^bank/schedule/get_schedule_by_date/$',GetScheduleByDateView.as_view()),
     url(r'^bank/marketplace/items/$',RetrievePurchaseItemsView.as_view()),
     url(r'^bank/marketplace/add_item/$',CreatePurchaseItemView.as_view()),
 	url(r'^bank/marketplace/item/update/(?P<pk>[0-9]+)/$',UpdatePurchaseItemView.as_view()),

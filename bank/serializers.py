@@ -262,26 +262,82 @@ class TThreeReportNoteSerializer(serializers.ModelSerializer):
 
 ## Scheduling Serializers
 class TimeSlotSerializer(serializers.ModelSerializer):
-	schedule = serializers.PrimaryKeyRelatedField(queryset=Schedule.objects.all())
-	
+	id = serializers.IntegerField(read_only=False,allow_null=True,required=False)
+
 	class Meta:
 		model = TimeSlot
-		field = ('grade','start_time','end_time','hour','num_bucks','schedule')
+		fields = ('grade','start_time','end_time','hour','num_bucks','id')
+
+	def create(self,validated_data):
+		ts = TimeSlot(
+			grade = validated_data['grade'],
+			start_time = validated_data['start_time'],
+			end_time = validated_data['end_time'],
+			hour = validated_data['hour'],
+			num_bucks = validated_data['num_bucks'],
+		)
+
+		ts.save()
+		return ts
+
+	def update(self,instance,validated_data):
+		instance.grade = validated_data['grade']
+		instance.start_time = validated_data['start_time']
+		instance.end_time = validated_data['end_time']
+		instance.hour = validated_data['hour']
+		instance.num_bucks = validated_data['num_bucks']
+		instance.save()
+		return instance
 
 class ScheduleSerializer(serializers.ModelSerializer):
-	courses = BasicCourseSerializer(many=True)
-	timeslot_set = TimeSlotSerializer(many=True)
+	courses = BasicCourseSerializer(many=True,allow_null=True,required=False)
+	time_slots = TimeSlotSerializer(many=True,allow_null=True,required=False)
+	id = serializers.IntegerField(read_only=False,allow_null=True,required=False)
 
 	class Meta:
 		model = Schedule
-		field = ('courses','timeslot_set','name')
+		fields = ('courses','time_slots','name','id')
+
+	def create(self,validated_data):
+		schedule = Schedule(
+			name = validated_data['name']
+		)
+		schedule.save()
+		return schedule
+
+	def update(self,instance,validated_data):
+		instance.name = validated_data['name']
+		instance.courses.clear()
+		for c in validated_data['courses']:
+			course = Course.objects.get(pk=c['id'])
+			instance.courses.add(course)
+
+		instance.time_slots.clear()
+		for t in validated_data['time_slots']:
+			ts = TimeSlot.objects.get(pk=t['id'])
+			instance.time_slots.add(ts)
+
+		instance.save()
+		return instance
 
 class DailyScheduleSerializer(serializers.ModelSerializer):
 	schedule = ScheduleSerializer()
 
 	class Meta:
 		model = DailySchedule
-		field = ('date','schedule')
+		fields = ('date','schedule')
+
+	def create(self,validated_data):
+		ds = DailySchedule(date=validated_data['date'],schedule=Schedule.objects.get(pk=validated_data['schedule']['id']))
+		ds.save()
+		return ds
+
+	def update(self,instance,validated_data):
+		instance.date = validated_data['date']
+		instance.schedule = Schedule.objects.get(pk=validated_data['schedule']['id'])
+		instance.save()
+		return instance
+
 
 
 ##Course Report Serializer
