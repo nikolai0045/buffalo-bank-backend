@@ -185,7 +185,7 @@ class RetrieveAllCoursesView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
 	def get(self,request,*args,**kwargs):
-		courses = Course.objects.all()
+		courses = Course.objects.filter(active=True)
 		return Response(BasicCourseSerializer(courses,many=True).data)
 
 class RetrieveStudentsByCourseView(RetrieveAPIView):
