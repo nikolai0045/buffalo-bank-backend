@@ -268,11 +268,11 @@ class TimeSlotSerializer(serializers.ModelSerializer):
 
 class ScheduleSerializer(serializers.ModelSerializer):
 	courses = BasicCourseSerializer(many=True)
-	time_slots = TimeSlotSerializer(many=True)
+	timeslot_set = TimeSlotSerializer(many=True)
 
 	class Meta:
 		model = Schedule
-		field = ('courses','time_slots','name')
+		field = ('courses','timeslot_set','name')
 
 class DailyScheduleSerializer(serializers.ModelSerializer):
 	schedule = ScheduleSerializer()

@@ -742,3 +742,15 @@ class DailyScheduleViewSet(viewsets.ModelViewSet):
 	queryset = DailySchedule.objects.all()
 	serializer_class = DailyScheduleSerializer
 	permission_classes = (authentication.TokenAuthentication,)
+	
+class GetScheduleByDateView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		year = data['date']['year']
+		month = data['date']['month']
+		day = data['date']['day']
+		date = datetime.date(year,month,day)
+		daily_schedule = DailySchedule.objects.filter(date=date).first()
+		return Response(DailyScheduleSerializer(daily_schedule))

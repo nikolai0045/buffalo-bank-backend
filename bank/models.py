@@ -145,17 +145,17 @@ class MissingAssignment(models.Model):
 	date = models.DateField(auto_now_add=True)
 
 ##Scheduling System
+class Schedule(models.Model):
+	courses = models.ManyToManyField(Course)
+	name = models.CharField(max_length=200)
+
 class TimeSlot(models.Model):
 	grade = models.CharField(max_length=10)
 	start_time = models.TimeField()
 	end_time = models.TimeField()
 	hour = models.CharField(max_length=20)
+	schedule = models.ForeignKey(Schedule)
 	num_bucks = models.IntegerField(default=1)
-
-class Schedule(models.Model):
-	time_slots = models.ManyToManyField(TimeSlot)
-	courses = models.ManyToManyField(Course)
-	name = models.CharField(max_length=200)
 
 class DailySchedule(models.Model):
 	date = models.DateField()
