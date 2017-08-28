@@ -60,7 +60,8 @@ from bank.views import (
 	TimeSlotViewSet,
 	DailyScheduleViewSet,
 	ScheduleViewSet,
-	GetScheduleByDateView
+	GetScheduleByDateView,
+	RetrieveAllCoursesView
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -131,6 +132,7 @@ urlpatterns = [
     url(r'^bank/reports/mark_inactive/$',MarkReportInactiveView.as_view()),
     url(r'^bank/reports/destroy/(?P<pk>[0-9]+)/$',RemoveReportView.as_view()),
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
+	url(r'^bank/courses/all/$',RetrieveAllCoursesView.as_view()),
     url(r'^bank/courses/missing_work/(?P<pk>[0-9]+)/$',RetrieveCourseMissingWorkView.as_view()),
     url(r'^bank/courses/not_missing_work/(?P<report_id>[0-9]+)/(?P<assignment_id>[0-9]+)/$',RetrieveStudentsNotMissingWork.as_view()),
     url(r'^bank/courses/missing_work_detail/(?P<report_id>[0-9]+)/(?P<mw_id>[0-9]+)/$',MissingWorkStudentsView.as_view()),

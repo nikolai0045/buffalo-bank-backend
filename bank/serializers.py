@@ -262,9 +262,11 @@ class TThreeReportNoteSerializer(serializers.ModelSerializer):
 
 ## Scheduling Serializers
 class TimeSlotSerializer(serializers.ModelSerializer):
+	schedule = serializers.PrimaryKeyRelatedField(queryset=Schedule.objects.all())
+	
 	class Meta:
 		model = TimeSlot
-		field = ('grade','start_time','end_time','hour','num_bucks')
+		field = ('grade','start_time','end_time','hour','num_bucks','schedule')
 
 class ScheduleSerializer(serializers.ModelSerializer):
 	courses = BasicCourseSerializer(many=True)

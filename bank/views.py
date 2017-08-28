@@ -54,7 +54,10 @@ from .models import (
 	Buck,
 	UserProfile,
 	PurchaseItem,
-	Purchase
+	Purchase,
+	TimeSlot,
+	Schedule,
+	DailySchedule
 )
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
@@ -178,6 +181,12 @@ class SearchCoursesView(APIView):
 					queryset = queryset.exclude(pk=c.pk)
 		return Response(BasicCourseSerializer(queryset,many=True).data)
 
+class RetrieveAllCoursesView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+	
+	def get(self,request,*args,**kwargs):
+		courses = Course.objects.all()
+		return Response(BasicCourseSerializer(courses,many=True))
 class RetrieveStudentsByCourseView(RetrieveAPIView):
     model = Course
     serializer_class = CourseStudentsSerializer
