@@ -184,39 +184,40 @@ class AddStudentToCourseReport(APIView):
 		date = datetime.date.today()
 		goals = BehaviorGoal.objects.all()
 
-		old_courses = student.course_set.filter(hour=report.course.hour,active=True)
-		for c in old_courses:
-			c.students.remove(student)
+		if student not in report.course.students.all():
+			old_courses = student.course_set.filter(hour=report.course.hour,active=True)
+			for c in old_courses:
+				c.students.remove(student)
 
-		deposit = Deposit(
-			student = student,
-			course_report = report,
-		)
-
-		deposit.save()
-
-		for g in goals:
-			buck = Buck(
-				goal = g,
-				deposit = deposit,
-			)
-
-			buck.save()
-
-		if student.is_ttwo():
-			for g in student.ttwoprofile_set.first().ttwogoal_set.all():
-				ttworeport = TTwoReport(
-					course_report = report,
-					goal = g,
-				)
-				ttworeport.save()
-
-		if student.is_tthree():
-			tthreereport = TThreeReport(
+			deposit = Deposit(
+				student = student,
 				course_report = report,
-				profile = student.tthreeprofile_set.first(),
 			)
-			tthreereport.save()
+
+			deposit.save()
+
+			for g in goals:
+				buck = Buck(
+					goal = g,
+					deposit = deposit,
+				)
+
+				buck.save()
+
+			if student.is_ttwo():
+				for g in student.ttwoprofile_set.first().ttwogoal_set.all():
+					ttworeport = TTwoReport(
+						course_report = report,
+						goal = g,
+					)
+					ttworeport.save()
+
+			if student.is_tthree():
+				tthreereport = TThreeReport(
+					course_report = report,
+					profile = student.tthreeprofile_set.first(),
+				)
+				tthreereport.save()
 
 		return Response({'success':True})
 class RemoveStudentFromCourseReport(APIView):
