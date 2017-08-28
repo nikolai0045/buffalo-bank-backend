@@ -153,6 +153,102 @@ class RemoveReportView(DestroyAPIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = CourseReport.objects.all()
 
+	def destroy(self,request,*args,**kwargs):
+		report = CourseReport.objects.get(pk=kwargs.pop('pk'))
+		schedule = Schedule.objects.filter(date = datetime.date.today()).first()
+		schedule.courses.remove(report.course)
+		report.delete()
+		schedule.save()
+		response = Response()
+		response.status_code = 204
+		return response
+
+class GetStudentsByGrade(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		grade = data['grade']
+		students = Student.objects.filter(grade=grade)
+		return Response(BasicStudentSerializer(students,many=True).data)
+
+class AddStudentToCourseReport(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		report_id = data['report_id']
+		report = CourseReport.objects.get(pk=report_id)
+		date = datetime.date.today()
+		goals = BehaviorGoal.objects.all()
+
+		old_courses = student.course_set.filter(hour=report.course.hour,active=True)
+		for c in old_courses:
+			c.students.remove(student)
+
+		deposit = Deposit(
+			student = student,
+			course_report = report,
+		)
+
+		deposit.save()
+
+		for g in goals:
+			buck = Buck(
+				goal = g,
+				deposit = deposit,
+			)
+
+			buck.save()
+
+		if student.is_ttwo():
+			for g in student.ttwoprofile_set.first().ttwogoal_set.all():
+				ttworeport = TTwoReport(
+					course_report = report,
+					goal = g,
+				)
+				ttworeport.save()
+
+		if student.is_tthree():
+			tthreereport = TThreeReport(
+				course_report = report,
+				profile = student.tthreeprofile_set.first(),
+			)
+			tthreereport.save()
+
+		return Response({'success':True})
+class RemoveStudentFromCourseReport(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		report_id = data['report_id']
+		report = CourseReport.objects.get(pk=report_id)
+		date = datetime.date.today()
+
+		deposits = Deposit.objects.filter(course_report=report,transaction__student=student,date=date)
+		for d in deposits:
+			d.delete()
+		if student.is_ttwo():
+			ttworeports = TTwoReport.objects.filter(date=date,course_report=report,goal__profile__student=student)
+			for t in ttworeports:
+				t.delete()
+		if student.is_tthree():
+			tthreereports = TThreeReport.objects.filter(date=date,course_report=report,profile__student=student)
+			for t in tthreereports:
+				t.delete()
+
+		course = report.course
+		course.students.remove(student)
+		course.save()
+		student.save()
+		return Response({'removed':True})
+
+
 class RetrieveActiveCoursesView(ListAPIView):
     serializer_class = BasicCourseSerializer
     authentication_classes = (authentication.TokenAuthentication,)

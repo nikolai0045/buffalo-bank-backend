@@ -36,7 +36,7 @@ class BasicCourseSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Course
-		fields = ('name','section_number','teachers','id','hour')
+		fields = ('name','section_number','teachers','id','hour','grade')
 
 class CourseReportSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer(many=False)

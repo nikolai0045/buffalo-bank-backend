@@ -61,7 +61,10 @@ from bank.views import (
 	DailyScheduleViewSet,
 	ScheduleViewSet,
 	GetScheduleByDateView,
-	RetrieveAllCoursesView
+	RetrieveAllCoursesView,
+    RemoveStudentFromCourseReport,
+    AddStudentToCourseReport,
+    GetStudentsByGrade
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -142,7 +145,10 @@ urlpatterns = [
 	url(r'^bank/roster/(?P<pk>[0-9]+)/$',RetrieveStudentsByCourseView.as_view()),
 	url(r'^bank/course_report/(?P<pk>[0-9]+)/$',RetrieveCourseReportView.as_view()),
 	url(r'^bank/course_report/save/(?P<pk>[0-9]+)/$', UpdateCourseReportView.as_view()),
+    url(r'^bank/course_report/remove_student/$',RemoveStudentFromCourseReport.as_view()),
+    url(r'^bank/course_report/add_student/$',AddStudentToCourseReport.as_view()),
 	url(r'^bank/behavior_goals/active/$',RetrieveBehaviorGoalsView.as_view()),
+    url(r'^bank/students/get_by_grade/$',GetStudentsByGrade.as_view()),
 	url(r'^bank/student/(?P<pk>[0-9]+)/$',RetrieveStudentView.as_view()),
 	url(r'^bank/student/(?P<pk>[0-9]+)/missing_assignments/$',RetrieveStudentMissingWorkView.as_view()),
 	url(r'^bank/student/goals/(?P<pk>[0-9]+)/$',RetrievePersonalBehaviorGoalsView.as_view()),
