@@ -622,10 +622,16 @@ class RetrieveTierThreeChartView(View):
 						if course['scores'][d] > 2:
 							total += 1
 							daily_total += 1
-				response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
-				
+				if daily_num != 0:
+					response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
+				else:
+					response['totals']['scores'][d] = "-"
 
-			response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
+
+			if num != 0:
+				response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
+			else:
+				response['totals']['summary'] = '-'
 
 			return response
 
@@ -708,9 +714,15 @@ class RetrieveTierTwoChartView(View):
 						if course['scores'][d] > 2:
 							total += 1
 							daily_total += 1
-				response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
+				if daily_num != 0:
+					response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
+				else:
+					response['totals']['scores'][d] = '-'
 
-			response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
+			if num != 0:
+				response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
+			else:
+				response['totals']['summary'] = '-'
 
 			return response
 
