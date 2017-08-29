@@ -103,6 +103,8 @@ class SubmitTransactionView(APIView):
 				new_purchase = Purchase(item=i,student=s,price=i.current_price)
 				new_purchase.save()
 				s.account_balance = s.account_balance - new_purchase.price
+				i.quantity_remaining -= 1
+				i.save()
 				s.save()
 		return Response({'Transaction':'success'})
 
@@ -327,10 +329,10 @@ class CreatePersonalBehaviorGoalView(CreateAPIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
 class RetrieveBehaviorGoalsView(ListAPIView):
-    model = BehaviorGoal
-    serializer_class = BehaviorGoalSerializer
-    authentication_classes = (authentication.TokenAuthentication,)
-    queryset = BehaviorGoal.objects.filter(active=True)
+	model = BehaviorGoal
+	serializer_class = BehaviorGoalSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+	queryset = BehaviorGoal.objects.filter(active=True)
 
 class RetrieveCourseMissingWorkView(ListAPIView):
 	model = MissingAssignment
@@ -591,10 +593,12 @@ class RetrieveTierThreeChartView(View):
 					'course':c,
 					'scores':[0,0,0,0,0],
 					'summary':0,
+					'num':0,
 				}
 				course_reports = reports.filter(report__course__name=c).order_by('report__date')
 				for cr in course_reports:
 					course_data['scores'][cr.report.date.weekday()]=cr.score
+					course_data['num'] += 1
 					if cr.score > 2:
 						course_data['summary'] += 1
 				for i, item in enumerate(course_data['scores']):
@@ -604,16 +608,24 @@ class RetrieveTierThreeChartView(View):
 			response['totals'] = {
 				'scores':[0,0,0,0,0],
 				'summary':0,
+				'num':0
 			}
+			total = 0
+			num = 0
 			for d in [0,1,2,3,4]:
-				total = 0
+				daily_total = 0
+				daily_num = 0
 				for course in response['courses']:
-					if course['scores'][d] != "-" and course['scores'][d] > 2:
-						total += 1
-				response['totals']['scores'][d] = total
+					if course['scores'][d] != "-":
+						num += 1
+						daily_num += 1
+						if course['scores'][d] > 2:
+							total += 1
+							daily_total += 1
+				response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
+				
 
-			for course in response['courses']:
-				response['totals']['summary'] += course['summary']
+			response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
 
 			return response
 
@@ -667,10 +679,12 @@ class RetrieveTierTwoChartView(View):
 					'course':c,
 					'scores':[0,0,0,0,0],
 					'summary':0,
+					'num':0,
 				}
 				course_reports = reports.filter(report__course__name=c).order_by('report__date')
 				for cr in course_reports:
 					course_data['scores'][cr.report.date.weekday()] = cr.score
+					course_data['num'] += 1
 					if cr.score > 2:
 						course_data['summary'] += 1
 				for i,item in enumerate(course_data['scores']):
@@ -682,15 +696,21 @@ class RetrieveTierTwoChartView(View):
 				'scores':[0,0,0,0,0],
 				'summary':0
 			}
+			total = 0
+			num = 0
 			for d in [0,1,2,3,4]:
-				total = 0
+				daily_total = 0
+				daily_num = 0
 				for course in response['courses']:
-					if course['scores'][d] != "-" and course['scores'][d] > 2:
-						total += 1
-				response['totals']['scores'][d] = total
+					if course['scores'][d] != "-":
+						num += 1
+						daily_num += 1
+						if course['scores'][d] > 2:
+							total += 1
+							daily_total += 1
+				response['totals']['scores'][d] = str("%.2f" % round(float(daily_total)/float(daily_num)*100,2)) + "%"
 
-			for course in response['courses']:
-				response['totals']['summary'] += course['summary']
+			response['totals']['summary'] = str("%.2f" % round(float(total)/float(num)*100,2)) + "%"
 
 			return response
 
