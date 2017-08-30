@@ -23,7 +23,7 @@ class TThreeGoal(models.Model):
 class TThreeReport(models.Model):
 	profile = models.ForeignKey(TThreeProfile)
 	report = models.ForeignKey(CourseReport)
-	score = models.IntegerField(default=4)
+	score = models.IntegerField(default=0)
 	note = models.TextField(null=True,blank=True)
 	absent = models.BooleanField(default=False)
 	iss = models.BooleanField(default=False)

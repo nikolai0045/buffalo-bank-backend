@@ -426,6 +426,16 @@ class IsMenteeView(View):
 				return {'mentee':True}
 		return {'mentee':False}
 
+class SearchStudentsView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		students = Student.objects.filter(active=True)
+		if data['grade']:
+			students = students.filter(grade=data['grade'])
+		return Response(BasicStudentSerializer(students,many=True).data)
+
 class MenteeListView(ListAPIView):
 	model = Student
 	serializer_class = BasicStudentSerializer
