@@ -28,6 +28,7 @@ def add_report_for_today(course):
             report.save()
 
             for s in course.students.all():
+                print s
                 for i in range(num_bucks):
                     deposit = Deposit(
                         course_report = report,
