@@ -6,10 +6,10 @@ from tier_three.models import *
 def add_report_for_today(course):
     today = datetime.date.today()
     daily_schedule = DailySchedule.objects.filter(date=today).first()
-    time_slots = daily_schedule.time_slots.filter(grade=course.grade,hour=course.hour)
-    if course not in daily_schedule.courses.all():
-        daily_schedule.courses.add(course)
-        daily_schedule.save()
+    time_slots = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour)
+    if course not in daily_schedule.schedule.courses.all():
+        daily_schedule.schedule.courses.add(course)
+        daily_schedule.schedule.save()
     for ts in time_slots:
         hour = ts.hour
         grade = ts.grade
