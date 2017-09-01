@@ -7,6 +7,7 @@ def add_report_for_today(course):
     today = datetime.date.today()
     daily_schedule = DailySchedule.objects.filter(date=today).first()
     time_slots = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour)
+    goals = BehaviorGoal.objects.filter(active=True)
     if course not in daily_schedule.schedule.courses.all():
         daily_schedule.schedule.courses.add(course)
         daily_schedule.schedule.save()
