@@ -53,7 +53,7 @@ def add_report_for_today(course):
                     p = s.ttwoprofile_set.first()
                     goals = p.ttwogoal_set.filter(active=True)
                     for g in goals:
-                        ttwo_report, created = TTwoProfile.objects.get_or_create(
+                        ttwo_report, created = TTwoReport.objects.get_or_create(
                             report = report,
                             goal = g
                         )
