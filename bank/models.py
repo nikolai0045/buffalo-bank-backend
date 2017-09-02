@@ -10,6 +10,7 @@ USER_TYPE_CHOICES = [
 	('OBSERVER','OBSERVER'),
 	('MERCHANT','MERCHANT')
 ]
+
 class Student(models.Model):
 	first_name = models.CharField(max_length=255)
 	last_name = models.CharField(max_length=255)
@@ -146,6 +147,11 @@ class MissingAssignment(models.Model):
 	date = models.DateField(auto_now_add=True)
 
 ##Scheduling System
+class Absence(models.Model):
+	student = models.ForeignKey(Student)
+	courses = models.ManyToManyField(Course)
+	date = models.DateField(auto_now_add=True)
+	
 class TimeSlot(models.Model):
 	grade = models.CharField(max_length=10)
 	start_time = models.TimeField()
