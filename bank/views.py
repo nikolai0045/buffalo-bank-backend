@@ -937,7 +937,7 @@ class RetrieveStudentDailyScheduleView(APIView):
 			return Response({'error':'There are no courses scheduled for today'})
 		response = []
 		for ts in schedule.time_slots.filter(grade=student.grade):
-			reports = CourseReport.objects.filter(course__hour=ts.hour,course__students=student)
+			reports = CourseReport.objects.filter(course__hour=ts.hour,course__students=student,date=date)
 			block = {
 				'hour':ts.hour,
 				'start_time':ts.start_time,
