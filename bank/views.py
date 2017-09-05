@@ -260,6 +260,11 @@ class RemoveStudentFromCourseReport(APIView):
 
 		deposits = Deposit.objects.filter(course_report=report,student=student)
 		for d in deposits:
+			if report.completed:
+				student.account_balance -= d.amount_earned
+				student.save()
+				for b in d.buck_set.all():
+					b.delete()
 			d.delete()
 		if student.is_ttwo():
 			ttworeports = TTwoReport.objects.filter(report=report,goal__profile__student=student)
@@ -579,7 +584,7 @@ class RetrieveRecentNotesView(ListAPIView):
 
 	def dispatch(self,request,*args,**kwargs):
 		self.student_id = kwargs.pop('student_id')
-		super(RetrieveRecentNotesView,self).dispatch(*args,**kwargs)
+		super(RetrieveRecentNotesView,self).dispatch(request,*args,**kwargs)
 
 	def get_queryset(self):
 		today = datetime.date.today()
@@ -994,7 +999,7 @@ class RetrieveStudentAbsencesView(ListAPIView):
 
 	def dispatch(self,request,*args,**kwargs):
 		self.student_id = kwargs.pop('student_id')
-		super (RetrieveStudentAbsencesView,self).dispatch(*args,**kwargs)
+		super (RetrieveStudentAbsencesView,self).dispatch(request,*args,**kwargs)
 
 	def get_queryset(self):
 		last_monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday()+7)
