@@ -567,7 +567,7 @@ class RetrieveStudentDailyDeposits(ListAPIView):
 		student_id = data['student_id']
 		student = Student.objects.get(pk=student_id)
 		date = data.pop('date',False)
-		if !date:
+		if not date:
 			date = datetime.date.today()
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date=date)
 		return qs
