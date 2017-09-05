@@ -191,7 +191,7 @@ class DepositNotesSerializer(serializers.ModelSerializer):
 		model = Deposit
 		fields = ('note','course_report')
 
-class AbsenceSerializer(serializer.ModelSerializer):
+class AbsenceSerializer(serializers.ModelSerializer):
 	student = BasicStudentSerializer()
 	courses = BasicCourseSerializer(many=True)
 
