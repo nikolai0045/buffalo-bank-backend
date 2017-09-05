@@ -65,7 +65,12 @@ from bank.views import (
     RemoveStudentFromCourseReport,
     AddStudentToCourseReport,
     GetStudentsByGrade,
-    SearchStudentsView
+    SearchStudentsView,
+    RetrieveRecentNotesView,
+    RetrieveStudentAbsencesView,
+    RetrieveStudentDailyScheduleView,
+    RetrieveStudentDailyDeposits,
+    RetrievePurchaseItemsByPrice
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -121,6 +126,7 @@ urlpatterns = [
 	url(r'^bank/schedule/schedule/(?P<pk>[0-9]+)/$',schedule_detail),
 	url(r'^bank/schedule/get_schedule_by_date/$',GetScheduleByDateView.as_view()),
     url(r'^bank/marketplace/items/$',RetrievePurchaseItemsView.as_view()),
+    url(r'^bank/marketplace/items_by_price/$',RetrievePurchaseItemsByPrice.as_view()),
     url(r'^bank/marketplace/add_item/$',CreatePurchaseItemView.as_view()),
 	url(r'^bank/marketplace/item/update/(?P<pk>[0-9]+)/$',UpdatePurchaseItemView.as_view()),
     url(r'^bank/marketplace/delete_item/(?P<pk>[0-9]+)/$',DeletePurchaseItemView.as_view()),
@@ -154,6 +160,8 @@ urlpatterns = [
 	url(r'^bank/student/(?P<pk>[0-9]+)/missing_assignments/$',RetrieveStudentMissingWorkView.as_view()),
 	url(r'^bank/student/goals/(?P<pk>[0-9]+)/$',RetrievePersonalBehaviorGoalsView.as_view()),
 	url(r'^bank/student/recent_deposits/(?P<pk>[0-9]+)/$',RetrieveRecentDepositsView.as_view()),
+    url(r'^bank/student/daily_deposits/$',RetrieveStudentDailyDeposits.as_view()),
+    url(r'^bank/student/recent_notes/(?P<student_id>[0-9]+)/$',RetrieveRecentNotesView.as_view()),
 	url(r'^bank/student/recent_ttwo_reports/(?P<pk>[0-9]+)/$',RetrieveRecentTTwoReportsView.as_view()),
 	url(r'^bank/student/ttwo_chart/$',RetrieveTierTwoChartView.as_view()),
 	url(r'^bank/student/ttwo_notes/$',RetrieveTierTwoNotesView.as_view()),
@@ -161,11 +169,13 @@ urlpatterns = [
 	url(r'^bank/student/tthree_chart/$',RetrieveTierThreeChartView.as_view()),
 	url(r'^bank/student/tthree_notes/$',RetrieveTierThreeNotesView.as_view()),
 	url(r'^bank/student/schedule/(?P<pk>[0-9]+)/$',RetrieveStudentScheduleView.as_view()),
+    url(r'^bank/student/daily_schedule/$',RetrieveStudentDailyScheduleView.as_view()),
 	url(r'^bank/student/statistics/(?P<pk>[0-9]+)/$',RetrieveStudentStatisticsView.as_view()),
     url(r'^bank/student/update_goal/(?P<pk>[0-9]+)/$',UpdatePersonalBehaviorGoalView.as_view()),
     url(r'^bank/student/new_goal/$',CreatePersonalBehaviorGoalView.as_view()),
 	url(r'^bank/student/init_goal/$',InitPersonalBehaviorGoalView.as_view()),
 	url(r'^bank/student/destroy_goal/(?P<pk>[0-9]+)/$',DestroyPersonalBehaviorGoalView.as_view()),
+    url(r'^bank/student/recent_absences/(?P<student_id>[0-9]+)/$',RetrieveStudentAbsencesView.as_view()),
     url(r'^bank/students/search/$',SearchStudentsView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 	url(r'^courses/search/$',SearchCoursesView.as_view()),

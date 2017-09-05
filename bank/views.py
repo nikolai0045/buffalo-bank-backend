@@ -41,7 +41,9 @@ from .serializers import (
 	CourseMissingAssignmentSerializer,
 	TimeSlotSerializer,
 	DailyScheduleSerializer,
-	ScheduleSerializer
+	ScheduleSerializer,
+	DepositNotesSerializer,
+	AbsenceSerializer
 )
 from .models import (
 	CourseReport,
@@ -57,7 +59,8 @@ from .models import (
 	Purchase,
 	TimeSlot,
 	Schedule,
-	DailySchedule
+	DailySchedule,
+	Absence
 )
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
@@ -67,6 +70,26 @@ class RetrievePurchaseItemsView(ListAPIView):
 	serializer_class = PurchaseItemSerializer
 	authentication_classes = (authentication.TokenAuthentication,)
 	queryset = PurchaseItem.objects.all()
+
+class RetrievePurchaseItemsByPrice(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		response = []
+		items = PurchaseItem.objects.filter(quantity_remaining__gte=1).order_by('current_price')
+		current_block = {
+			'price':items[0].current_price,
+			'items':[]
+		}
+		for item in items:
+			if current_block['price'] != item.current_price:
+				response.append(current_block)
+				current_block = {
+					'price':item.current_price,
+					'items':[]
+				}
+			current_block['items'].append(PurchaseItemSerializer(item)).data
+		return Response(response)
 
 class CreatePurchaseItemView(CreateAPIView):
 	model = PurchaseItem
@@ -223,6 +246,7 @@ class AddStudentToCourseReport(APIView):
 				tthreereport.save()
 
 		return Response({'success':True})
+
 class RemoveStudentFromCourseReport(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
@@ -251,7 +275,6 @@ class RemoveStudentFromCourseReport(APIView):
 		course.save()
 		student.save()
 		return Response({'removed':True})
-
 
 class RetrieveActiveCoursesView(ListAPIView):
     serializer_class = BasicCourseSerializer
@@ -535,6 +558,45 @@ class RetrieveRecentDepositsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date__gte=two_weeks_ago)
 		return qs
+
+class RetrieveStudentDailyDeposits(ListAPIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',False)
+		if !date:
+			date = datetime.date.today()
+		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date=date)
+		return qs
+
+class RetrieveRecentNotesView(ListAPIView):
+	model = Deposit
+	serializer_class = DepositNotesSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def dispatch(self,request,*args,**kwargs):
+		self.student_id = kwargs.pop('student_id')
+		super(RetrieveRecentNotesView,self).dispatch(*args,**kwargs)
+
+	def get_queryset(self):
+		today = datetime.date.today()
+		weekday = today.weekday()
+		monday = today - datetime.timedelta(days=weekday)
+		last_monday = monday - datetime.timedelat(days=7)
+		student_id = self.student_id
+		student = Student.objects.get(pk=student_id)
+		deposits = Deposit.objects.filter(
+			student=student,
+			course_report__completed=True,
+			note__isnull=False,
+			date__gte=last_monday,
+		).exclude(
+			note=""
+		)
+		return deposits
 
 class RetrieveRecentTTwoReportsView(ListAPIView):
 	model = TTwoReport
@@ -825,6 +887,7 @@ class RetrieveTierTwoNotesView(View):
 			)
 		serializer = TTwoReportSerializer(reports,many=True)
 		return serializer.data
+
 class RetrieveRecentTThreeReportsView(ListAPIView):
 	model = TThreeReport
 	serializer_class = TThreeReportSerializer
@@ -842,6 +905,7 @@ class RetrieveRecentTThreeReportsView(ListAPIView):
 				return False
 		else:
 			return False
+
 class RetrieveStudentScheduleView(ListAPIView):
 	model = CourseReport
 	serializer_class = CourseReportSerializer
@@ -857,6 +921,32 @@ class RetrieveStudentScheduleView(ListAPIView):
 			if date < (date - datetime.timedelta(days=14)):
 				return qs
 		return qs
+
+class RetrieveStudentDailyScheduleView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self,request,*args,**kwargs):
+		data = request.data
+		student_id = data['student_id']
+		student = Student.objects.get(pk=student_id)
+		date = data.pop('date',False)
+		if !date:
+			date = datetime.date.today()
+		schedule = DailySchedule.objects.filter(date=date).first().schedule
+		if !schedule:
+			return Response({'error':'There are no courses scheduled for today'})
+		schedule = []
+		for ts in schedule.time_slots.filter(grade=student.grade):
+			reports = CourseReport.objects.filter(hour=ts.hour,course__students=student)
+			block = {
+				'hour':ts.hour,
+				'start_time':ts.start_time,
+				'end_time':ts.end_time,
+				'courses':CourseReportSerializer(reports,many=True).data
+			}
+			schedule.append(block)
+		return Response(schedule)
+
 class RetrieveStudentStatisticsView(View):
 	http_method_names = [u'get']
 
@@ -896,6 +986,22 @@ class RetrieveStudentStatisticsView(View):
 				response['bucks_by_course'][b.deposit.course_report.course.pk]['unearned'] += 1
 
 		return response
+
+class RetrieveStudentAbsencesView(ListAPIView):
+	model = Absence
+	serializer_class = AbsenceSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def dispatch(self,request,*args,**kwargs):
+		self.student_id = kwargs.pop('student_id')
+		super (RetrieveStudentAbsencesView,self).dispatch(*args,**kwargs)
+
+	def get_queryset(self):
+		last_monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday()+7)
+		student_id = self.kwargs.pop('student_id')
+		student = Student.objects.get(pk=student_id)
+		absences = Absence.objects.filter(student=student,date__gte=last_monday)
+		return absences
 
 ##Schedule Serializers
 class TimeSlotViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem, TimeSlot, DailySchedule, Schedule
+from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem, TimeSlot, DailySchedule, Schedule, Absence
 from tier_two.models import TTwoProfile, TTwoGoal, TTwoReport
 from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
 import datetime
@@ -183,6 +183,21 @@ class CourseMissingAssignmentSerializer(serializers.ModelSerializer):
 		instance.description = validated_data['description']
 		instance.save()
 		return instance
+
+class DepositNotesSerializer(serializers.ModelSerializer):
+	course_report = CourseReportSerializer()
+
+	class Meta:
+		model = Deposit
+		fields = ('note','course_report')
+
+class AbsenceSerializer(serializer.ModelSerializer):
+	student = BasicStudentSerializer()
+	courses = BasicCourseSerializer(many=True)
+
+	class Meta:
+		model = Absence
+		fields = ('student','courses','note','date')
 
 ##Marketplace serializers
 class PurchaseItemSerializer(serializers.ModelSerializer):
@@ -372,12 +387,42 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 			for d in validated_data['deposit_set']:
 				deposit = Deposit.objects.get(pk=d['id'])
 				student = deposit.student
-				print d['absent']
 				if d['absent']:
 					deposit.absent = True
+					student.account_balance -= deposit.amount_earned
+					student.save()
+					deposit.amount_earned = 0
+					for b in d['buck_set']:
+						buck = Buck.objects.get(pk=b['id'])
+						buck.earned = False
+						buck.save()
+					absence, created = Absence.objects.get_or_create(
+						student = student,
+						date = deposit.course_report.date,
+					)
+					if created:
+						absence.save()
+					if deposit.course_report.course not in absence.courses.all():
+						absence.courses.add(deposit.course_report.course)
+						absence.save()
 					deposit.save()
 				elif d['iss']:
 					deposit.iss = True
+					deposit.amount_earned = 0
+					for b in d['buck_set']:
+						buck = Buck.objects.get(pk=b['id'])
+						buck.earned = False
+						buck.save()
+					absence, created = Absence.objects.get_or_create(
+						student = student,
+						date = deposit.course_report.date,
+						note = "In ISS"
+					)
+					if created:
+						absence.save()
+					if deposit.course_report.course not in absence.courses.all():
+						absence.courses.add(deposit.course_report.course)
+						absence.save()
 					deposit.save()
 				else:
 					for b in d['buck_set']:
