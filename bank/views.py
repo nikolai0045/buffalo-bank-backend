@@ -576,7 +576,7 @@ class RetrieveStudentDailyDeposits(ListAPIView):
 		if not date:
 			date = datetime.date.today()
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,date=date)
-		response =  FullDepositSerializer(qs,many=True)
+		response =  StudentDepositSerializer(qs,many=True)
 		return Response(response.data)
 
 class RetrieveRecentNotesView(ListAPIView):
