@@ -935,7 +935,7 @@ class RetrieveStudentDailyScheduleView(APIView):
 		schedule = DailySchedule.objects.filter(date=date).first().schedule
 		if not schedule:
 			return Response({'error':'There are no courses scheduled for today'})
-		schedule = []
+		response = []
 		for ts in schedule.time_slots.filter(grade=student.grade):
 			reports = CourseReport.objects.filter(hour=ts.hour,course__students=student)
 			block = {
@@ -944,8 +944,8 @@ class RetrieveStudentDailyScheduleView(APIView):
 				'end_time':ts.end_time,
 				'courses':CourseReportSerializer(reports,many=True).data
 			}
-			schedule.append(block)
-		return Response(schedule)
+			response.append(block)
+		return Response(response)
 
 class RetrieveStudentStatisticsView(View):
 	http_method_names = [u'get']
