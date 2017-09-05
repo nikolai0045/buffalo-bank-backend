@@ -584,7 +584,7 @@ class RetrieveRecentNotesView(ListAPIView):
 
 	def dispatch(self,request,*args,**kwargs):
 		self.student_id = kwargs.pop('student_id')
-		super(RetrieveRecentNotesView,self).dispatch(request,*args,**kwargs)
+		return super(RetrieveRecentNotesView,self).dispatch(request,*args,**kwargs)
 
 	def get_queryset(self):
 		today = datetime.date.today()
@@ -999,7 +999,7 @@ class RetrieveStudentAbsencesView(ListAPIView):
 
 	def dispatch(self,request,*args,**kwargs):
 		self.student_id = kwargs.pop('student_id')
-		super (RetrieveStudentAbsencesView,self).dispatch(request,*args,**kwargs)
+		return super (RetrieveStudentAbsencesView,self).dispatch(request,*args,**kwargs)
 
 	def get_queryset(self):
 		last_monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday()+7)
