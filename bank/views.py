@@ -590,7 +590,7 @@ class RetrieveRecentNotesView(ListAPIView):
 		today = datetime.date.today()
 		weekday = today.weekday()
 		monday = today - datetime.timedelta(days=weekday)
-		last_monday = monday - datetime.timedelat(days=7)
+		last_monday = monday - datetime.timedelta(days=7)
 		student_id = self.student_id
 		student = Student.objects.get(pk=student_id)
 		deposits = Deposit.objects.filter(
