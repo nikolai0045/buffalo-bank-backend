@@ -1003,7 +1003,7 @@ class RetrieveStudentAbsencesView(ListAPIView):
 
 	def get_queryset(self):
 		last_monday = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday()+7)
-		student_id = self.kwargs.pop('student_id')
+		student_id = self.student_id
 		student = Student.objects.get(pk=student_id)
 		absences = Absence.objects.filter(student=student,date__gte=last_monday)
 		return absences
