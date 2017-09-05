@@ -88,7 +88,7 @@ class RetrievePurchaseItemsByPrice(APIView):
 					'price':item.current_price,
 					'items':[]
 				}
-			current_block['items'].append(PurchaseItemSerializer(item)).data
+			current_block['items'].append(PurchaseItemSerializer(item).data)
 		return Response(response)
 
 class CreatePurchaseItemView(CreateAPIView):
