@@ -43,7 +43,8 @@ from .serializers import (
 	DailyScheduleSerializer,
 	ScheduleSerializer,
 	DepositNotesSerializer,
-	AbsenceSerializer
+	AbsenceSerializer,
+	FullDepositSerializer
 )
 from .models import (
 	CourseReport,
@@ -575,7 +576,8 @@ class RetrieveStudentDailyDeposits(ListAPIView):
 		if not date:
 			date = datetime.date.today()
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,date=date)
-		return qs
+		response =  FullDepositSerializer(qs,many=True)
+		return Response(response.data)
 
 class RetrieveRecentNotesView(ListAPIView):
 	model = Deposit
