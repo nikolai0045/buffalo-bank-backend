@@ -930,7 +930,7 @@ class RetrieveStudentDailyScheduleView(APIView):
 		student_id = data['student_id']
 		student = Student.objects.get(pk=student_id)
 		date = data.pop('date',False)
-		if !date:
+		if not date:
 			date = datetime.date.today()
 		schedule = DailySchedule.objects.filter(date=date).first().schedule
 		if !schedule:
