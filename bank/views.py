@@ -933,7 +933,7 @@ class RetrieveStudentDailyScheduleView(APIView):
 		if not date:
 			date = datetime.date.today()
 		schedule = DailySchedule.objects.filter(date=date).first().schedule
-		if !schedule:
+		if not schedule:
 			return Response({'error':'There are no courses scheduled for today'})
 		schedule = []
 		for ts in schedule.time_slots.filter(grade=student.grade):

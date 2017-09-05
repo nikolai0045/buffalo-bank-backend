@@ -151,7 +151,7 @@ class Absence(models.Model):
 	student = models.ForeignKey(Student)
 	courses = models.ManyToManyField(Course)
 	date = models.DateField(auto_now_add=True)
-	note = models.CharField(null=True,blank=True)
+	note = models.CharField(null=True,blank=True,max_length=255)
 
 class TimeSlot(models.Model):
 	grade = models.CharField(max_length=10)
