@@ -10,7 +10,7 @@ class Command(BaseCommand):
         daily_schedule = DailySchedule.objects.filter(date = today).first()
         schedule = daily_schedule.schedule
         goals = BehaviorGoal.objects.all()
-        for ts in schedule.time_slots.filter(grade='6'):
+        for ts in schedule.time_slots.all():
             hour = ts.hour
             grade = ts.grade
             num_bucks = ts.num_bucks
