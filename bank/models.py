@@ -91,6 +91,9 @@ class CourseReport(models.Model):
 	def __str__(self):
 		return str(self.course.name) + " - " + str(self.date)
 
+	class Meta:
+		ordering = ['course__hour','course__grade']
+
 class Deposit(Transaction):
 
 	class Meta:
