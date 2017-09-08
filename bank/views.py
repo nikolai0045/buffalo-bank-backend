@@ -215,6 +215,7 @@ class AddStudentToCourseReport(APIView):
 			old_courses = student.course_set.filter(hour=report.course.hour,active=True)
 			for c in old_courses:
 				c.students.remove(student)
+			report.course.students.add(student)
 
 			deposit = Deposit(
 				student = student,
