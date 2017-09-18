@@ -208,8 +208,8 @@ class PurchaseItemSerializer(serializers.ModelSerializer):
 		model = PurchaseItem
 		fields = ('name','current_price','quantity_remaining','description','id')
 
-class PurchaseItemSerializer(serializers.ModelSerializer):
-	item = PurchaseSerializer()
+class PurchaseSerializer(serializers.ModelSerializer):
+	item = PurchaseItemSerializer()
 	student = BasicStudentSerializer()
 	id = serializers.IntegerField(read_only=False)
 
