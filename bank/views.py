@@ -44,7 +44,8 @@ from .serializers import (
 	ScheduleSerializer,
 	DepositNotesSerializer,
 	AbsenceSerializer,
-	FullDepositSerializer
+	FullDepositSerializer,
+	PurchaseSerializer
 )
 from .models import (
 	CourseReport,
@@ -216,6 +217,7 @@ class AddStudentToCourseReport(APIView):
 			for c in old_courses:
 				c.students.remove(student)
 			report.course.students.add(student)
+			report.course.save()
 
 			deposit = Deposit(
 				student = student,

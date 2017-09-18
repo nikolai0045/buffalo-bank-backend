@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem, TimeSlot, DailySchedule, Schedule, Absence
+from .models import UserProfile, CourseReport, Course, Student, Deposit, Buck, BehaviorGoal, MissingAssignment, PersonalBehaviorGoal, BehaviorNote, PurchaseItem, TimeSlot, DailySchedule, Schedule, Absence, Purchase
 from tier_two.models import TTwoProfile, TTwoGoal, TTwoReport
 from tier_three.models import TThreeProfile, TThreeGoal, TThreeReport
 import datetime
@@ -207,6 +207,15 @@ class PurchaseItemSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = PurchaseItem
 		fields = ('name','current_price','quantity_remaining','description','id')
+
+class PurchaseSerializer(serializers.ModelSerializer):
+	item = PurchaseSerializer()
+	student = BasicStudentSerializer()
+	id = serializers.IntegerField(read_only=False)
+
+	class Meta:
+		model = Purchase
+		fields = ('item','student','date','time','price','id')
 
 ##Tier Two Serializers
 class TTwoProfileSerializer(serializers.ModelSerializer):

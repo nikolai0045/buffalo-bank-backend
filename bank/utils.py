@@ -3,6 +3,43 @@ from bank.models import *
 from tier_two.models import *
 from tier_three.models import *
 
+def add_student_to_report(student,report):
+    daily_schedule = DailySchedule.objects.filter(date=report.date).first()
+    time_slot = daily_schedule.schedule.time_slots.filter(grade=report.course.grade,hour=report.course.hour,start_time=report.course.start_time).first()
+    num_bucks = time_slot.num_bucks
+    goals = BehaviorGoal.objects.filter(active=True)
+
+    for i in range(num_bucks):
+        deposit = Deposit(
+            course_report=report,
+            student = student,
+            )
+        deposit.save()
+        for g in goals:
+            buck = Buck(
+                deposit=deposit,
+                goal = g,
+                )
+            buck.save()
+        if student.is_tthree():
+            p = student.tthreeprofile_set.first()
+            tthree_report, created = TThreeReport.objects.get_or_create(
+                report = report,
+                profile = p,
+                )
+            if created:
+                tthree_report.save()
+        if student.is_ttwo():
+            p = s.ttwoprofile_set.first()
+            ttwo_goals = p.ttwogoal_set.filter(active=True)
+            for g in ttwo_goals:
+                ttwo_report, created = TTwoReport.objects.get_or_create(
+                    report=report,
+                    goal=g,
+                    )
+                if created:
+                    ttwo_report.save()
+                    
 def add_report_for_today(course):
     today = datetime.date.today()
     daily_schedule = DailySchedule.objects.filter(date=today).first()
@@ -58,4 +95,4 @@ def add_report_for_today(course):
                             goal = g
                         )
                         if created:
-                            report.save()
+                            ttwo_report.save()
