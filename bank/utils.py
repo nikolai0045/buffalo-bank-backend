@@ -5,7 +5,7 @@ from tier_three.models import *
 
 def add_student_to_report(student,report):
     daily_schedule = DailySchedule.objects.filter(date=report.date).first()
-    time_slot = daily_schedule.schedule.time_slots.filter(grade=report.course.grade,hour=report.course.hour,start_time=report.course.start_time).first()
+    time_slot = daily_schedule.schedule.time_slots.filter(grade=report.course.grade,hour=report.course.hour,start_time=report.start_time).first()
     num_bucks = time_slot.num_bucks
     goals = BehaviorGoal.objects.filter(active=True)
 
@@ -39,7 +39,7 @@ def add_student_to_report(student,report):
                     )
                 if created:
                     ttwo_report.save()
-                    
+
 def add_report_for_today(course):
     today = datetime.date.today()
     daily_schedule = DailySchedule.objects.filter(date=today).first()
