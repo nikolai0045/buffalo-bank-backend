@@ -70,7 +70,8 @@ from bank.views import (
     RetrieveStudentAbsencesView,
     RetrieveStudentDailyScheduleView,
     RetrieveStudentDailyDeposits,
-    RetrievePurchaseItemsByPrice
+    RetrievePurchaseItemsByPrice,
+    RetrievePurchasesByGradeView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -133,6 +134,7 @@ urlpatterns = [
 	url(r'^bank/marketplace/eligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsEligibleToPurchase.as_view()),
 	url(r'^bank/marketplace/ineligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsIneligibleToPurchase.as_view()),
 	url(r'^bank/marketplace/submit_transaction/',SubmitTransactionView.as_view()),
+	url(r'^bank/marketplace/purchases/(?P<grade>\w+)/$',RetrievePurchasesByGradeView.as_view()),
 	url(r'^bank/current_user/$',RetrieveUserView.as_view()),
 	url(r'^bank/user/(?P<uid>[0-9]+)/$',RetrieveUserView.as_view()),
     url(r'^bank/mentee_list/(?P<pk>[0-9]+)/$',MenteeListView.as_view()),

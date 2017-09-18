@@ -67,6 +67,17 @@ from .models import (
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
 
+class RetrievePurchasesByGradeView(ListAPIView):
+	model = Purchase
+	serializer_class = PurchaseSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get_queryset(self):
+		grade = self.kwargs.pop('grade')
+		date = datetime.date.today() - datetime.timedelta(days=14)
+		qs = Purchase.objects.filter(date__gte=date,grade=grade).order_by('date','time')
+		return qs
+		
 class RetrievePurchaseItemsView(ListAPIView):
 	model = PurchaseItem
 	serializer_class = PurchaseItemSerializer
