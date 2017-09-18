@@ -75,7 +75,7 @@ class RetrievePurchasesByGradeView(ListAPIView):
 	def get_queryset(self):
 		grade = self.kwargs.pop('grade')
 		date = datetime.date.today() - datetime.timedelta(days=14)
-		qs = Purchase.objects.filter(date__gte=date,grade=grade).order_by('date','time')
+		qs = Purchase.objects.filter(date__gte=date,student__grade=grade).order_by('date','time')
 		return qs
 		
 class RetrievePurchaseItemsView(ListAPIView):
