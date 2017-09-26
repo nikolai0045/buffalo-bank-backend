@@ -522,7 +522,7 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 				students.append(d.student)
 		for s in course.students.all():
 			if s not in students:
-				if len(d.student.missingassignment_set.all() == 0):
+				if len(d.student.missingassignment_set.all()) == 0:
 					students.append(s)
 		return students
 
