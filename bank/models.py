@@ -70,7 +70,7 @@ class Course(models.Model):
 		return self.name + " - Section #" + self.section_number
 
 	class Meta:
-		ordering = ['course_number','section_number']
+		ordering = ['grade','name','section_number']
 
 class BehaviorGoal(models.Model):
 	goal = models.CharField(max_length=255)
