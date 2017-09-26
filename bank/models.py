@@ -69,6 +69,9 @@ class Course(models.Model):
 	def __str__(self):
 		return self.name + " - Section #" + self.section_number
 
+	class Meta:
+		ordering = ['course_number','section_number']
+
 class BehaviorGoal(models.Model):
 	goal = models.CharField(max_length=255)
 	active = models.BooleanField(default=True)

@@ -414,6 +414,7 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 					if deposit.course_report.course not in absence.courses.all():
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
+					
 					deposit.save()
 				elif d['iss']:
 					deposit.iss = True
