@@ -33,6 +33,7 @@ class BasicUserProfileSerializer(serializers.ModelSerializer):
 
 class BasicCourseSerializer(serializers.ModelSerializer):
 	teachers = BasicUserProfileSerializer(many=True, read_only=True)
+	id = serializers.IntegerField(read_only=False,required=False)
 
 	class Meta:
 		model = Course
