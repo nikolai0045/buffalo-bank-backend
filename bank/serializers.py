@@ -332,8 +332,10 @@ class ScheduleSerializer(serializers.ModelSerializer):
 	def update(self,instance,validated_data):
 		instance.name = validated_data['name']
 		instance.courses.clear()
+		for course in 
 		for c in validated_data['courses']:
 			print c
+			print c.id
 			course = Course.objects.get(pk=c['id'])
 			instance.courses.add(course)
 
