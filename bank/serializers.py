@@ -416,6 +416,8 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
 
+					report = deposit.course_report
+
 					future_deposits = Deposit.objects.filter(
 						course_report__date=report.date,
 						course_report__start_time__gte=report.start_time,
