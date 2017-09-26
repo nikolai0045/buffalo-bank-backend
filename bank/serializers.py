@@ -416,10 +416,11 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
 
-					future_deposits = student.deposit_set.filter(
+					future_deposits = Deposit.objects.filter(
 						course_report__date=report.date,
 						course_report__start_time__gte=report.start_time,
-						course_report__completed=False
+						course_report__completed=False,
+						student = student
 						)
 					for dep in future_deposits:
 						dep.absent = True
