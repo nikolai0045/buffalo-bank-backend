@@ -415,6 +415,19 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 					if deposit.course_report.course not in absence.courses.all():
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
+
+					future_deposits = student.deposit_set.filter(
+						course_report.date=report.date,
+						course_report.start_time__gte=report.start_time,
+						course_report.completed=False
+						)
+					for dep in future_deposits:
+						dep.absent = True
+						for b in deposit.buck_set.all():
+							b.earned = False
+							b.save()
+						absence.courses.add(dep.course_report.course)
+						absence.save()
 					
 					deposit.save()
 				elif d['iss']:
