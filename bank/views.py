@@ -520,6 +520,10 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 		for d in deposits:
 			if len(d.student.missingassignment_set.all()) == 0:
 				students.append(d.student)
+		for s in course.students.all():
+			if s not in students:
+				if len(d.student.missingassignment_set.all() == 0):
+					students.append(s)
 		return students
 
 class RetrieveStudentsIneligibleToPurchase(ListAPIView):
