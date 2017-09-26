@@ -431,6 +431,7 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 							b.save()
 						absence.courses.add(dep.course_report.course)
 						absence.save()
+						dep.save()
 					
 					deposit.save()
 				elif d['iss']:
