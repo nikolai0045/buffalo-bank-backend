@@ -230,35 +230,47 @@ class AddStudentToCourseReport(APIView):
 			report.course.students.add(student)
 			report.course.save()
 
-			deposit = Deposit(
-				student = student,
-				course_report = report,
-			)
+			date = report.date
+			ds = DailySchedule.objects.get(date=date)
+			schedule = ds.schedule
 
-			deposit.save()
-
-			for g in goals:
-				buck = Buck(
-					goal = g,
-					deposit = deposit,
+			time_slot = schedule.time_slots.get(
+				start_time = report.start_time,
+				end_time = report.end_time,
+				grade = report.course.grade,
+				hour = report.course.hour
 				)
 
-				buck.save()
+			for i in range(time_slot.num_bucks):
+				deposit = Deposit(
+					student = student,
+					course_report = report,
+				)
 
-			if student.is_ttwo():
-				for g in student.ttwoprofile_set.first().ttwogoal_set.all():
-					ttworeport = TTwoReport(
-						report = report,
+				deposit.save()
+
+				for g in goals:
+					buck = Buck(
 						goal = g,
+						deposit = deposit,
 					)
-					ttworeport.save()
 
-			if student.is_tthree():
-				tthreereport = TThreeReport(
-					report = report,
-					profile = student.tthreeprofile_set.first(),
-				)
-				tthreereport.save()
+					buck.save()
+
+				if student.is_ttwo():
+					for g in student.ttwoprofile_set.first().ttwogoal_set.all():
+						ttworeport = TTwoReport(
+							report = report,
+							goal = g,
+						)
+						ttworeport.save()
+
+				if student.is_tthree():
+					tthreereport = TThreeReport(
+						report = report,
+						profile = student.tthreeprofile_set.first(),
+					)
+					tthreereport.save()
 
 		return Response({'success':True})
 
