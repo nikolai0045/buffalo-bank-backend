@@ -125,6 +125,9 @@ class PurchaseItem(models.Model):
 	def __str__(self):
 		return self.name + " - $" + str(self.current_price)
 
+	class Meta:
+		ordering = ['name']
+
 class Purchase(Transaction):
 	item = models.ForeignKey(PurchaseItem)
 	price = models.IntegerField(default=0)

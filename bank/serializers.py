@@ -406,12 +406,16 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 						buck = Buck.objects.get(pk=b['id'])
 						buck.earned = False
 						buck.save()
-					absence, created = Absence.objects.get_or_create(
-						student = student,
-						date = deposit.course_report.date,
-					)
-					if created:
+					if len(Absence.objects.filter(student=student,date=deposit.course_report.date)) > 1:
+						absence = Absence.objects.filter(student=student,date=deposit.course_report.date).first()
 						absence.save()
+					else:
+						absence, created = Absence.objects.get_or_create(
+							student = student,
+							date = deposit.course_report.date,
+						)
+						if created:
+							absence.save()
 					if deposit.course_report.course not in absence.courses.all():
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
@@ -441,13 +445,17 @@ class FullCourseReportSerializer(serializers.ModelSerializer):
 						buck = Buck.objects.get(pk=b['id'])
 						buck.earned = False
 						buck.save()
-					absence, created = Absence.objects.get_or_create(
-						student = student,
-						date = deposit.course_report.date,
-						note = "In ISS"
-					)
-					if created:
+					if len(Absence.objects.filter(student=student,date=deposit.course_report.date,note="In ISS"))>1:
+						absence = Absence.objects.filter(student=student,date=deposit.course_report.date,note="In ISS").first()
 						absence.save()
+					else:
+						absence, created = Absence.objects.get_or_create(
+							student = student,
+							date = deposit.course_report.date,
+							note = "In ISS"
+						)
+						if created:
+							absence.save()
 					if deposit.course_report.course not in absence.courses.all():
 						absence.courses.add(deposit.course_report.course)
 						absence.save()
