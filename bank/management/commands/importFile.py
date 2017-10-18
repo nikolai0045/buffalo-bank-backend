@@ -45,6 +45,8 @@ class Command(BaseCommand):
             if created:
                 student.save()
 
+            print student, course
+
             course.students.add(student)
 
             for schedule in schedules:
