@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self,*args,**kwargs):
 
         with open('/opt/bank/buffalo-bank-api/second_nine_weeks.csv','rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
+            reader = csv.reader(csvfile)
             for c in Course.objects.all():
                 c.active = False
                 c.students.clear()
