@@ -9,6 +9,7 @@ class Command(BaseCommand):
 
         with open('/opt/bank/buffalo-bank-api/second_nine_weeks.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
+            
             for c in Course.objects.all():
                 c.active = False
                 c.students.clear()
@@ -25,31 +26,31 @@ class Command(BaseCommand):
                 t_first_name = False
                 t_last_name = False
 
-            teacher = False
-            if len(t_split)>1:
-                t_first_name = t_split[1].strip()
-                t_last_name = t_split[0].strip()
-            if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
-                teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
+                teacher = False
+                if len(t_split)>1:
+                    t_first_name = t_split[1].strip()
+                    t_last_name = t_split[0].strip()
+                if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
+                    teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
 
-            course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
-            if created:
-                course.save()
-                course.active = True
-                course.grade = s_grade
-                course.save()
-            if teacher and teacher not in course.teachers.all():
-                course.teachers.add(teacher)
+                course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
+                if created:
+                    course.save()
+                    course.active = True
+                    course.grade = s_grade
+                    course.save()
+                if teacher and teacher not in course.teachers.all():
+                    course.teachers.add(teacher)
 
-            student, created = Student.objects.get_or_create(first_name=s_first_name,last_name=s_last_name,grade=s_grade)
-            if created:
-                student.save()
+                student, created = Student.objects.get_or_create(first_name=s_first_name,last_name=s_last_name,grade=s_grade)
+                if created:
+                    student.save()
 
-            print student, course
+                print student, course
 
-            course.students.add(student)
+                course.students.add(student)
 
-            for schedule in schedules:
-                if course not in schedule.courses.all():
-                    schedule.courses.add(course)
-                schedule.save() 
+                for schedule in schedules:
+                    if course not in schedule.courses.all():
+                        schedule.courses.add(course)
+                    schedule.save() 
