@@ -19,22 +19,20 @@ class Command(BaseCommand):
                 s_grade = row[2].strip()
                 course_number = row[3].strip()
                 course_name = row[4].strip()
-                teacher_name_raw = row[5].strip()
+                t_split = row[5].strip().split(",")
                 section_number = row[6].strip()
                 c_hour = row[7].strip()
                 t_first_name = False
                 t_last_name = False
-            try:
-                teacher_name_raw.split(",")
-            except:
-                pass
+
             teacher = False
-            if len(teacher_name_raw)>1:
+            if len(t_split)>1:
                 t_first_name = t_split[1].strip()
                 t_last_name = t_split[0].strip()
             if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
                 teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
-                course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
+
+            course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
             if created:
                 course.save()
                 course.active = True
