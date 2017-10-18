@@ -42,9 +42,12 @@ class Command(BaseCommand):
                 if teacher and teacher not in course.teachers.all():
                     course.teachers.add(teacher)
 
-                student, created = Student.objects.get_or_create(first_name=s_first_name,last_name=s_last_name,grade=s_grade)
-                if created:
-                    student.save()
+                if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
+                    student = Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade).first()
+                else:
+                    student, created = Student.objects.get_or_create(first_name=s_first_name,last_name=s_last_name,grade=s_grade)
+                    if created:
+                        student.save()
 
                 print s_first_name, s_last_name
 
