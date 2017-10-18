@@ -33,12 +33,15 @@ class Command(BaseCommand):
                 if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
                     teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
 
-                course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
-                if created:
-                    course.save()
-                    course.active = True
-                    course.grade = s_grade
-                    course.save()
+                if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 0:
+                    course = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour).first()
+                else:
+                    course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
+                    if created:
+                        course.save()
+                        course.active = True
+                        course.grade = s_grade
+                        course.save()
                 if teacher and teacher not in course.teachers.all():
                     course.teachers.add(teacher)
 
