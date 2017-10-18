@@ -17,10 +17,10 @@ class Command(BaseCommand):
                 s_last_name = row[0].strip()
                 s_first_name = row[1].strip()
                 s_grade = row[2].strip()
-                course_number = row[3].strip()
+                c_number = row[3].strip()
                 course_name = row[4].strip()
                 t_split = row[5].strip().split(",")
-                section_number = row[6].strip()
+                c_section_number = row[6].strip()
                 c_hour = row[7].strip()
                 t_first_name = False
                 t_last_name = False
