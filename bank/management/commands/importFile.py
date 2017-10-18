@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
         with open('/opt/bank/buffalo-bank-api/second_nine_weeks.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
-            
+
             for c in Course.objects.all():
                 c.active = False
                 c.students.clear()
@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 if created:
                     student.save()
 
-                print student, course
+                print s_first_name, s_last_name
 
                 course.students.add(student)
 
