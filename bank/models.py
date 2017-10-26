@@ -149,7 +149,7 @@ class BehaviorNote(models.Model):
 	note = models.TextField()
 
 class MissingAssignment(models.Model):
-	name = models.CharField(max_length=30)
+	name = models.CharField(max_length=400)
 	description = models.CharField(max_length=400,blank=True,null=True)
 	students = models.ManyToManyField(Student)
 	course = models.ForeignKey(Course)

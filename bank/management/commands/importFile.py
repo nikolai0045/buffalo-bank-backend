@@ -54,6 +54,9 @@ class Command(BaseCommand):
 
                 print s_first_name, s_last_name
 
+                course.active = True
+                course.save()
+
                 course.students.add(student)
 
                 for schedule in schedules:
