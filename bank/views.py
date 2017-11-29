@@ -706,10 +706,15 @@ class RetrieveTierThreeChartView(View):
 				}
 				course_reports = reports.filter(report__course__name=c).order_by('report__date')
 				for cr in course_reports:
-					course_data['scores'][cr.report.date.weekday()]=cr.score
-					course_data['num'] += 1
-					if cr.score > 2:
-						course_data['summary'] += 1
+					if cr.absent:
+						course_data['scores'][cr.report.date.weekday()] = "A"
+					elif cr.iss:
+						course_data['scores'][cr.report.date.weekday()] = "ISS"
+					else:
+						course_data['scores'][cr.report.date.weekday()]=cr.score
+						course_data['num'] += 1
+						if cr.score > 2:
+							course_data['summary'] += 1
 				for i, item in enumerate(course_data['scores']):
 					if item == 0:
 						course_data['scores'][i] = "-"
@@ -798,10 +803,15 @@ class RetrieveTierTwoChartView(View):
 				}
 				course_reports = reports.filter(report__course__name=c).order_by('report__date')
 				for cr in course_reports:
-					course_data['scores'][cr.report.date.weekday()] = cr.score
-					course_data['num'] += 1
-					if cr.score > 2:
-						course_data['summary'] += 1
+					if cr.absent:
+						course_data['scores'][cr.report.date.weekday()] = "A"
+					elif cr.iss:
+						course_data['scores'][cr.report.date.weekday()] = "ISS"
+					else:
+						course_data['scores'][cr.report.date.weekday()] = cr.score
+						course_data['num'] += 1
+						if cr.score > 2:
+							course_data['summary'] += 1
 				for i,item in enumerate(course_data['scores']):
 					if item == 0:
 						course_data['scores'][i] = "-"
