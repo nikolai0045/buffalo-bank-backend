@@ -848,8 +848,7 @@ class RetrieveTierTwoChartView(View):
 
 		for g in goals:
 			goal_scores = get_goal_scores(g,monday,friday)
-			if len(goal_scores['courses']) > 0:
-				response.append(goal_scores)
+			response.append(goal_scores)
 
 		return response
 
