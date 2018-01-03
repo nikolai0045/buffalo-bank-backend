@@ -1081,8 +1081,8 @@ class GetScheduleByDateView(APIView):
 class PercentageCompletionByTeacherView(APIView):
 	def get(self,request,*args,**kwargs):
 		teachers = UserProfile.objects.filter(user__isnull=False).order_by('last_name','first_name')
-		start_date = datetime.date.today - datetime.timedelta(days=14)
-		end_date = datetime.date.today - datetime.timedelta(days=1)
+		start_date = datetime.date.today() - datetime.timedelta(days=14)
+		end_date = datetime.date.today() - datetime.timedelta(days=1)
 		percentages = []
 		for t in teachers:
 			reports = CourseReport.objects.filter(course__teachers=t,date__gte=start_date,date__lte=end_date)
