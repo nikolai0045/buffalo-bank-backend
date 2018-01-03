@@ -1090,9 +1090,9 @@ class PercentageCompletionByTeacherView(APIView):
 		completion_percentage = "{:2.f}".format(float(num_complete)/float(num_reports)*100)
 		data = {
 			teacher: t.last_name + ", " + t.first_name,
-			percentage: 
+			percentage: completion_percentage,
 		}
 		percentages.append(data)
 	return Response(percentages)
-	
+
 
