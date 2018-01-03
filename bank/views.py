@@ -1094,8 +1094,8 @@ class PercentageCompletionByTeacherView(APIView):
 			else:
 				completion_percentage = "N/A"
 			data = {
-				teacher: t.last_name + ", " + t.first_name,
-				percentage: completion_percentage,
+				"teacher": t.last_name + ", " + t.first_name,
+				"percentage": completion_percentage,
 			}
 			percentages.append(data)
 		return Response(percentages)
