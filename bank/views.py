@@ -183,6 +183,10 @@ class MarkReportInactiveView(APIView):
 		course = Course.objects.get(pk=course_id)
 		course.active = False
 		course.save()
+		schedules = Schedule.objects.all()
+		for schedule in schedules:
+			schedule.courses.remove(course)
+			schedule.save()
 		return BasicCourseSerializer(course).data
 
 class RemoveReportView(DestroyAPIView):
@@ -193,7 +197,8 @@ class RemoveReportView(DestroyAPIView):
 
 	def destroy(self,request,*args,**kwargs):
 		report = CourseReport.objects.get(pk=kwargs.pop('pk'))
-		schedule = Schedule.objects.filter(date = datetime.date.today()).first()
+		ds = DailySchedule.objects.get(date=datetime.date.today())
+		schedule = ds.schedule
 		schedule.courses.remove(report.course)
 		report.delete()
 		schedule.save()
