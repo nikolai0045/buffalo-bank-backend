@@ -1095,7 +1095,7 @@ class PercentageCompletionByTeacherView(APIView):
 			num_complete = len(completed_reports)
 			num_reports = len(reports)
 			if num_reports != 0:
-				completion_percentage = "{:2.f}".format(float(num_complete)/float(num_reports)*100)
+				completion_percentage = "{:.2f}".format(float(num_complete)/float(num_reports)*100)
 			else:
 				completion_percentage = "N/A"
 			data = {
