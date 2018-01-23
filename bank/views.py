@@ -1098,7 +1098,7 @@ class PercentageCompletionByTeacherView(APIView):
 		teachers = UserProfile.objects.filter(user__isnull=False).order_by('last_name','first_name')
 		percentages = []
 		for t in teachers:
-			reports = CourseReport.objects.filter(course__teachers=t,date__gte=date)
+			reports = CourseReport.objects.filter(course__teachers=t,date=date)
 			completed_reports = reports.filter(completed=True)
 			num_complete = len(completed_reports)
 			num_reports = len(reports)
