@@ -1085,15 +1085,13 @@ class GetScheduleByDateView(APIView):
 ##Admin analysis serializers
 class PercentageCompletionByTeacherView(APIView):
 	def get(self,request,*args,**kwargs):
-        day = int(kwargs.pop('day',False))
-        month = int(kwargs.pop('month',False))
-        year = int(kwargs.pop('year',False))
-
+		day = int(kwargs.pop('day',False))
+		month = int(kwargs.pop('month',False))
+		year = int(kwargs.pop('year',False))
 		if not self.day and not self.month and not self.year:
 			date = datetime.date.today()
 		else:
 			date = datetime.date(self.year,self.month,self.day)
-
 
 		teachers = UserProfile.objects.filter(user__isnull=False).order_by('last_name','first_name')
 		percentages = []
