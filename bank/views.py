@@ -1084,6 +1084,8 @@ class GetScheduleByDateView(APIView):
 
 ##Admin analysis serializers
 class PercentageCompletionByTeacherView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+	
 	def get(self,request,*args,**kwargs):
 		day = int(kwargs.pop('day',False))
 		month = int(kwargs.pop('month',False))
