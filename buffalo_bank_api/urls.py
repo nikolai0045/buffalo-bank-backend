@@ -181,7 +181,7 @@ urlpatterns = [
     url(r'^bank/student/recent_absences/(?P<student_id>[0-9]+)/$',RetrieveStudentAbsencesView.as_view()),
     url(r'^bank/students/search/$',SearchStudentsView.as_view()),
     url(r'^bank/teachers/completion_percentages/(?P<year>[0-9]+)/(?P<month>[0-9]+)/(?P<day>[0-9]+)/$',PercentageCompletionByTeacherView.as_view()),
-    url(r'^bank/teachers/completion_percentages/$',PercentageCompletionByTeacherView.as_view()),
+    # url(r'^bank/teachers/completion_percentages/$',PercentageCompletionByTeacherView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 	url(r'^courses/search/$',SearchCoursesView.as_view()),
 ]
