@@ -32,6 +32,11 @@ class Student(models.Model):
 			return True
 		return False
 
+	def is_missing_work(self):
+		if len(self.missingassignment_set.all()>0):
+			return True
+		return False
+
 	def __str__(self):
 		return self.first_name + " " + self.last_name
 

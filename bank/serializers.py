@@ -51,12 +51,13 @@ class CourseReportSerializer(serializers.ModelSerializer):
 class BasicStudentSerializer(serializers.ModelSerializer):
 	is_ttwo = serializers.BooleanField()
 	is_tthree = serializers.BooleanField()
+	is_missing_work = serializers.BooleanField()
 	id = serializers.IntegerField(read_only=False)
 	personalbehaviorgoal_set = StudentPersonalBehaviorGoalSerializer(many=True)
 
 	class Meta:
 		model = Student
-		fields = ('first_name','last_name','grade','id','account_balance','is_ttwo','is_tthree','personalbehaviorgoal_set')
+		fields = ('first_name','last_name','grade','id','account_balance','is_ttwo','is_tthree','is_missing_work','personalbehaviorgoal_set')
 
 class CourseStudentsSerializer(serializers.ModelSerializer):
 	students = BasicStudentSerializer(many=True)
