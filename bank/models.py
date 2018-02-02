@@ -33,7 +33,7 @@ class Student(models.Model):
 		return False
 
 	def is_missing_work(self):
-		if len(self.missingassignment_set.all()>0):
+		if len(self.missingassignment_set.all())>0:
 			return True
 		return False
 
