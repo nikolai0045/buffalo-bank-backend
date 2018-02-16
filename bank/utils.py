@@ -96,3 +96,59 @@ def add_report_for_today(course):
                         )
                         if created:
                             ttwo_report.save()
+
+def add_report_for_date(course,date):
+    daily_schedule = DailySchedule.objects.filter(date=date).first()
+    time_slots = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour)
+    goals = BehaviorGoal.objects.filter(active=True)
+    if course not in daily_schedule.schedule.courses.all():
+        daily_schedule.schedule.courses.add(course)
+        daily_schedule.schedule.save()
+    for ts in time_slots:
+        hour = ts.hour
+        grade = ts.grade
+        num_bucks = ts.num_bucks
+        start_time = ts.start_time
+        end_time = ts.end_time
+        report, created = CourseReport.objects.get_or_create(
+            date = date,
+            course = course,
+            start_time = start_time,
+            end_time = end_time,
+            completed = False
+        )
+        if created:
+            report.save()
+
+            for s in course.students.all():
+                print s
+                for i in range(num_bucks):
+                    deposit = Deposit(
+                        course_report = report,
+                        student = s
+                    )
+                    deposit.save()
+                    for g in goals:
+                        buck = Buck(
+                            deposit = deposit,
+                            goal = g
+                        )
+                        buck.save()
+                if s.is_tthree():
+                    p = s.tthreeprofile_set.first()
+                    tthree_report, created = TThreeReport.objects.get_or_create(
+                        report = report,
+                        profile = p
+                    )
+                    if created:
+                        tthree_report.save()
+                if s.is_ttwo():
+                    p = s.ttwoprofile_set.first()
+                    ttwo_goals = p.ttwogoal_set.filter(active=True)
+                    for g in ttwo_goals:
+                        ttwo_report, created = TTwoReport.objects.get_or_create(
+                            report = report,
+                            goal = g
+                        )
+                        if created:
+                            ttwo_report.save()
