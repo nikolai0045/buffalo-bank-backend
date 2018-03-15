@@ -519,7 +519,7 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 
 	def get_queryset(self):
 		pk = self.kwargs.pop('pk',False)
-		if not course:
+		if not pk:
 			return Student.objects.filter(active=True)
 		course = Course.objects.get(pk=pk)
 		report = CourseReport.objects.filter(course=course).last()
