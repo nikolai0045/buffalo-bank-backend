@@ -519,6 +519,9 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 
 	def get_queryset(self):
 		pk = self.kwargs.pop('pk',False)
+		grade = self.kwargs.pop('grade',False)
+		if grade:
+			return Student.objects.filter(active=True,grade=grade)
 		if not pk:
 			return Student.objects.filter(active=True)
 		course = Course.objects.get(pk=pk)
