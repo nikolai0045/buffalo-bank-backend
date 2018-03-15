@@ -133,6 +133,7 @@ urlpatterns = [
 	url(r'^bank/marketplace/item/update/(?P<pk>[0-9]+)/$',UpdatePurchaseItemView.as_view()),
     url(r'^bank/marketplace/delete_item/(?P<pk>[0-9]+)/$',DeletePurchaseItemView.as_view()),
 	url(r'^bank/marketplace/eligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsEligibleToPurchase.as_view()),
+	url(r'^bank/marketplace/eligible_students/$',RetrieveStudentsEligibleToPurchase.as_view()),
 	url(r'^bank/marketplace/ineligible_students/(?P<pk>[0-9]+)/$',RetrieveStudentsIneligibleToPurchase.as_view()),
 	url(r'^bank/marketplace/submit_transaction/',SubmitTransactionView.as_view()),
 	url(r'^bank/marketplace/purchases/(?P<grade>\w+)/$',RetrievePurchasesByGradeView.as_view()),

@@ -518,7 +518,9 @@ class RetrieveStudentsEligibleToPurchase(ListAPIView):
 	authentication_class = (authentication.TokenAuthentication,)
 
 	def get_queryset(self):
-		course = Course.objects.get(pk=self.kwargs['pk'])
+		course = Course.objects.get(pk=self.kwargs['pk'],False)
+		if not course:
+			return Student.objects.filter(active=True)
 		report = CourseReport.objects.filter(course=course).last()
 		students = []
 		deposits = report.deposit_set.all()
