@@ -334,7 +334,7 @@ class SearchCoursesView(APIView):
 			return False
 		queryset = Course.objects.all()
 		for c in queryset:
-			if len(c.students.all() == 0):
+			if len(c.students.all()) == 0:
 				queryset = queryset.exclude(pk=c.pk)
 		if data['active']:
 			queryset = queryset.filter(active=data['active'])
