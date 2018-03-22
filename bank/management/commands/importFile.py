@@ -7,13 +7,15 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
 
-        with open('/opt/bank/buffalo-bank-api/second_nine_weeks.csv','rb') as csvfile:
+        with open('/opt/bank/schedules fourth nine weeks.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
 
             for c in Course.objects.all():
                 c.active = False
                 c.students.clear()
             schedules = Schedule.objects.all()
+            for s in schedules:
+                s.courses.clear()
             for row in reader:
                 s_last_name = row[0].strip()
                 s_first_name = row[1].strip()
@@ -22,7 +24,7 @@ class Command(BaseCommand):
                 course_name = row[4].strip()
                 t_split = row[5].strip().split(",")
                 c_section_number = row[6].strip()
-                c_hour = row[7].strip()
+                c_hour = row[9].strip()
                 t_first_name = False
                 t_last_name = False
 
