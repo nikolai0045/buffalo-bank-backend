@@ -331,6 +331,9 @@ class SearchCoursesView(APIView):
 	def post(self,request,*args,**kwargs):
 		data = request.data
 		queryset = Course.objects.all()
+		for c in queryset:
+			if len(c.students.all() == 0):
+				queryset = queryset.exclude(pk=c.pk)
 		if data['active']:
 			queryset = queryset.filter(active=data['active'])
 		if data['hour']:
