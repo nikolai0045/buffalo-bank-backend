@@ -330,6 +330,8 @@ class SearchCoursesView(APIView):
 
 	def post(self,request,*args,**kwargs):
 		data = request.data
+		if not data:
+			return False
 		queryset = Course.objects.all()
 		for c in queryset:
 			if len(c.students.all() == 0):
