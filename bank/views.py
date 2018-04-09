@@ -1213,6 +1213,7 @@ def missing_work_report(request, course_id):
 	doc = DocTemplate('Missing Work - ' + course_name + '.pdf')
 	doc.multiBuild(story)
 	doc.save()
+	doc.close()
 
 	response = HttpResponse(doc, content_type="application/pdf")
 	response['Content-Disposition'] = 'attachment; filename="Missing Work - ' + course_name + '.pdf'
