@@ -22,7 +22,7 @@ from reportlab.lib import colors
 from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
 from reportlab.platypus import PageBreak
 from reportlab.platypus.paragraph import Paragraph
-from reportlab.playtpus.frames import Frame
+from reportlab.playtpus import Frame
 from reportlab.lib.units import inch
 from reportlab.lib.styles import ParagraphStyle
 
