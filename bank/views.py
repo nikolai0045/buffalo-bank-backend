@@ -1221,3 +1221,5 @@ def missing_work_report(request, course_id):
 	doc.multiBuild(story)
 
 	response['Content-Disposition'] = 'attachment; filename="Missing Work - ' + course_name + '.pdf"'
+
+	return response
