@@ -1221,4 +1221,4 @@ def missing_work_report(request, course_id):
 	doc.save()
 
 	response = HttpResponse(doc, content_type="application/pdf")
-	response['Content-Disposition'] = 'attachment; filename="Missing Work - ' + course_name + '.pdf'
+	response['Content-Disposition'] = 'attachment; filename="' + file_path + '"'
