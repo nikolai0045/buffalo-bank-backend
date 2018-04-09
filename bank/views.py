@@ -1175,7 +1175,7 @@ def get_missing_work_list(raw_missing_work):
 		missing_work.append(mw)
 	for mw in missing_work[:-1]:
 		text += mw.name
-		text ++ ", "
+		text += ", "
 	text += missing_work[-1].name
 	return text
 
