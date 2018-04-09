@@ -16,6 +16,18 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView,
 from rest_framework import status, authentication, permissions, viewsets
 from rest_framework.parsers import JSONParser
 
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
+from reportlab.platypus import PageBreak
+from reportlab.platypus.paragraph import Paragraph
+from reportlab.playtpus.frames import Frame
+from reportlab.lib.units import inch
+from reportlab.lib.styles import ParagraphStyle
+
+from django.http import HttpResponse
+
 from jsonview.decorators import json_view
 
 from .serializers import (
@@ -1122,4 +1134,73 @@ class PercentageCompletionByTeacherView(APIView):
 			percentages.append(data)
 		return Response(percentages)
 
+width, height = letter
+class DocTemplate(BaseDocTemplate):
 
+	def __init__(self,filename,**kwargs):
+		self.allowSplitting = 0
+		BaseDocTemplate.__init__(self,filename,**kwargs)
+		template = PageTemplate('normal',Frame(0,0,width,height,leftPadding=inch/2, bottomPadding=inch/2, rightPadding=inch/2, topPadding=inch/2))
+		self.addPageTemplates(template)
+
+h1 = ParagraphStyle(
+	name = "Heading1",
+	fontSize = 14
+	)
+
+h2 = ParagraphStyle(
+	name = "Heading2",
+	fontSize = 12
+	)
+
+def get_teachers_text(teachers):
+	text = ""
+	for t in teachers[:-1]:
+		text.append(t.first_name + " " + t.last_name + ", ")
+	text.append(teachers[-1].first_name + " " + teachers[-1].last_name)
+
+	return text
+
+def get_missing_work_list(missing_work):
+	text = ""
+	for mw in missing_work[:-1]:
+		text.append(mw.name + ", ")
+	text.append(missing_work[-1].name)
+	return text
+
+student_divider = "---------------------------------------------------------------"
+def missing_work_report(request, course_id):
+	course = Course.objects.get(pk=course_id)
+
+	students = course.students.all()
+	course_name = course.name
+	cn = course.course_number
+	sn = course.section_number
+	teachers = course.teachers.all()
+
+	story = []
+	story.append(Paragraph(course_name + ' -- ' + cn + " (section " + sn + ")", h1))
+	for t in teachers:
+		story.append(Paragraph(t.last_name + ", " + t.first_name,ParagraphStyle('body')))
+	story.append(Paragraph(student_divider,ParagraphStyle('body')))
+	for count, s in enumerate(students.order_by('last_name')):
+		if count % 4 == 0:
+			story.append(PageBreak())
+		story.append(Paragraph(s.last_name + ", " + s.first_name, ParagraphStyle('body')))
+		missing_work = student.missingassignment_set.all().order_by('course__hour')
+		mw_courses = []
+		for mw in missing_work:
+			if mw.course not in mw_courses:
+				mw_courses.append(mw)
+		for c in mw_courses:
+			story.append(Paragraph(course.name,ParagraphStyle('body')))
+			story.append(Paragraph(get_teachers_text(c.teachers.all()),ParagraphStyle('body')))
+			course_mw = missing_work.filter(course=c)
+			story.append(Paragraph(get_missing_work_list(course_mw),ParagraphStyle('body')))
+		story.append(Paragraph(student_divider,ParagraphStyle("body")))
+
+	doc = DocTemplate('Missing Work - ' + course_name + '.pdf')
+	doc.multiBuild(story)
+
+	response = HttpResponse(doc, content_type="application/pdf")
+	response['Content-Disposition'] = 'attachment; filename="Missing Work - ' + course_name + '.pdf'

@@ -72,7 +72,8 @@ from bank.views import (
     RetrieveStudentDailyDeposits,
     RetrievePurchaseItemsByPrice,
     RetrievePurchasesByGradeView,
-    PercentageCompletionByTeacherView
+    PercentageCompletionByTeacherView,
+    missing_work_report
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -186,4 +187,5 @@ urlpatterns = [
     # url(r'^bank/teachers/completion_percentages/$',PercentageCompletionByTeacherView.as_view()),
 	url(r'^get_auth_token/$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 	url(r'^courses/search/$',SearchCoursesView.as_view()),
+	url(r'^bank/missing_work_report/(?P<course_id>[0-9]+)/$',missing_work_report)
 ]
