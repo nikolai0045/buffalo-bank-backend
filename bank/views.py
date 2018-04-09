@@ -1196,19 +1196,18 @@ def missing_work_report(request, course_id):
 		story.append(Paragraph(t.last_name + ", " + t.first_name,ParagraphStyle('body')))
 	story.append(Paragraph(student_divider,ParagraphStyle('body')))
 	for count, s in enumerate(students.order_by('last_name')):
-		if count % 4 == 0:
+		if count % 4 == 0 and count != 0:
 			story.append(PageBreak())
-		story.append(Paragraph(s.last_name + ", " + s.first_name, ParagraphStyle('body')))
+		story.append(Paragraph(s.last_name + ", " + s.first_name, h1))
 		missing_work = s.missingassignment_set.all().order_by('course__hour')
 		mw_courses = []
 		for mw in missing_work:
 			if mw.course not in mw_courses:
 				mw_courses.append(mw.course)
 		for c in mw_courses:
-			story.append(Paragraph(course.name,ParagraphStyle('body')))
-			story.append(Paragraph(get_teachers_text(c.teachers.all()),ParagraphStyle('body')))
+			story.append(Paragraph("    " + course.name + ": " + get_teachers_text(c.teachers.all()),h2))
 			course_mw = missing_work.filter(course=c)
-			story.append(Paragraph(get_missing_work_list(course_mw),ParagraphStyle('body')))
+			story.append(Paragraph("        " + get_missing_work_list(course_mw),ParagraphStyle('body')))
 		story.append(Paragraph(student_divider,ParagraphStyle("body")))
 
 	folder_path = "/opt/bank/buffalo-bank-api/static/pdf/"
