@@ -1153,16 +1153,22 @@ h2 = ParagraphStyle(
 	fontSize = 12
 	)
 
-def get_teachers_text(teachers):
+def get_teachers_text(raw_teachers):
 	text = ""
+	teachers = []
+	for t in raw_teachers:
+		teachers.append(t)
 	for t in teachers[:-1]:
 		text.append(t.first_name + " " + t.last_name + ", ")
 	text.append(teachers[-1].first_name + " " + teachers[-1].last_name)
 
 	return text
 
-def get_missing_work_list(missing_work):
+def get_missing_work_list(raw_missing_work):
 	text = ""
+	missing_work = []
+	for mw in raw_missing_work:
+		missing_work.append(mw)
 	for mw in missing_work[:-1]:
 		text.append(mw.name + ", ")
 	text.append(missing_work[-1].name)
