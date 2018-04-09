@@ -1187,7 +1187,7 @@ def missing_work_report(request, course_id):
 		if count % 4 == 0:
 			story.append(PageBreak())
 		story.append(Paragraph(s.last_name + ", " + s.first_name, ParagraphStyle('body')))
-		missing_work = student.missingassignment_set.all().order_by('course__hour')
+		missing_work = s.missingassignment_set.all().order_by('course__hour')
 		mw_courses = []
 		for mw in missing_work:
 			if mw.course not in mw_courses:
