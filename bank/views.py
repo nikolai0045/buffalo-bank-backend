@@ -1146,12 +1146,14 @@ class DocTemplate(BaseDocTemplate):
 
 h1 = ParagraphStyle(
 	name = "Heading1",
-	fontSize = 14
+	fontSize = 14,
+	spaceAfter = 5
 	)
 
 h2 = ParagraphStyle(
 	name = "Heading2",
-	fontSize = 12
+	fontSize = 12,
+	spaceAfter = 5
 	)
 
 def get_teachers_text(raw_teachers):
@@ -1180,7 +1182,7 @@ def get_missing_work_list(raw_missing_work):
 	text += missing_work[-1].name
 	return text
 
-student_divider = "---------------------------------------------------------------"
+student_divider = "----------------------------------------------------------------------------------------------------------------------"
 def missing_work_report(request, course_id):
 	course = Course.objects.get(pk=course_id)
 
