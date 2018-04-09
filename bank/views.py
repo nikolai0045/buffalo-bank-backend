@@ -1215,10 +1215,11 @@ def missing_work_report(request, course_id):
 	folder_name = os.path.basename(folder_path)
 	file_path = os.path.join(folder_name,'Missing Work - ' + course_name + '.pdf')
 
-	doc = DocTemplate(file_path)
+	response = HttpResponse(content_type="application/pdf")
+
+	doc = DocTemplate(response)
 	doc.multiBuild(story)
 	doc.showPage()
 	doc.save()
 
-	response = HttpResponse(doc, content_type="application/pdf")
-	response['Content-Disposition'] = 'attachment; filename="' + file_path + '"'
+	response['Content-Disposition'] = 'attachment; filename="Missing Work - ' + course_name + '.pdf"'
