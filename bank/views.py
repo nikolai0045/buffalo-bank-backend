@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import datetime
 import json
+import os
 
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -1210,7 +1211,11 @@ def missing_work_report(request, course_id):
 			story.append(Paragraph(get_missing_work_list(course_mw),ParagraphStyle('body')))
 		story.append(Paragraph(student_divider,ParagraphStyle("body")))
 
-	doc = DocTemplate('Missing Work - ' + course_name + '.pdf')
+	folder_path = "/opt/bank/buffalo-bank-api/static/pdf/"
+	folder_name = os.path.basename(folder_path)
+	file_path = os.path.join(folder_name,'Missing Work - ' + course_name + '.pdf')
+
+	doc = DocTemplate(file_path)
 	doc.multiBuild(story)
 	doc.showPage()
 	doc.save()
