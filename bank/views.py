@@ -1154,7 +1154,7 @@ h1 = ParagraphStyle(
 
 h2 = ParagraphStyle(
 	name = "Heading2",
-	fontSize = 14,
+	fontSize = 12,
 	spaceAfter = 10,
 	alignment = TA_CENTER
 	)
@@ -1162,20 +1162,21 @@ h2 = ParagraphStyle(
 h3 = ParagraphStyle(
 	name = "Heading3",
 	fontsize = 12,
-	spaceAfter = 10,
+	spaceAfter = 5,
 	leftIndent = 0
 	)
 
 pp = ParagraphStyle(
 	name = "body",
 	fontsize = 10,
-	leftIndent = 10
+	leftIndent = 10,
+	spaceAfter = 5,
 	)
 
 divStyle = ParagraphStyle(
 	name = "div",
 	fontsize = 10,
-	spaceAfter = 15,
+	spaceAfter = 3,
 	alignment = TA_CENTER
 	)
 
