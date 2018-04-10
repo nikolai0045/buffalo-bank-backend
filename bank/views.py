@@ -1231,7 +1231,7 @@ def missing_work_report(request, course_id):
 			if mw.course not in mw_courses:
 				mw_courses.append(mw.course)
 		for c in mw_courses:
-			story.append(Paragraph("	" + course.name + ": " + get_teachers_text(c.teachers.all()),h3))
+			story.append(Paragraph("	" + c.name + ": " + get_teachers_text(c.teachers.all()),h3))
 			course_mw = missing_work.filter(course=c)
 			story.append(Paragraph("		" + get_missing_work_list(course_mw),pp))
 		story.append(Paragraph(student_divider,divStyle))
