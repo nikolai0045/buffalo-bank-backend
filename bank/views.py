@@ -26,6 +26,7 @@ from reportlab.platypus.paragraph import Paragraph
 from reportlab.platypus import Frame
 from reportlab.lib.units import inch
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
 
 from django.http import HttpResponse
 
@@ -1146,14 +1147,30 @@ class DocTemplate(BaseDocTemplate):
 
 h1 = ParagraphStyle(
 	name = "Heading1",
-	fontSize = 14,
-	spaceAfter = 5
+	fontSize = 16,
+	spaceAfter = 5,
+	alignment = TA_CENTER
 	)
 
 h2 = ParagraphStyle(
 	name = "Heading2",
-	fontSize = 12,
-	spaceAfter = 5
+	fontSize = 14,
+	spaceAfter = 5,
+	alignment = TA_CENTER
+	)
+
+h3 = ParagraphStyle(
+	name = "Heading3",
+	fontsize = 12,
+	spaceAfter = 5,
+	leftIndent = 0
+	)
+
+pp = ParagraphStyle(
+	name = "body",
+	fontsize = 10,
+	spaceAfter = 5,
+	leftIndent = 10
 	)
 
 def get_teachers_text(raw_teachers):
@@ -1182,7 +1199,7 @@ def get_missing_work_list(raw_missing_work):
 	text += missing_work[-1].name
 	return text
 
-student_divider = "----------------------------------------------------------------------------------------------------------------------"
+student_divider = "----------------------------------------------------------------------------------------------------------------------------------------------------------------"
 def missing_work_report(request, course_id):
 	course = Course.objects.get(pk=course_id)
 
@@ -1207,9 +1224,9 @@ def missing_work_report(request, course_id):
 			if mw.course not in mw_courses:
 				mw_courses.append(mw.course)
 		for c in mw_courses:
-			story.append(Paragraph("    " + course.name + ": " + get_teachers_text(c.teachers.all()),h2))
+			story.append(Paragraph("	" + course.name + ": " + get_teachers_text(c.teachers.all()),h2))
 			course_mw = missing_work.filter(course=c)
-			story.append(Paragraph("        " + get_missing_work_list(course_mw),ParagraphStyle('body')))
+			story.append(Paragraph("		" + get_missing_work_list(course_mw),ParagraphStyle('body')))
 		story.append(Paragraph(student_divider,ParagraphStyle("body")))
 
 	folder_path = "/opt/bank/buffalo-bank-api/static/pdf/"
