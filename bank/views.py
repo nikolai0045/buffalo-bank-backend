@@ -1173,6 +1173,13 @@ pp = ParagraphStyle(
 	leftIndent = 10
 	)
 
+divStyle = ParagraphStyle(
+	name = "div",
+	fontsize = 10,
+	spaceAfter = 15,
+	alignment = TA_CENTER
+	)
+
 def get_teachers_text(raw_teachers):
 	text = ""
 	teachers = []
@@ -1210,10 +1217,8 @@ def missing_work_report(request, course_id):
 	teachers = course.teachers.all()
 
 	story = []
-	story.append(Paragraph(course_name + ' -- ' + cn + " (section " + sn + ")", h1))
-	for t in teachers:
-		story.append(Paragraph(t.last_name + ", " + t.first_name,pp))
-	story.append(Paragraph(student_divider,pp))
+	story.append(Paragraph(course_name + ' -- ' + cn + " (section " + sn + ")" + " - " + get_teachers_text(teachers), h1))
+	story.append(Paragraph(student_divider,divStyle))
 	for count, s in enumerate(students.order_by('last_name')):
 		if count % 4 == 0 and count != 0:
 			story.append(PageBreak())
@@ -1227,7 +1232,7 @@ def missing_work_report(request, course_id):
 			story.append(Paragraph("	" + course.name + ": " + get_teachers_text(c.teachers.all()),h3))
 			course_mw = missing_work.filter(course=c)
 			story.append(Paragraph("		" + get_missing_work_list(course_mw),pp))
-		story.append(Paragraph(student_divider,pp))
+		story.append(Paragraph(student_divider,divStyle))
 
 	folder_path = "/opt/bank/buffalo-bank-api/static/pdf/"
 	folder_name = os.path.basename(folder_path)
