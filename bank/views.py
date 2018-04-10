@@ -1169,7 +1169,6 @@ h3 = ParagraphStyle(
 pp = ParagraphStyle(
 	name = "body",
 	fontsize = 10,
-	spaceAfter = 10,
 	leftIndent = 10
 	)
 
@@ -1224,6 +1223,8 @@ def missing_work_report(request, course_id):
 			story.append(PageBreak())
 		story.append(Paragraph(s.last_name + ", " + s.first_name, h1))
 		missing_work = s.missingassignment_set.all().order_by('course__hour')
+		if len(missing_work) == 0:
+			story.append(Paragraph("No missing work", pp))
 		mw_courses = []
 		for mw in missing_work:
 			if mw.course not in mw_courses:
