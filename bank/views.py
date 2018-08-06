@@ -692,14 +692,14 @@ class RemoveCourseFromScheduleView(APIView):
 
 	def get(self,request,*args,**kwargs):
 		course = Course.objects.get(pk=self.kwargs['course_pk'])
-		schedule = DailySchedule.objects.get(pk=self.kwargs['schedule_pk'])
-		date = schedule.date
+		ds = DailySchedule.objects.get(pk=self.kwargs['schedule_pk'])
+		date = ds.date
 
 		reports = CourseReport.objects.filter(date=date,course=course)
 		for r in reports:
 			r.delete()
 
-		schedule.courses.remove(course)
+		ds.schedule.courses.remove(course)
 
 		return Response({'Success':True})
 
