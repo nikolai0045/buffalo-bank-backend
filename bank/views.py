@@ -681,7 +681,7 @@ class AddReportToDateView(APIView):
 
 	def get(self,request,*args,**kwargs):
 		course = Course.objects.get(pk=self.kwargs['course_pk'])
-		date = DailySchedule.objects.get(pk=self.kwargs['schedule_pk']).date
+		date = Schedule.objects.get(pk=self.kwargs['schedule_pk']).date
 
 		add_report_for_date(course,date,False)
 
@@ -692,7 +692,7 @@ class RemoveCourseFromScheduleView(APIView):
 
 	def get(self,request,*args,**kwargs):
 		course = Course.objects.get(pk=self.kwargs['course_pk'])
-		schedule = Schedule.objects.get(pk=self.kwargs['schedule_pk'])
+		schedule = DailySchedule.objects.get(pk=self.kwargs['schedule_pk'])
 		date = schedule.date
 
 		reports = CourseReport.objects.filter(date=date,course=course)
