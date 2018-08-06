@@ -631,17 +631,17 @@ class RetrieveDailyScheduleView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
 	def get(self,request,*args,**kwargs):
-        day = int(kwargs.pop('day',False))
-        month = int(kwargs.pop('month',False))
-        year = int(kwargs.pop('year',False))
+		day = int(kwargs.pop('day',False))
+		month = int(kwargs.pop('month',False))
+		year = int(kwargs.pop('year',False))
 
-        if not day and not month and not year:
-            date = datetime.date.today()
-        else:
-            date = datetime.date(year,month,day)
+		if not day and not month and not year:
+			date = datetime.date.today()
+		else:
+			date = datetime.date(year,month,day)
 
-        schedule = DailySchedule.objects.get(date=date)
-        return Response(BasicDailyScheduleSerializer(schedule).data)
+		schedule = DailySchedule.objects.get(date=date)
+		return Response(BasicDailyScheduleSerializer(schedule).data)
 
 
 class RetrieveCoursesNotOnCurrentScheduleView(ListAPIView):
