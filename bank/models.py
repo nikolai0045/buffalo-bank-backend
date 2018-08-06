@@ -70,9 +70,18 @@ class Course(models.Model):
 	active = models.BooleanField(default=True)
 	hour = models.CharField(max_length=15,blank=True,null=True)
 	grade = models.CharField(max_length=3,blank=True,null=True)
+	day_of_week = models.CharField(max_length=30,blank=True,null=True)
 
 	def __str__(self):
 		return self.name + " - Section #" + self.section_number
+
+	def get_course_instances(self):
+		return Course.objects.filter(
+			course_number=self.course_number,
+			section_number=self.section_number,
+			active=self.active,
+			hour = self.hour
+			)
 
 	class Meta:
 		ordering = ['grade','name','section_number']
@@ -178,6 +187,7 @@ class Schedule(models.Model):
 	courses = models.ManyToManyField(Course)
 	name = models.CharField(max_length=200)
 	time_slots = models.ManyToManyField(TimeSlot)
+	day_of_week = models.CharField(max_length=30,blank=True,null=True)
 
 class DailySchedule(models.Model):
 	date = models.DateField()

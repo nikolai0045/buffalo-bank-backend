@@ -31,13 +31,21 @@ class BasicUserProfileSerializer(serializers.ModelSerializer):
 		model = UserProfile
 		fields = ('first_name','last_name')
 
+class StudentNameSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(read_only=False)
+
+	class Meta:
+		model = Student
+		fields = ('first_name','last_name','id')
+
 class BasicCourseSerializer(serializers.ModelSerializer):
 	teachers = BasicUserProfileSerializer(many=True, read_only=True)
+	students = StudentNameSerializer(many=True, read_only=True)
 	id = serializers.IntegerField(read_only=False,required=False)
 
 	class Meta:
 		model = Course
-		fields = ('name','section_number','teachers','id','hour','grade')
+		fields = ('name','section_number','course_number','teachers','students','id','hour','grade')
 
 class CourseReportSerializer(serializers.ModelSerializer):
 	course = BasicCourseSerializer(many=False)
@@ -314,6 +322,20 @@ class TimeSlotSerializer(serializers.ModelSerializer):
 		instance.num_bucks = validated_data['num_bucks']
 		instance.save()
 		return instance
+
+class BasicScheduleSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(read_only=False,allow_null=True,required=False)
+	class Meta:
+		model = Schedule
+		fields = ('name','day_of_week','id')
+
+class BasicDailyScheduleSerializer(serializers.ModelSerializer):
+	schedule = BasicScheduleSerializer()
+	id = serializers.IntegerField(read_only=False,allow_null=True,required=False)
+
+	class Meta:
+		model = DailySchedule
+		fields = ('date','schedule','id')
 
 class ScheduleSerializer(serializers.ModelSerializer):
 	courses = BasicCourseSerializer(many=True,allow_null=True,required=False)

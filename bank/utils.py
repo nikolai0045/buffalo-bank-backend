@@ -97,11 +97,11 @@ def add_report_for_today(course):
                         if created:
                             ttwo_report.save()
 
-def add_report_for_date(course,date):
+def add_report_for_date(course,date,add_to_schedule):
     daily_schedule = DailySchedule.objects.filter(date=date).first()
     time_slots = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour)
     goals = BehaviorGoal.objects.filter(active=True)
-    if course not in daily_schedule.schedule.courses.all():
+    if course not in daily_schedule.schedule.courses.all() and add_to_schedule:
         daily_schedule.schedule.courses.add(course)
         daily_schedule.schedule.save()
     for ts in time_slots:

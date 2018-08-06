@@ -59,7 +59,8 @@ from .serializers import (
 	DepositNotesSerializer,
 	AbsenceSerializer,
 	FullDepositSerializer,
-	PurchaseSerializer
+	PurchaseSerializer,
+	BasicDailyScheduleSerializer
 )
 from .models import (
 	CourseReport,
@@ -78,6 +79,7 @@ from .models import (
 	DailySchedule,
 	Absence
 )
+from .utils import add_report_for_date
 from tier_two.models import TTwoReport
 from tier_three.models import TThreeReport
 
@@ -622,6 +624,100 @@ class RetrieveRecentDepositsView(ListAPIView):
 		student = Student.objects.get(pk=self.kwargs['pk'])
 		qs = Deposit.objects.filter(student=student,course_report__completed=True,transaction_ptr__date__gte=two_weeks_ago)
 		return qs
+
+class RetrieveDailyScheduleView(APIView):
+	model = DailySchedule
+	seralizer_class = BasicDailyScheduleSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+        day = int(kwargs.pop('day',False))
+        month = int(kwargs.pop('month',False))
+        year = int(kwargs.pop('year',False))
+
+        if not day and not month and not year:
+            date = datetime.date.today()
+        else:
+            date = datetime.date(year,month,day)
+
+        schedule = DailySchedule.objects.get(date=date)
+        return Response(BasicDailyScheduleSerializer(schedule).data)
+
+
+class RetrieveCoursesNotOnCurrentScheduleView(ListAPIView):
+	model = Course
+	serializer_class = BasicCourseSerializer
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get_queryset(self):
+		schedule = Schedule.objects.get(pk=self.kwargs['schedule_pk'])
+		teacher = self.request.user.userprofile
+
+		courses = Course.objects.filter(teachers=teacher,day_of_week=schedule.day_of_week)
+
+		already_in_schedule = []
+		for c in courses:
+			if c in schedule.courses.all():
+				already_in_schedule.append(c.pk)
+
+		for c in already_in_schedule:
+			courses = courses.exclude(pk=c)
+
+		return courses
+
+class AddCourseToScheduleView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		course = Course.objects.get(pk=self.kwargs['course_pk'])
+		date = Schedule.objects.get(pk=self.kwargs['schedule_pk']).date
+
+		add_report_for_date(course,date,True)
+
+		return Response({'Success':True})
+
+class AddReportToDateView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		course = Course.objects.get(pk=self.kwargs['course_pk'])
+		date = Schedule.objects.get(pk=self.kwargs['schedule_pk']).date
+
+		add_report_for_date(course,date,False)
+
+		return Response({'Success':True})
+
+class RemoveCourseFromScheduleView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		course = Course.objects.get(pk=self.kwargs['course_pk'])
+		schedule = Schedule.objects.get(pk=self.kwargs['schedule_pk'])
+		date = schedule.date
+
+		reports = CourseReport.objects.filter(date=date,course=course)
+		for r in reports:
+			r.delete()
+
+		schedule.courses.remove(course)
+
+		return Response({'Success':True})
+
+class RemoveReportFromDate(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		course = Course.objects.get(pk=self.kwargs['course_pk'])
+		schedule = Schedule.objects.get(pk=self.kwargs['schedule_pk'])
+		date = schedule.date
+
+		reports = CourseReport.objects.filter(date=date,course=course)
+		for r in reports:
+			r.delete()
+
+		return Response({'Success':True})
+
+
 
 class RetrieveStudentDailyDeposits(ListAPIView):
 	authentication_classes = (authentication.TokenAuthentication,)

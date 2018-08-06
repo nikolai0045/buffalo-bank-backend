@@ -73,7 +73,13 @@ from bank.views import (
     RetrievePurchaseItemsByPrice,
     RetrievePurchasesByGradeView,
     PercentageCompletionByTeacherView,
-    missing_work_report
+    missing_work_report,
+    RetrieveCoursesNotOnCurrentScheduleView,
+    AddCourseToScheduleView,
+    AddReportToDateView,
+    RemoveCourseFromScheduleView,
+    RemoveReportFromDate,
+    RetrieveDailyScheduleView,
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -146,7 +152,14 @@ urlpatterns = [
 	url(r'^bank/reports/$',RetrieveReportsView.as_view()),
 	url(r'^bank/reports/(?P<year>[0-9]+)/(?P<month>[0-9]+)/(?P<day>[0-9]+)/$',RetrieveReportsView.as_view()),
     url(r'^bank/reports/mark_inactive/$',MarkReportInactiveView.as_view()),
+
+    url(r'^bank/reports/daily_schedule/(?P<year>[0-9]+)/(?P<month>[0-9]+)/(?P<day>[0-9]+)/$',RetrieveDailyScheduleView.as_view()),
+    url(r'^bank/reports/courses_not_in_schedule/(?P<schedule_pk>[0-9]+)/$',RetrieveCoursesNotOnCurrentScheduleView.as_view()),
+    url(r'^bank/reports/add_course_to_schedule/(?P<schedule_pk>[0-9]+)/(?P<course_pk>[0-9]+)/$',AddCourseToScheduleView.as_view()),
+    url(r'^bank/reports/add_report_to_date/(?P<schedule_pk>[0-9]+)/(?P<course_pk>[0-9]+)/$',AddReportToDateView.as_view()),
+    url(r'^bank/reports/remove_course_from_schedule/(?P<schedule_pk>[0-9]+)/(?P<course_pk>[0-9]+)/$',RemoveCourseFromScheduleView.as_view()),
     url(r'^bank/reports/destroy/(?P<pk>[0-9]+)/$',RemoveReportView.as_view()),
+
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
 	url(r'^bank/courses/all/$',RetrieveAllCoursesView.as_view()),
     url(r'^bank/courses/missing_work/(?P<pk>[0-9]+)/$',RetrieveCourseMissingWorkView.as_view()),
