@@ -681,7 +681,7 @@ class AddReportToDateView(APIView):
 
 	def get(self,request,*args,**kwargs):
 		course = Course.objects.get(pk=self.kwargs['course_pk'])
-		date = Schedule.objects.get(pk=self.kwargs['schedule_pk']).date
+		date = DailySchedule.objects.get(pk=self.kwargs['schedule_pk']).date
 
 		add_report_for_date(course,date,False)
 
