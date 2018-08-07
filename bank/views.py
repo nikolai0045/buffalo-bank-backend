@@ -908,7 +908,7 @@ class RetrieveTierTwoChartView(View):
 		def get_goal_scores(goal,start,end):
 			response = {}
 			response['goal'] = TTwoGoalSerializer(goal).data
-			response['courses'] = []
+			response['hours'] = []
 			day_two = start + datetime.timedelta(days=1)
 			day_three = start + datetime.timedelta(days=2)
 			day_four = start + datetime.timedelta(days=3)
