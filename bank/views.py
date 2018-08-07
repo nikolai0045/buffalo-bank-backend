@@ -937,7 +937,7 @@ class RetrieveTierTwoChartView(View):
 						hour_data['scores'][hr.report.date.weekday()] = hr.score
 						hour_data['num'] += 1
 						if hr.score > 2:
-							course_data['summary'] += 1
+							hour_data['summary'] += 1
 				for i, item in enumerate(hour_data['scores']):
 					if item == 0:
 						hour_data['scores'][i] = "-"
