@@ -978,11 +978,11 @@ class RetrieveTierTwoChartView(View):
 			for d in [0,1,2,3,4]:
 				daily_total = 0
 				daily_num = 0
-				for course in response['hour']:
-					if course['scores'][d] != "-":
+				for hour in response['hours']:
+					if hour['scores'][d] != "-":
 						num += 1
 						daily_num += 1
-						if course['scores'][d] > 2:
+						if hour['scores'][d] > 2:
 							total += 1
 							daily_total += 1
 				if daily_num != 0:
