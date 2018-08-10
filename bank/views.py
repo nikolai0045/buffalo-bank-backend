@@ -916,10 +916,7 @@ class RetrieveTierTwoChartView(View):
 			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,absent=False,iss=False).order_by('report__start_time')
 ##			course_list = []
 			##added 8/6/18
-			hour_list = []
-			for r in reports:
-				if r.report.course.hour not in hour_list:
-					hour_list.append(r.report.course.hour)
+			hour_list = ['Mentoring','1','2','3','5','6','7']
 			for h in hour_list:
 				hour_data = {
 					'hour':h,
@@ -936,11 +933,11 @@ class RetrieveTierTwoChartView(View):
 					else:
 						hour_data['scores'][hr.report.date.weekday()] = hr.score
 						hour_data['num'] += 1
-						if hr.score > 2:
-							hour_data['summary'] += 1
 				for i, item in enumerate(hour_data['scores']):
 					if item == 0:
 						hour_data['scores'][i] = "-"
+					if int(item) > 2:
+						hour_data['summary'] += 1
 				response['hours'].append(hour_data)
 
 ##			for r in reports:
