@@ -905,6 +905,13 @@ class RetrieveTierTwoChartView(View):
 		goals = profile.ttwogoal_set.all()
 		response = []
 
+		print student
+		print date
+		print monday + " - Monday"
+		print friday _ " - Friday"
+		for g in goals:
+			print g.goal
+
 		def get_goal_scores(goal,start,end):
 			response = {}
 			response['goal'] = TTwoGoalSerializer(goal).data
@@ -913,7 +920,7 @@ class RetrieveTierTwoChartView(View):
 			day_three = start + datetime.timedelta(days=2)
 			day_four = start + datetime.timedelta(days=3)
 			response['col_headers'] = ["Course",start.strftime("%m/%d/%y"),day_two.strftime("%m/%d/%y"),day_three.strftime("%m/%d/%y"),day_four.strftime("%m/%d/%y"),end.strftime("%m/%d/%y")]
-			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,absent=False,iss=False).order_by('report__start_time')
+			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
 ##			course_list = []
 			##added 8/6/18
 			hour_list = ['Mentoring','1','2','3','5','6','7']
@@ -940,36 +947,11 @@ class RetrieveTierTwoChartView(View):
 						hour_data['summary'] += 1
 				response['hours'].append(hour_data)
 
-##			for r in reports:
-##				if r.report.course.name not in course_list:
-##					course_list.append(r.report.course.name)
-##			for c in course_list:
-##				course_data = {
-##					'course':c,
-##					'scores':[0,0,0,0,0],
-##					'summary':0,
-##					'num':0,
-##				}
-##				course_reports = reports.filter(report__course__name=c).order_by('report__date')
-##				for cr in course_reports:
-##					if cr.absent:
-##						course_data['scores'][cr.report.date.weekday()] = "A"
-##					elif cr.iss:
-##						course_data['scores'][cr.report.date.weekday()] = "ISS"
-##					else:
-##						course_data['scores'][cr.report.date.weekday()] = cr.score
-##						course_data['num'] += 1
-##						if cr.score > 2:
-##							course_data['summary'] += 1
-##				for i,item in enumerate(course_data['scores']):
-##					if item == 0:
-##						course_data['scores'][i] = "-"
-##				response['courses'].append(course_data)
-
 			response['totals'] = {
 				'scores':[0,0,0,0,0],
 				'summary':0
 			}
+
 			total = 0
 			num = 0
 			for d in [0,1,2,3,4]:
