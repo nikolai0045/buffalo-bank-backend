@@ -908,7 +908,7 @@ class RetrieveTierTwoChartView(View):
 		print student
 		print date
 		print monday + " - Monday"
-		print friday _ " - Friday"
+		print friday + " - Friday"
 		for g in goals:
 			print g.goal
 
