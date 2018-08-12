@@ -826,7 +826,7 @@ class RetrieveTierThreeChartView(View):
 					'num':0,
 				}
 				hour_reports = reports.filter(report__course__hour=h).order_by('report__date')
-				for hr in course_reports:
+				for hr in hour_reports:
 					if hr.absent:
 						hour_data['scores'][hr.report.date.weekday()] = "A"
 					elif cr.iss:
