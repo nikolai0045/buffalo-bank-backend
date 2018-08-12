@@ -943,8 +943,9 @@ class RetrieveTierTwoChartView(View):
 				for i, item in enumerate(hour_data['scores']):
 					if item == 0:
 						hour_data['scores'][i] = "-"
-					if int(item) > 2:
-						hour_data['summary'] += 1
+					if item !== "A" && item !== "ISS":
+						if int(item) > 2:
+							hour_data['summary'] += 1
 				response['hours'].append(hour_data)
 
 			response['totals'] = {
