@@ -829,7 +829,7 @@ class RetrieveTierThreeChartView(View):
 				for hr in hour_reports:
 					if hr.absent:
 						hour_data['scores'][hr.report.date.weekday()] = "A"
-					elif cr.iss:
+					elif hr.iss:
 						hour_data['scores'][hr.report.date.weekday()] = "ISS"
 					else:
 						hour_data['scores'][hr.report.date.weekday()]=hr.score
