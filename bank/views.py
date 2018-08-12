@@ -835,11 +835,11 @@ class RetrieveTierThreeChartView(View):
 						hour_data['scores'][hr.report.date.weekday()]=hr.score
 						hour_data['num'] += 1
 						if hr.score > 2:
-							course_data['summary'] += 1
-				for i, item in enumerate(course_data['scores']):
+							hour_data['summary'] += 1
+				for i, item in enumerate(hour_data['scores']):
 					if item == 0:
-						course_data['scores'][i] = "-"
-				response['hours'].append(course_data)
+						hour_data['scores'][i] = "-"
+				response['hours'].append(hour_data)
 			response['totals'] = {
 				'scores':[0,0,0,0,0],
 				'summary':0,
