@@ -803,12 +803,12 @@ class RetrieveTierThreeChartView(View):
 
 		def get_chart(profile,start,end):
 			response = {}
-			response['courses'] = []
+			response['hours'] = []
 			day_two = start + datetime.timedelta(days=1)
 			day_three = start + datetime.timedelta(days=2)
 			day_four = start + datetime.timedelta(days=3)
 			response['col_headers']=[
-				"Course",
+				"Hour",
 				start.strftime("%m/%d/%y"),
 				day_two.strftime("%m/%d/%y"),
 				day_three.strftime("%m/%d/%y"),
