@@ -816,33 +816,30 @@ class RetrieveTierThreeChartView(View):
 				end.strftime("%m/%d/%y"),
 				"Blues and Greens"
 			]
-			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True,absent=False,iss=False).order_by('report__start_time')
-			course_list = []
-			for r in reports:
-				if r.report.course.name not in course_list:
-					course_list.append(r.report.course.name)
-			for c in course_list:
-				course_data = {
-					'course':c,
+			reports = profile.tthreereport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			hour_list = ['Mentoring','1','2','3','5','6','7']
+			for h in hour_list:
+				hour_data = {
+					'hour':h,
 					'scores':[0,0,0,0,0],
 					'summary':0,
 					'num':0,
 				}
-				course_reports = reports.filter(report__course__name=c).order_by('report__date')
-				for cr in course_reports:
-					if cr.absent:
-						course_data['scores'][cr.report.date.weekday()] = "A"
+				hour_reports = reports.filter(report__course__hour=h).order_by('report__date')
+				for hr in course_reports:
+					if hr.absent:
+						hour_data['scores'][hr.report.date.weekday()] = "A"
 					elif cr.iss:
-						course_data['scores'][cr.report.date.weekday()] = "ISS"
+						hour_data['scores'][hr.report.date.weekday()] = "ISS"
 					else:
-						course_data['scores'][cr.report.date.weekday()]=cr.score
-						course_data['num'] += 1
-						if cr.score > 2:
+						hour_data['scores'][hr.report.date.weekday()]=hr.score
+						hour_data['num'] += 1
+						if hr.score > 2:
 							course_data['summary'] += 1
 				for i, item in enumerate(course_data['scores']):
 					if item == 0:
 						course_data['scores'][i] = "-"
-				response['courses'].append(course_data)
+				response['hours'].append(course_data)
 			response['totals'] = {
 				'scores':[0,0,0,0,0],
 				'summary':0,
@@ -853,11 +850,11 @@ class RetrieveTierThreeChartView(View):
 			for d in [0,1,2,3,4]:
 				daily_total = 0
 				daily_num = 0
-				for course in response['courses']:
-					if course['scores'][d] != "-":
+				for hour in response['hours']:
+					if hour['scores'][d] != "-" and hour['scores'][d] != "A" and hour['scores'][d] != "ISS":
 						num += 1
 						daily_num += 1
-						if course['scores'][d] > 2:
+						if int(hour['scores'][d]) > 2:
 							total += 1
 							daily_total += 1
 				if daily_num != 0:
