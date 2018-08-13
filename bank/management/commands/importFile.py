@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
                 else:
                     teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
-                    teachers.save()
+                    teacher.save()
 
                 if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 0:
                     courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
