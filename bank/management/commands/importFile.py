@@ -39,12 +39,15 @@ class Command(BaseCommand):
                     t_last_name = t_split[0].strip()
                 if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
                     teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
+                else:
+                    teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
+                    teachers.save()
 
                 if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 0:
                     courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
                 else:
                     for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
-                        course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
+                        course, created = Course.objects.get_or_create(name=course_name,course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
                         if created:
                          course.save()
                          course.active = True
