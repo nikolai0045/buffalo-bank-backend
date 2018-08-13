@@ -53,6 +53,7 @@ class Command(BaseCommand):
                     if teacher and teacher not in course.teachers.all():
                         course.teachers.add(teacher)
                         course.save()
+                    courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
 
                 if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
                     student = Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade).first()
