@@ -37,8 +37,8 @@ class Command(BaseCommand):
                 if len(t_split)>1:
                     t_first_name = t_split[1].strip()
                     t_last_name = t_split[0].strip()
-                if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).exists():
-                    teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
+                if UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name).exists():
+                    teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name).first()
                 else:
                     teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
                     teacher.save()
