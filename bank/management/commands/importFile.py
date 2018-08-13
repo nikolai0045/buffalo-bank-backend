@@ -7,8 +7,13 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
 
-        with open('/opt/bank/buffalo-bank-api/bank/schedules fourth nine weeks.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/bank/2018 schedules.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
+            monday_schedule = Schedule.objects.get(name__icontains="Monday")
+            tuesday_schedule = Schedule.objects.get(name__icontains="Tuesday")
+            wednesday_schedule = Schedule.objects.get(name__icontains="Wednesday")
+            thursday_schedule = Schedule.objects.get(name__icontains="Thursday")
+            friday_schedule = Schedule.objects.get(name__icontains="Friday")
 
             for c in Course.objects.all():
                 c.active = False
@@ -36,16 +41,18 @@ class Command(BaseCommand):
                     teacher = UserProfile.objects.filter(first_name=t_first_name,last_name=t_last_name,user__isnull=False).first()
 
                 if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 0:
-                    course = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour).first()
+                    courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
                 else:
-                    course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour)
-                    if created:
+                    for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
+                        course, created = Course.objects.get_or_create(course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
+                        if created:
+                         course.save()
+                         course.active = True
+                         course.grade = s_grade
+                         course.save()
+                    if teacher and teacher not in course.teachers.all():
+                        course.teachers.add(teacher)
                         course.save()
-                        course.active = True
-                        course.grade = s_grade
-                        course.save()
-                if teacher and teacher not in course.teachers.all():
-                    course.teachers.add(teacher)
 
                 if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
                     student = Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade).first()
@@ -56,12 +63,17 @@ class Command(BaseCommand):
 
                 print s_first_name, s_last_name
 
-                course.active = True
-                course.save()
-
-                course.students.add(student)
-
-                for schedule in schedules:
-                    if course not in schedule.courses.all():
-                        schedule.courses.add(course)
-                    schedule.save() 
+                for c in courses:
+                    course.active = True
+                    course.save()
+                    course.students.add(student)
+                    if c.day_of_week == 'Monday' and c not in monday_schedule.courses.all():
+                        monday_schedule.courses.add(c)
+                    elif c.day_of_week == 'Tuesday' and c not in tuesday_schedule.courses.all():
+                        tuesday_schedule.courses.add(c)
+                    elif c.day_of_week == 'Wednesday' and c not in wednesday_schedule.courses.all():
+                        wednesday_schedule.courses.add(c)
+                    elif c.day_of_week == 'Thursday' and c not in thursday_schedule.courses.all():
+                        thursday_schedule.courses.add(c)
+                    elif c.day_of_week == 'Friday' and c not in friday_schedule.courses.all():
+                        friday_schedule.courses.add(c)
