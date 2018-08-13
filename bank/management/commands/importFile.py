@@ -46,7 +46,7 @@ class Command(BaseCommand):
                     teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
                     teacher.save()
 
-                if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 0:
+                if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 4:
                     courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
                 else:
                     for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
