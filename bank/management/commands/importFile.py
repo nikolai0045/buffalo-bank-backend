@@ -22,7 +22,9 @@ class Command(BaseCommand):
             for s in schedules:
                 s.courses.clear()
             for row in reader:
-                print row
+                print row[0]
+                print row[1]
+                print row[2]
                 s_last_name = row[0].strip()
                 s_first_name = row[1].strip()
                 s_grade = row[2].strip()
