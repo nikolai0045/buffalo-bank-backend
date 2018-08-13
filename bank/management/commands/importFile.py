@@ -22,9 +22,6 @@ class Command(BaseCommand):
             for s in schedules:
                 s.courses.clear()
             for row in reader:
-                print row[0]
-                print row[1]
-                print row[2]
                 s_last_name = row[0].strip()
                 s_first_name = row[1].strip()
                 s_grade = row[2].strip()
@@ -46,20 +43,17 @@ class Command(BaseCommand):
                     teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
                     teacher.save()
 
-                if len(Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)) > 4:
-                    courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
-                else:
-                    for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
-                        course, created = Course.objects.get_or_create(name=course_name,course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
-                        if created:
-                         course.save()
-                         course.active = True
-                         course.grade = s_grade
-                         course.save()
+                for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
+                    course, created = Course.objects.get_or_create(name=course_name,course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
+                    if created:
+                        course.save()
+                        course.active = True
+                        course.grade = s_grade
+                        course.save()
                     if teacher and teacher not in course.teachers.all():
                         course.teachers.add(teacher)
                         course.save()
-                    courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
+                courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
 
                 if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
                     student = Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade).first()
@@ -68,7 +62,6 @@ class Command(BaseCommand):
                     if created:
                         student.save()
 
-                print s_first_name, s_last_name
 
                 for c in courses:
                     c.active = True
