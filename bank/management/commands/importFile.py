@@ -65,9 +65,9 @@ class Command(BaseCommand):
                 print s_first_name, s_last_name
 
                 for c in courses:
-                    course.active = True
-                    course.save()
-                    course.students.add(student)
+                    c.active = True
+                    c.save()
+                    c.students.add(student)
                     if c.day_of_week == 'Monday' and c not in monday_schedule.courses.all():
                         monday_schedule.courses.add(c)
                     elif c.day_of_week == 'Tuesday' and c not in tuesday_schedule.courses.all():
