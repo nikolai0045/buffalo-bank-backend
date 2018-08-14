@@ -80,6 +80,10 @@ from bank.views import (
     RemoveCourseFromScheduleView,
     RemoveReportFromDate,
     RetrieveDailyScheduleView,
+    AddStudentToDayOfWeek,
+    AddStudentToAllDaysOfWeek,
+    RemoveStudentFromDayOfWeek,
+    RemoveStudentFromAllDaysOfWeek
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -159,6 +163,12 @@ urlpatterns = [
     url(r'^bank/reports/add_report_to_date/(?P<schedule_pk>[0-9]+)/(?P<course_pk>[0-9]+)/$',AddReportToDateView.as_view()),
     url(r'^bank/reports/remove_course_from_schedule/(?P<schedule_pk>[0-9]+)/(?P<course_pk>[0-9]+)/$',RemoveCourseFromScheduleView.as_view()),
     url(r'^bank/reports/destroy/(?P<pk>[0-9]+)/$',RemoveReportView.as_view()),
+
+    url(r'^bank/reports/add_student_to_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',AddStudentToDayOfWeek.as_view()),
+    url(r'^bank/reports/add_student_all_days/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',AddStudentToAllDaysOfWeek.as_view()),
+    url(r'^bank/reports/remove_student_to_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromDayOfWeek.as_view()),
+    url(r'^bank/reports/remove_student_all_days/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromAllDaysOfWeek.as_view()),
+
 
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
 	url(r'^bank/courses/all/$',RetrieveAllCoursesView.as_view()),

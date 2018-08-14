@@ -643,7 +643,6 @@ class RetrieveDailyScheduleView(APIView):
 		schedule = DailySchedule.objects.get(date=date)
 		return Response(BasicDailyScheduleSerializer(schedule).data)
 
-
 class RetrieveCoursesNotOnCurrentScheduleView(ListAPIView):
 	model = Course
 	serializer_class = BasicCourseSerializer
@@ -717,6 +716,117 @@ class RemoveReportFromDate(APIView):
 
 		return Response({'Success':True})
 
+def create_student_report_for_day(report,student):
+	daily_schedule = DailySchedule.objects.get(date=report.date)
+    ts = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour).first()
+    goals = BehaviorGoal.objects.filter(active=True)
+    num_bucks = ts.num_bucks
+
+	for i in range(num_bucks):
+		deposit = Deposit(
+			course_report = report,
+			student = student
+			)
+		deposit.save()
+		for g in goals:
+			buck = Buck(
+				deposit = deposit,
+				goal = g
+			)
+			buck.save()
+	if student.is_tthree():
+		p = student.tthreeprofile_set.first()
+		tthree_report, created = TThreeReport.objects.get_or_create(
+			report = report,
+			profile = p
+		)
+		if created:
+			tthree_report.save()
+	if student.is_ttwo():
+		p = student.ttwoprofile_set.first()
+		ttwo_goals = p.ttwogoal_set.filter(active=True)
+		for g in ttwo_goals:
+			ttwo_report, created = TTwoReport.objects.get_or_create(
+				report = report,
+				goal = g
+			)
+			if created:
+				ttwo_report.save()
+
+class AddStudentToDayOfWeek(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		student = Student.objects.get(pk=self.kwargs['student_pk'])
+		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
+
+		course = report.couse
+		course.students.add(student)
+		course.save()
+
+		create_student_report_for_day(report,student)
+
+		return Response({'Success':True})
+
+class AddStudentToAllDaysOfWeek(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		student = Student.objects.get(pk=self.kwargs['student_pk'])
+		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
+
+		course = report.course
+		for c in Course.objects.filter(course_number=course.course_number,section_number=course.section_number,hour=course.hour,name=course.name):
+			c.students.add(student)
+			c.save()
+
+		create_student_report_for_day(report,student)
+
+		return Response({'Success':True})
+
+def remove_student_report_from_day(report,student):
+	deposits = report.deposit_set.filter(student=student)
+	ttwo_reports = report.ttworeport_set.filter(goal__profile__student=student)
+	tthree_reports = report.tthreereport_set.filter(profile__student=student)
+
+	for d in deposits:
+		d.delete()
+
+	for r in ttwo_reports:
+		r.delete()
+
+	for r in tthree_reports:
+		r.delete()
+
+class RemoveStudentFromDayOfWeek(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		student = Student.objects.get(pk=self.kwargs['student_pk'])
+		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
+
+		course = report.course
+		course.students.remove(student)
+
+		remove_student_report_from_day(report,student)
+
+		return Response({'Success':True})
+
+class RemoveStudentFromAllDaysOfWeek(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		student = Student.objects.get(pk=self.kwargs['student_pk'])
+		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
+
+		course = report.course
+		for c in Course.objects.filter(course_number=course.course_number,section_number=course.section_number,hour=course.hour,name=course.name):
+			c.students.remove(student)
+			c.save()
+
+		remove_student_report_from_day(report,student)
+
+		return Response({'Success':True})
 
 
 class RetrieveStudentDailyDeposits(ListAPIView):
