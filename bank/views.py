@@ -718,9 +718,9 @@ class RemoveReportFromDate(APIView):
 
 def create_student_report_for_day(report,student):
 	daily_schedule = DailySchedule.objects.get(date=report.date)
-    ts = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour).first()
-    goals = BehaviorGoal.objects.filter(active=True)
-    num_bucks = ts.num_bucks
+	ts = daily_schedule.schedule.time_slots.filter(grade=course.grade,hour=course.hour).first()
+	goals = BehaviorGoal.objects.filter(active=True)
+	num_bucks = ts.num_bucks
 
 	for i in range(num_bucks):
 		deposit = Deposit(
