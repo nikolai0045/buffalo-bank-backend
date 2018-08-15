@@ -782,7 +782,7 @@ class AddStudentToAllDaysOfWeek(APIView):
 		student = Student.objects.get(pk=self.kwargs['student_pk'])
 		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
 
-		old_courses = student.course_set.filter(hour=report.hour,active=True)
+		old_courses = student.course_set.filter(hour=report.course.hour,active=True)
 		for c in old_courses:
 			c.students.remove(student)
 			c.save()
