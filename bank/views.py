@@ -760,7 +760,14 @@ class AddStudentToDayOfWeek(APIView):
 		student = Student.objects.get(pk=self.kwargs['student_pk'])
 		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
 
-		course = report.couse
+		daily_schedule = DailySchedule.objects.get(date=report.date)
+
+		old_courses = student.course_set.filter(day_of_week=daily_schedule.schedule.day_of_week,hour=report.course.hour,active=True)
+		for c in old_courses:
+			c.students.remove(student)
+			c.save()
+
+		course = report.course
 		course.students.add(student)
 		course.save()
 
@@ -774,6 +781,11 @@ class AddStudentToAllDaysOfWeek(APIView):
 	def get(self,request,*args,**kwargs):
 		student = Student.objects.get(pk=self.kwargs['student_pk'])
 		report = CourseReport.objects.get(pk=self.kwargs['report_pk'])
+
+		old_courses = student.course_set.filter(hour=report.hour,active=True)
+		for c in old_courses:
+			c.students.remove(student)
+			c.save()
 
 		course = report.course
 		for c in Course.objects.filter(course_number=course.course_number,section_number=course.section_number,hour=course.hour,name=course.name):
