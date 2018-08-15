@@ -166,7 +166,7 @@ urlpatterns = [
 
     url(r'^bank/reports/add_student_to_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',AddStudentToDayOfWeek.as_view()),
     url(r'^bank/reports/add_student_all_days/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',AddStudentToAllDaysOfWeek.as_view()),
-    url(r'^bank/reports/remove_student_to_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromDayOfWeek.as_view()),
+    url(r'^bank/reports/remove_student_from_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromDayOfWeek.as_view()),
     url(r'^bank/reports/remove_student_all_days/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromAllDaysOfWeek.as_view()),
 
 
