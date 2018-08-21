@@ -753,6 +753,20 @@ def create_student_report_for_day(report,student):
 			if created:
 				ttwo_report.save()
 
+class AddBucksForStudentView(APIView):
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def get(self,request,*args,**kwargs):
+		student = Student.objects.get(pk=self.kwargs['student_pk'])
+		bucks = int(self.kwargs['bucks'])
+
+		student.account_balance += bucks
+		student.save()
+
+		return Response({
+				'Success':True
+			})
+
 class AddStudentToDayOfWeek(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 

@@ -83,7 +83,8 @@ from bank.views import (
     AddStudentToDayOfWeek,
     AddStudentToAllDaysOfWeek,
     RemoveStudentFromDayOfWeek,
-    RemoveStudentFromAllDaysOfWeek
+    RemoveStudentFromAllDaysOfWeek,
+    AddBucksForStudentView
 	)
 from rest_framework.authtoken import views as rest_framework_views
 
@@ -169,6 +170,7 @@ urlpatterns = [
     url(r'^bank/reports/remove_student_from_day/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromDayOfWeek.as_view()),
     url(r'^bank/reports/remove_student_all_days/(?P<report_pk>[0-9]+)/(?P<student_pk>[0-9]+)/$',RemoveStudentFromAllDaysOfWeek.as_view()),
 
+    url(r'^bank/students/add_bucks/(?P<student_pk>[0-9]+)/(?P<bucks>[0-9]+)/$',AddBucksForStudentView.as_view()),
 
 	url(r'^bank/courses/active/$',RetrieveActiveCoursesView.as_view()),
 	url(r'^bank/courses/all/$',RetrieveAllCoursesView.as_view()),
