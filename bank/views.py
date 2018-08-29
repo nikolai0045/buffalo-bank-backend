@@ -423,7 +423,7 @@ class RetrieveCourseMissingWorkView(ListAPIView):
 	def get_queryset(self):
 		report = CourseReport.objects.get(pk=self.kwargs['pk'])
 		course = report.course
-		qs = course.missingassignment_set.all()
+		qs = MissingAssignment.objects.filter(course__course_number=course.course_number,course__section_number=course.section_number)
 		return qs
 
 class UpdateMissingWorkView(UpdateAPIView):
