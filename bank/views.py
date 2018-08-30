@@ -1284,7 +1284,7 @@ class RetrieveStudentStatisticsView(View):
 			}
 			response['bucks_by_goal'][g.pk]=stats
 		for b in bucks:
-			course = Course.objects.all(course_number=b.deposit.course_report.course.course_number,section_number=b.deposit.course_report.course.section_number)
+			course = Course.objects.filter(course_number=b.deposit.course_report.course.course_number,section_number=b.deposit.course_report.course.section_number).first()
 			if not response['bucks_by_course'].has_key(course.pk):
 				response['bucks_by_course'][course.pk] = {
 					'name':'',
