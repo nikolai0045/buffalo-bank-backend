@@ -968,7 +968,7 @@ class RetrieveTierThreeChartView(View):
 					elif hr.iss:
 						hour_data['scores'][hr.report.date.weekday()] = "ISS"
 					else:
-						if hr.score != 0 and hour_data['scores'][hr.report.date.weekday()] != 0:
+						if hr.score != 0 and hour_data['scores'][hr.report.date.weekday()] == 0:
 							hour_data['scores'][hr.report.date.weekday()]=hr.score
 							hour_data['num'] += 1
 							if hr.score > 2:
