@@ -14,8 +14,9 @@ class Command(BaseCommand):
             transactions = student.transaction_set.filter(date=today,deposit__isnull=False)
             for g in goals:
                 for t in transactions:
-                    report = TTwoReport(
+                    report, created = TTwoReport.objects.get_or_create(
                         report = t.deposit.course_report,
                         goal = g,
                     )
-                    report.save()
+                    if created:
+                        report.save()

@@ -12,8 +12,9 @@ class Command(BaseCommand):
             student = p.student
             transactions = student.transaction_set.filter(date__lte=today,date__gte=today-datetime.timedelta(days=5),deposit__isnull=False)
             for t in transactions:
-                report = TThreeReport(
+                report, created = TThreeReport.objects.get_or_create(
                     report = t.deposit.course_report,
                     profile = p
                 )
-                report.save()
+                if created:
+                    report.save()
