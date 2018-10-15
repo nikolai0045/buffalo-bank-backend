@@ -662,9 +662,7 @@ class RetrieveCoursesNotOnCurrentScheduleView(ListAPIView):
 		for c in already_in_schedule:
 			courses = courses.exclude(pk=c)
 
-		serializer = BasicCourseSerializer(courses,many=True)
-		return Response(serializer.data)
-
+		return courses
 class AddCourseToScheduleView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
