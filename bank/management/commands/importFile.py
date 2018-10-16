@@ -15,7 +15,12 @@ class Command(BaseCommand):
             thursday_schedule = Schedule.objects.get(name__icontains="Thursday")
             friday_schedule = Schedule.objects.get(name__icontains="Friday")
 
+            for c in Course.objects.all():
+                c.active = False
+                c.students.clear()
             schedules = Schedule.objects.all()
+            for s in schedules:
+                s.courses.clear()
             for row in reader:
                 s_last_name = row[0].strip()
                 s_first_name = row[1].strip()
@@ -48,7 +53,6 @@ class Command(BaseCommand):
                     if teacher and teacher not in course.teachers.all():
                         course.teachers.add(teacher)
                         course.save()
-
                 courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
 
                 if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
@@ -60,11 +64,6 @@ class Command(BaseCommand):
 
 
                 for c in courses:
-                    old_courses = student.course_set.filter(
-                        hour=c.hour,
-                        day_of_week=c.day_of_week)
-                    for oc in old_courses:
-                        oc.students.remove(s)
                     c.active = True
                     c.save()
                     c.students.add(student)
