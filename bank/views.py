@@ -663,6 +663,7 @@ class RetrieveCoursesNotOnCurrentScheduleView(ListAPIView):
 			courses = courses.exclude(pk=c)
 
 		return courses
+		
 class AddCourseToScheduleView(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 
