@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
 
-        with open('/opt/bank/buffalo-bank-api/second_nine_weeks_18.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/third_nine_weeks_19.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
             monday_schedule = Schedule.objects.get(name__icontains="Monday")
             tuesday_schedule = Schedule.objects.get(name__icontains="Tuesday")
@@ -30,6 +30,7 @@ class Command(BaseCommand):
                 t_split = row[5].strip().split(",")
                 c_section_number = row[6].strip()
                 c_hour = row[8].strip()
+                dow = row[9].strip()
                 t_first_name = False
                 t_last_name = False
 
@@ -43,16 +44,16 @@ class Command(BaseCommand):
                     teacher = UserProfile(first_name=t_first_name,last_name=t_last_name)
                     teacher.save()
 
-                for dow in ['Monday','Tuesday','Wednesday','Thursday','Friday']:
-                    course, created = Course.objects.get_or_create(name=course_name,course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
-                    if created:
-                        course.save()
-                        course.active = True
-                        course.grade = s_grade
-                        course.save()
-                    if teacher and teacher not in course.teachers.all():
-                        course.teachers.add(teacher)
-                        course.save()
+
+                course, created = Course.objects.get_or_create(name=course_name,course_number=c_number,section_number=c_section_number,hour=c_hour,day_of_week=dow)
+                if created:
+                    course.save()
+                    course.active = True
+                    course.grade = s_grade
+                    course.save()
+                if teacher and teacher not in course.teachers.all():
+                    course.teachers.add(teacher)
+                    course.save()
                 courses = Course.objects.filter(course_number=c_number,section_number=c_section_number,hour=c_hour)
 
                 if len(Student.objects.filter(first_name=s_first_name,last_name=s_last_name,grade=s_grade)) > 1:
