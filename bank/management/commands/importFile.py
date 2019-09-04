@@ -7,13 +7,11 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
 
-        with open('/opt/bank/buffalo-bank-api/third_nine_weeks_19.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/first_nine_weeks.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
-            monday_schedule = Schedule.objects.get(name__icontains="Monday")
-            tuesday_schedule = Schedule.objects.get(name__icontains="Tuesday")
-            wednesday_schedule = Schedule.objects.get(name__icontains="Wednesday")
-            thursday_schedule = Schedule.objects.get(name__icontains="Thursday")
-            friday_schedule = Schedule.objects.get(name__icontains="Friday")
+            mr_schedule = Schedule.objects.get(name__icontains="Monday")
+            tf_schedule = Schedule.objects.get(name__icontains="Tuesday")
+            weds_schedule = Schedule.objects.get(name__icontains="Wednesday")
 
             for c in Course.objects.all():
                 c.active = False
@@ -68,13 +66,9 @@ class Command(BaseCommand):
                     c.active = True
                     c.save()
                     c.students.add(student)
-                    if c.day_of_week == 'Monday' and c not in monday_schedule.courses.all():
-                        monday_schedule.courses.add(c)
-                    elif c.day_of_week == 'Tuesday' and c not in tuesday_schedule.courses.all():
-                        tuesday_schedule.courses.add(c)
-                    elif c.day_of_week == 'Wednesday' and c not in wednesday_schedule.courses.all():
-                        wednesday_schedule.courses.add(c)
-                    elif c.day_of_week == 'Thursday' and c not in thursday_schedule.courses.all():
-                        thursday_schedule.courses.add(c)
-                    elif c.day_of_week == 'Friday' and c not in friday_schedule.courses.all():
-                        friday_schedule.courses.add(c)
+                    if c.day_of_week == 'Monday/Thursday' and c not in mr_schedule.courses.all():
+                        mr_schedule.courses.add(c)
+                    elif c.day_of_week == 'Tuesday/Friday' and c not in tf_schedule.courses.all():
+                        tf_schedule.courses.add(c)
+                    elif c.day_of_week == 'Wednesday' and c not in weds_schedule.courses.all():
+                        weds_schedule.courses.add(c)
