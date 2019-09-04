@@ -27,8 +27,8 @@ class Command(BaseCommand):
                 course_name = row[4].strip()
                 t_split = row[5].strip().split(",")
                 c_section_number = row[6].strip()
-                c_hour = row[8].strip()
-                dow = row[9].strip()
+                c_hour = row[7].strip()
+                dow = row[8].strip()
                 t_first_name = False
                 t_last_name = False
 
