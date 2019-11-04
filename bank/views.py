@@ -1057,8 +1057,8 @@ class RetrieveTierTwoChartView(View):
 			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
 			hour_list = []
 			for r in reports:
-				if r.course.hour not in hour_list:
-					hour_list.append(r.course.hour)
+				if r.report.course.hour not in hour_list:
+					hour_list.append(r.report.course.hour)
 ##			course_list = []
 			##added 8/6/18
 ##			hour_list = ['Mentoring','1','2','3','5','6','7']
