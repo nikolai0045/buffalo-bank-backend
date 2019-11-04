@@ -1055,9 +1055,13 @@ class RetrieveTierTwoChartView(View):
 			day_four = start + datetime.timedelta(days=3)
 			response['col_headers'] = ["Course",start.strftime("%m/%d/%y"),day_two.strftime("%m/%d/%y"),day_three.strftime("%m/%d/%y"),day_four.strftime("%m/%d/%y"),end.strftime("%m/%d/%y")]
 			reports = goal.ttworeport_set.filter(report__date__gte=start,report__date__lte=end,report__completed=True).order_by('report__start_time')
+			hour_list = []
+			for r in reports:
+				if r.course.hour not in hour_list:
+					hour_list.append(r.course.hour)
 ##			course_list = []
 			##added 8/6/18
-			hour_list = ['Mentoring','1','2','3','5','6','7']
+##			hour_list = ['Mentoring','1','2','3','5','6','7']
 			for h in hour_list:
 				hour_data = {
 					'hour':h,
