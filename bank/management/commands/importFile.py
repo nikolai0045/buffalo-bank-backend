@@ -13,7 +13,7 @@ class Command(BaseCommand):
             tues_schedule = Schedule.objects.get(name__icontains="Tuesday")
             weds_schedule = Schedule.objects.get(name__icontains="Wednesday")
             thurs_schedule = Schedule.objects.get(name__icontains="Thursday")
-            fri_schedule = Schedule.obejcts.get(name__icontains="Friday")
+            fri_schedule = Schedule.objects.get(name__icontains="Friday")
 
             for c in Course.objects.all():
                 c.active = False
