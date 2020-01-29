@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
 
-        with open('/opt/bank/buffalo-bank-api/bank/2nd term 2019-2020.csv','rb') as csvfile:
+        with open('/opt/bank/buffalo-bank-api/bank/3rd nine weeks 2020.csv','rb') as csvfile:
             reader = csv.reader(csvfile)
             mon_schedule = Schedule.objects.get(name__icontains="Monday")
             tues_schedule = Schedule.objects.get(name__icontains="Tuesday")

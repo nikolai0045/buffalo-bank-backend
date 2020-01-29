@@ -1,4 +1,5 @@
-﻿Bennett,James,6,219909,Design and Modeling (PLTW),"Boone, Thomas",63,6th PM Encore,Wednesday
+﻿student.lastName,student.firstName,student.grade,courseSection.courseNumber,courseSection.courseName,courseSection.teacherFullName,courseSection.sectionNumber,activeEnrollment.active,sectionSchedule.scheduleEnd
+Bennett,James,6,219909,Design and Modeling (PLTW),"Boone, Thomas",63,6th PM Encore,Wednesday
 Bennett,James,6,219909,Design and Modeling (PLTW),"Boone, Thomas",63,6th PM Encore,Monday/Thursday
 Bennett,James,6,219909,Design and Modeling (PLTW),"Boone, Thomas",63,6th PM Encore,Tuesday/Friday
 Whalen,Teryn,7,320101,Career Choices 6-8,"Gerton, Kristin",71,7th Encore AM,Wednesday
